@@ -1,3 +1,4 @@
+const fetch = require('node-fetch');
 const getGithub = require('../utils/get-github');
 const getGithubToken = require('../utils/get-github-token');
 const TarStripStream = require('../utils/tar-strip-stream');

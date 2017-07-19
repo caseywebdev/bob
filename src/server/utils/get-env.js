@@ -5,8 +5,8 @@ const NOT_FOUND = _.extend(new Error(), {statusCode: 404});
 
 module.exports = async ({id, slug}) => {
   const db = await getDb();
-  const [env] = db('envs').select().where({id, slug});
-  if (env) return _.extend({}, env.config, {id: env.id});
+  const [env] = await db('envs').select().where(_.pick({id, slug}));
+  if (env) return env;
 
   throw NOT_FOUND;
 };

@@ -24,7 +24,7 @@ module.exports = async ({
   const json = await source.readFile({commit, env, filename: 'bob.json'});
   if (!json) return [];
 
-  const configs = JSON.parse(json);
+  let configs = JSON.parse(json);
   if (!_.isArray(configs)) configs = [configs];
   const db = await getDb();
   return Promise.all(_.map(configs, async config => {
@@ -39,7 +39,7 @@ module.exports = async ({
         repo,
         sha,
         sourceId,
-        tags: getTags({ref, sha, tags})
+        tags: JSON.stringify(getTags({ref, sha, tags}))
       })
       .returning('*');
     await publishBuild({build});

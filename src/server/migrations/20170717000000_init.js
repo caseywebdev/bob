@@ -31,7 +31,7 @@ exports.up = db =>
       t.specificType('ref', 'citext').notNullable().index();
       t.specificType('repo', 'citext').notNullable().index();
       t.specificType('sha', 'citext').notNullable().index();
-      t.specificType('tags', 'citext[]').notNullable().index();
+      t.jsonb('tags').notNullable().index();
       t.string('status').notNullable().defaultTo(PENDING);
       t.string('error');
       t.json('meta');

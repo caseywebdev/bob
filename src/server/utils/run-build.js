@@ -60,6 +60,7 @@ const buildImage = async ({build, env, source}) => {
 
 const pushImage = async ({env, tag}) => {
   const authconfig = await getAuthConfig({env, tag});
+  console.log(authconfig);
   const stream = await call(docker.getImage(tag), 'push', {authconfig});
   await handleStream(stream);
 };
@@ -70,10 +71,12 @@ const pushImages = async ({build, env}) => {
 
 const updateStatus = async ({build, build: {id}, error, status}) => {
   const db = await getDb();
-  build = await db('builds')
-    .update({status, error, updatedAt: new Date()})
-    .where({id})
-    .returning('*');
+  build = (
+    await db('builds')
+      .update({status, error, updatedAt: new Date()})
+      .where({id})
+      .returning('*')
+  )[0];
   return publishBuild({build});
 };
 
@@ -89,7 +92,7 @@ module.exports = async ({build}) => {
     await updateStatus({build, status: SUCCEEDED});
   } catch (er) {
     try {
-      await updateStatus({build, error: er.message, status: FAILED});
+      await updateStatus({build, error: `${er}`, status: FAILED});
     } catch (er) {
       console.error(er);
     }
