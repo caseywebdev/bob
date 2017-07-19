@@ -1,0 +1,6 @@
+{
+  "tags": [
+    "quay.io/caseywebdev/bob:{{SHA}}",
+    "quay.io/caseywebdev/bob:{{REF}}"
+  ]
+}
