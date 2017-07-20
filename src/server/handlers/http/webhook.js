@@ -1,9 +1,9 @@
 const _ = require('underscore');
-const {WRITE} = require('../constants/permission-levels');
-const createBuilds = require('../utils/create-builds');
-const getEnv = require('../utils/get-env');
-const hasPermission = require('../utils/has-permission');
-const sources = require('../sources');
+const {WRITE} = require('../../../shared/constants/permission-levels');
+const createBuilds = require('../../utils/create-builds');
+const getEnv = require('../../utils/get-env');
+const hasPermission = require('../../utils/has-permission');
+const sources = require('../../sources');
 
 module.exports = async (req, res) => {
   const {params: {envSlug, sourceId}, query: {token}} = req;

@@ -1,5 +1,6 @@
-const {PENDING, RUNNING} = require('../constants/statuses');
+const {PENDING, CLAIMED} = require('../../shared/constants/statuses');
 const getDb = require('../utils/get-db');
+const ensure = require('../utils/ensure');
 const loop = require('../utils/loop');
 const runBuild = require('../utils/run-build');
 const sleep = require('../utils/sleep');
@@ -7,7 +8,7 @@ const sleep = require('../utils/sleep');
 const getBuild = async () => {
   const db = await getDb();
   const [build] = await db('builds')
-    .update({status: RUNNING, updatedAt: new Date()})
+    .update({status: CLAIMED, updatedAt: new Date()})
     .whereIn('id', sql => sql
       .select('id')
       .from('builds')
@@ -21,8 +22,8 @@ const getBuild = async () => {
 
 const maybeBuild = async () => {
   const build = await getBuild();
-  if (build) runBuild({build});
+  if (build) runBuild({buildId: build.id});
   await sleep(1000);
 };
 
-module.exports = async () => { loop(maybeBuild); };
+module.exports = async () => { loop(() => ensure(maybeBuild)); };

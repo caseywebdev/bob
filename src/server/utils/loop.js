@@ -1,6 +1,4 @@
-const ensure = require('./ensure');
-
 const loop = module.exports = async fn => {
-  await ensure(fn);
+  await fn();
   return loop(fn);
 };

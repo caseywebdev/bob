@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+exec node_modules/.bin/cogs -c etc/cogs.js "$@"

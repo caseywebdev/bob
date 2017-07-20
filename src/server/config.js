@@ -20,5 +20,8 @@ module.exports = {
       method: env.VAULT_AUTH_METHOD
     },
     url: env.VAULT_URL
+  },
+  worker: {
+    buildId: parseInt(env.WORKER_BUILD_ID)
   }
 };
