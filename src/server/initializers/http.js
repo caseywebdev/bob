@@ -49,4 +49,13 @@ wss.on('connection', socket => {
   socket.trigger('open');
 });
 
-module.exports = promisify(server.listen.bind(server, 80));
+process.on('SIGTERM', () => {
+  console.log('Closing HTTP server...');
+  server.close(() => console.log('HTTP server closed'));
+});
+
+module.exports = async () => {
+  console.log('Starting HTTP server...');
+  await promisify(server.listen.bind(server, 80))();
+  console.log('HTTP server started');
+};

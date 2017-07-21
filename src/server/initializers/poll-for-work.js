@@ -1,9 +1,8 @@
 const {PENDING, CLAIMED} = require('../../shared/constants/statuses');
 const getDb = require('../utils/get-db');
-const ensure = require('../utils/ensure');
-const loop = require('../utils/loop');
 const runBuild = require('../utils/run-build');
-const sleep = require('../utils/sleep');
+
+let timeoutId;
 
 const getBuild = async () => {
   const db = await getDb();
@@ -21,9 +20,21 @@ const getBuild = async () => {
 };
 
 const maybeBuild = async () => {
-  const build = await getBuild();
-  if (build) runBuild({buildId: build.id});
-  await sleep(1000);
+  try {
+    const build = await getBuild();
+    if (build) runBuild({buildId: build.id});
+  } catch (er) {
+    console.error(er);
+  }
+  timeoutId = setTimeout(maybeBuild, 1000);
 };
 
-module.exports = async () => { loop(() => ensure(maybeBuild)); };
+process.on('SIGTERM', () => {
+  clearTimeout(timeoutId);
+  console.log('Build polling stopped');
+});
+
+module.exports = () => {
+  console.log('Polling for new builds...');
+  maybeBuild();
+};

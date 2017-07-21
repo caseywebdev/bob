@@ -7,7 +7,7 @@ const STATUS_INFO = require('../../shared/constants/status-info');
 const getToken = async ({
   env,
   env: {config: {slack: {token: {value, vault: {path, key} = {}}}}}
-}) => value || (await (await getVault({env})).get(path))[key];
+}) => value || (await getVault({env}).get(path))[key];
 
 const getChannel = async ({
   build: {meta},

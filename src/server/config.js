@@ -4,6 +4,24 @@ module.exports = {
   bob: {
     url: env.BOB_URL
   },
+  docker: {
+    socketPath: env.DOCKER_SOCKET_PATH,
+    protocol: env.DOCKER_PROTOCOL,
+    host: env.DOCKER_HOST,
+    port: parseInt(env.DOCKER_PORT),
+    ca: {
+      value: env.DOCKER_CA,
+      vault: {path: env.DOCKER_CA_VAULT_PATH, key: env.DOCKER_CA_VAULT_KEY}
+    },
+    cert: {
+      value: env.DOCKER_CERT,
+      vault: {path: env.DOCKER_CERT_VAULT_PATH, key: env.DOCKER_CERT_VAULT_KEY}
+    },
+    key: {
+      value: env.DOCKER_KEY,
+      vault: {path: env.DOCKER_KEY_VAULT_PATH, key: env.DOCKER_KEY_VAULT_KEY}
+    }
+  },
   github: {
     clientId: {
       value: env.GITHUB_CLIENT_ID,

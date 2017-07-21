@@ -1,7 +1,6 @@
 const config = require('../config');
-const getVault = require('./get-vault');
+const vault = require('./root-vault');
 
-const {rootUserId: {value, vault: {path, key}}, vault} = config;
+const {rootUserId: {value, vault: {path, key}}} = config;
 
-module.exports = async () =>
-  value || (await (await getVault({env: {config: {vault}}})).get(path))[key];
+module.exports = async () => value || (await vault.get(path))[key];

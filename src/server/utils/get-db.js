@@ -1,13 +1,21 @@
 const config = require('../config');
 const knex = require('knex');
 const memoize = require('./memoize');
-const getVault = require('./get-vault');
+const vault = require('./root-vault');
 
-const {postgres: {url: {value, vault: {path, key}}}, vault} = config;
+const {postgres: {url: {value, vault: {path, key}}}} = config;
 
-const getUrl = async () =>
-  value || (await (await getVault({env: {config: {vault}}})).get(path))[key];
+const getUrl = async () => value || (await vault.get(path))[key];
+
+let db;
+process.on('SIGTERM', async () => {
+  if (db) {
+    console.log('Destroying PG connection pool...');
+    await db.destroy();
+    console.log('PG connection pool destroyed');
+  }
+});
 
 module.exports = memoize(async () =>
-  knex({client: 'pg', connection: await getUrl()})
+  db = knex({client: 'pg', connection: await getUrl()})
 );

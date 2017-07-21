@@ -1,9 +1,9 @@
 const _ = require('underscore');
 const {BUILDING, CANCELLED, CLAIMED, FAILED, PULLING, PUSHING, SUCCEEDED} = require('../../shared/constants/statuses');
 const {promisify} = require('util');
-const Docker = require('dockerode');
 const getBuildArgs = require('./get-build-args');
 const getDb = require('./get-db');
+const getDocker = require('./get-docker');
 const getEnv = require('./get-env');
 const getRegistryConfig = require('./get-registry-config');
 const LogLineStream = require('./log-line-stream');
@@ -12,12 +12,11 @@ const sources = require('../sources');
 const updateBuildStatus = require('./update-build-status');
 const uuid = require('uuid/v4');
 
-const docker = new Docker();
 const call = (obj, key, ...args) => promisify(obj[key].bind(obj))(...args);
 
 const handleStream = ({logLines, stream}) =>
-  new Promise((resolve, reject) =>
-    docker.modem.followProgress(
+  new Promise(async (resolve, reject) =>
+    (await getDocker()).modem.followProgress(
       stream,
       er => er ? reject(er) : resolve(),
       logLine => logLines.write(logLine)
@@ -32,6 +31,7 @@ const getAuthConfig = async ({env, tag}) => {
 
 const pullImage = async ({env, logLines, tag}) => {
   const authconfig = await getAuthConfig({env, tag});
+  const docker = await getDocker();
   const stream = await call(docker, 'pull', tag, {authconfig});
   await handleStream({logLines, stream});
 };
@@ -48,6 +48,7 @@ const buildImage = async ({build, env, logLines, source}) => {
   const buildArgs = getBuildArgs({build, env});
   const registryConfig = getRegistryConfig({env});
   const tarStream = source.getTarStream({build, env});
+  const docker = await getDocker();
   const stream = await call(docker, 'buildImage', await tarStream, {
     buildargs: await buildArgs,
     cachefrom: tags,
@@ -64,6 +65,7 @@ const buildImage = async ({build, env, logLines, source}) => {
 
 const pushImage = async ({env, tag, logLines}) => {
   const authconfig = await getAuthConfig({env, tag});
+  const docker = await getDocker();
   const stream = await call(docker.getImage(tag), 'push', {authconfig});
   await handleStream({logLines, stream});
 };
