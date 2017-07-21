@@ -1,4 +1,4 @@
-FROM node:8.1.4
+FROM node:8.2.0
 
 WORKDIR /code
 
@@ -18,7 +18,7 @@ COPY bin/build /code/bin/build
 COPY etc/cogs.js /code/etc/cogs.js
 COPY src/client /code/src/client
 COPY src/shared /code/src/shared
-RUN MINIFY=1 bin/build
+# RUN MINIFY=1 bin/build
 
 COPY bin /code/bin
 COPY etc /code/etc

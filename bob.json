@@ -1,6 +1,6 @@
 {
   "tags": [
-    "quay.io/coderiety/bob:{{SHA}}",
-    "quay.io/coderiety/bob:{{REF}}"
+    "quay.io/coderiety/bob:{{REF}}",
+    "quay.io/coderiety/bob:{{SHA}}"
   ]
 }

@@ -1,6 +1,25 @@
 const {env} = process;
 
 module.exports = {
+  bob: {
+    url: env.BOB_URL
+  },
+  github: {
+    clientId: {
+      value: env.GITHUB_CLIENT_ID,
+      vault: {
+        path: env.GITHUB_CLIENT_ID_VAULT_PATH,
+        key: env.GITHUB_CLIENT_ID_VAULT_KEY
+      }
+    },
+    clientSecret: {
+      value: env.GITHUB_CLIENT_SECRET,
+      vault: {
+        path: env.GITHUB_CLIENT_SECRET_VAULT_PATH,
+        key: env.GITHUB_CLIENT_SECRET_VAULT_KEY
+      }
+    }
+  },
   postgres: {
     url: {
       value: env.POSTGRES_URL,
@@ -10,9 +29,9 @@ module.exports = {
       }
     }
   },
-  rootToken: {
-    value: env.ROOT_TOKEN,
-    vault: {path: env.ROOT_TOKEN_VAULT_PATH, key: env.ROOT_TOKEN_VAULT_KEY}
+  rootUserId: {
+    value: env.ROOT_USER_ID,
+    vault: {path: env.ROOT_USER_ID_VAULT_PATH, key: env.ROOT_USER_ID_VAULT_KEY}
   },
   vault: {
     auth: {

@@ -28,13 +28,14 @@ module.exports = async ({
   if (!_.isArray(configs)) configs = [configs];
   const db = await getDb();
   return Promise.all(_.map(configs, async config => {
-    const {buildArgs, context, dockerfile, tags} = config;
+    const {buildArgs, context, dockerfile, tags, meta} = config;
     const [build] = await db('builds')
       .insert({
         buildArgs,
         context,
         dockerfile,
         envId,
+        meta,
         ref,
         repo,
         sha,

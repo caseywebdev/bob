@@ -14,11 +14,11 @@ exports.up = db =>
 
     .createTable('permissions', t => {
       t.integer('envId').notNullable().references('envs.id').onUpdate('CASCADE').onDelete('CASCADE');
-      t.string('auth', 'citext').notNullable();
+      t.string('userId').notNullable();
       t.integer('level').notNullable();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
-      t.primary(['envId', 'auth']);
+      t.primary(['envId', 'userId']);
     })
 
     .createTable('builds', t => {
@@ -53,7 +53,8 @@ exports.up = db =>
 CREATE FUNCTION build_change_notify() RETURNS trigger AS $$
 DECLARE
 BEGIN
-  PERFORM pg_notify('change' || '', '{"_type":"build","id":' || NEW.id || ',"envId":' || NEW."envId" || '}');
+  PERFORM pg_notify('build:' || NEW.id, '{"table":"builds","where":{"id":' || NEW.id || '}}');
+  PERFORM pg_notify('env:' || NEW."envId" || ':build', '{"table":"builds","where":{"id":' || NEW.id || '}}');
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -64,7 +65,7 @@ FOR EACH ROW EXECUTE PROCEDURE build_change_notify();
 CREATE FUNCTION log_line_change_notify() RETURNS trigger AS $$
 DECLARE
 BEGIN
-  PERFORM pg_notify('change' || '', '{"_type":"logLine","buildId":' || NEW."buildId" || ',"number":' || NEW.number || '}');
+  PERFORM pg_notify('build:' || NEW."buildId" || ':logLine', '{"table":"logLines","where":{"buildId":' || NEW."buildId" || ',"number":' || NEW.number || '}}');
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -78,10 +79,10 @@ exports.down = ({schema}) =>
   schema
     .raw(
 `
-DROP TRIGGER build_change_trigger ON builds;
-DROP FUNCTION build_change_notify();
 DROP TRIGGER log_line_change_trigger ON "logLines";
 DROP FUNCTION log_line_change_notify();
+DROP TRIGGER build_change_trigger ON builds;
+DROP FUNCTION build_change_notify();
 `
     )
     .dropTable('logLines')

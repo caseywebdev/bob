@@ -1,16 +1,14 @@
 const getDb = require('./get-db');
-const getRootToken = require('./get-root-token');
-const splitAuth = require('./split-auth');
+const getRootUserId = require('./get-root-user-id');
 
-module.exports = async ({auth, envId, level}) => {
-  const [type, id] = splitAuth({auth});
-  if (type === 'token' && id === await getRootToken()) return true;
+module.exports = async ({envId, level, userId}) => {
+  if (userId === await getRootUserId()) return true;
 
   const db = await getDb();
   const [row] = await db('permissions')
     .select()
-    .where({auth, envId})
-    .whereIn('auth', [auth, 'public'])
-    .andWhere('bit_and(level, ?) > 0', level);
+    .where({envId, userId})
+    .whereIn('userId', [userId, 'public'])
+    .andWhere('bit_and(level, ?) > 0', [level]);
   return !!row;
 };

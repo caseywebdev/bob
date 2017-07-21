@@ -7,9 +7,9 @@ service docker start
 ONLY_STATIC=1 bin/build
 
 if [ "$WATCH" = "1" ]; then
-  bin/build -w src/client,src/shared &
+  bin/build -w src/client -w src/shared &
   node_modules/.bin/livereload build -p 8080 &
-  exec node_modules/.bin/watchy -w src/server,src/shared node src/server
+  exec node_modules/.bin/watchy -w src/server -w src/shared node src/server
 else
   exec node src/server
 fi
