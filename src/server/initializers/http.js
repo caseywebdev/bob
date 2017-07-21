@@ -5,7 +5,9 @@ const compression = require('compression');
 const express = require('express');
 const http = require('http');
 const Live = require('live-socket');
+const path = require('path');
 const ws = require('uws');
+const {NOT_FOUND} = require('../../shared/constants/errors');
 
 const asyncify = handlers =>
   _.map(_.isArray(handlers) ? handlers : [handlers], handler =>
@@ -15,6 +17,8 @@ const asyncify = handlers =>
   );
 
 const setHeaders = res => res.set('Cache-Control', 'no-cache, public');
+
+const ROOT_PATH = path.resolve('build/index.html');
 
 const server = http.createServer(
   express()
@@ -29,7 +33,8 @@ const server = http.createServer(
       '/api/envs/:envSlug/webhooks/:sourceId',
       asyncify(require('../handlers/http/webhook'))
     )
-    .use((req, res) => res.sendFile('build/index.html'))
+    .use('/api/*', (req, res, next) => next(NOT_FOUND))
+    .use((req, res) => res.sendFile(ROOT_PATH))
     .use(require('../handlers/http/error'))
 );
 

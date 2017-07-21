@@ -10,14 +10,14 @@ const STATIC = {
       options: {
         flags: 'g',
         patterns: {
-          '{env.escaped.(\\w+)}': (_, key) => JSON.stringify(env[key]),
-          '{env.literal.(\\w+)}': (_, key) => env[key]
+          '{{env.escaped.(\\w+)}}': (_, key) => JSON.stringify(env[key]),
+          '{{env.literal.(\\w+)}}': (_, key) => env[key]
         }
       }
     }
   ],
   builds: {
-    'src/public/**/*': {dir: 'build'}
+    'src/client/public/**/*': {dir: 'build'}
   }
 };
 
@@ -31,7 +31,7 @@ const STYLES = {
       name: 'local-css',
       only: 'src/**/*.scss',
       except: 'src/global.scss',
-      options: {base: 'src', debug: !MINIFY}
+      options: {base: 'src/client', debug: !MINIFY}
     },
     MINIFY ? {
       name: 'clean-css',
@@ -39,7 +39,7 @@ const STYLES = {
       options: {processImport: false}
     } : []
   ),
-  builds: {'src/index.scss': 'build/index.css'}
+  builds: {'src/client/index.scss': 'build/index.css'}
 };
 
 const JAVASCRIPT = {
@@ -48,7 +48,7 @@ const JAVASCRIPT = {
     {
       name: 'local-css',
       only: 'src/**/*.scss',
-      options: {base: 'src', debug: !MINIFY, export: true}
+      options: {base: 'src/client', debug: !MINIFY, export: true}
     },
     {name: 'json', only: '**/*.+(json|scss)'},
     {name: 'eslint', only: 'src/**/*.js'},
@@ -64,27 +64,24 @@ const JAVASCRIPT = {
     },
     {
       name: 'babel',
-      only: [
-        'src/**/*.+(js|json|scss)',
-        'node_modules/entities/maps/*.json'
-      ],
+      only: 'src/**/*.+(js|json|scss)',
       options: {presets: ['es2015', 'stage-0', 'react']}
     },
     {
       name: 'concat-commonjs',
       only: '**/*.+(js|json|scss)',
       options: {
-        entry: 'src/index.js',
+        entry: 'src/client/index.js',
         extensions: ['.js', '.scss']
       }
     },
     MINIFY ? {
       name: 'uglify-js',
       only: '**/*.+(js|json|scss)',
-      except: ['**/*+(-|_|.)min.js', 'node_modules/ammo.js/ammo.js']
+      except: '**/*+(-|_|.)min.js'
     } : []
   ),
-  builds: {'src/index.js': 'build/index.js'}
+  builds: {'src/client/index.js': 'build/index.js'}
 };
 
 module.exports = ONLY_STATIC ? [STATIC] : [JAVASCRIPT, STATIC, STYLES];
