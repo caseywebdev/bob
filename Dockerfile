@@ -5,6 +5,8 @@ WORKDIR /code
 COPY package.json /code/package.json
 RUN npm install
 
+COPY .eslintrc /code/.eslintrc
+COPY .stylelintrc /code/.stylelintrc
 COPY bin/build /code/bin/build
 COPY etc/cogs.js /code/etc/cogs.js
 COPY src/client /code/src/client

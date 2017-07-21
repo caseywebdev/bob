@@ -1,0 +1,36 @@
+version: '3'
+
+volumes:
+  build:
+  pg-data:
+
+services:
+  postgres:
+    image: postgres:9.6.3
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  bob: &shared
+    command: bin/watch
+    depends_on:
+      - postgres
+    environment:
+      BOB_URL: http://localhost
+      GITHUB_CLIENT_ID:
+      GITHUB_CLIENT_SECRET:
+      LIVERELOAD_URL: http://localhost:8080
+      POSTGRES_URL: pg://postgres:postgres@postgres/postgres
+      ROOT_USER_ID:
+    image: quay.io/coderiety/bob:af45af3b08b1e219605b08543b0ef627cb644b38
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - ./.eslintrc:/code/.eslintrc
+      - ./.stylelintrc:/code/.stylelintrc
+      - ./bin:/code/bin
+      - ./etc:/code/etc
+      - ./package.json:/code/package.json
+      - ./src:/code/src
+      - /var/run/docker.sock:/var/run/docker.sock
+      - build:/code/build
