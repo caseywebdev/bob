@@ -5,8 +5,7 @@ exports.up = db =>
     .raw('CREATE EXTENSION IF NOT EXISTS citext')
     .createTable('envs', t => {
       t.increments('id').primary();
-      t.string('slug').notNullable().unique();
-      t.string('name').notNullable();
+      t.string('name').notNullable().unique();
       t.json('config').notNullable();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
@@ -15,7 +14,7 @@ exports.up = db =>
     .createTable('permissions', t => {
       t.integer('envId').notNullable().references('envs.id').onUpdate('CASCADE').onDelete('CASCADE');
       t.string('userId').notNullable();
-      t.integer('level').notNullable();
+      t.integer('role').notNullable();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
       t.primary(['envId', 'userId']);
@@ -54,7 +53,6 @@ CREATE FUNCTION build_change_notify() RETURNS trigger AS $$
 DECLARE
 BEGIN
   PERFORM pg_notify('build:' || NEW.id, '{"table":"builds","where":{"id":' || NEW.id || '}}');
-  PERFORM pg_notify('env:' || NEW."envId" || ':build', '{"table":"builds","where":{"id":' || NEW.id || '}}');
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

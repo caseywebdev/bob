@@ -2,8 +2,6 @@ const {PENDING, CLAIMED} = require('../../shared/constants/statuses');
 const getDb = require('../utils/get-db');
 const runBuild = require('../utils/run-build');
 
-let timeoutId;
-
 const getBuild = async () => {
   const db = await getDb();
   const [build] = await db('builds')
@@ -19,6 +17,8 @@ const getBuild = async () => {
   return build;
 };
 
+let sigtermReceived;
+let timeoutId;
 const maybeBuild = async () => {
   try {
     const build = await getBuild();
@@ -26,10 +26,11 @@ const maybeBuild = async () => {
   } catch (er) {
     console.error(er);
   }
-  timeoutId = setTimeout(maybeBuild, 1000);
+  if (!sigtermReceived) timeoutId = setTimeout(maybeBuild, 1000);
 };
 
 process.on('SIGTERM', () => {
+  sigtermReceived = true;
   clearTimeout(timeoutId);
   console.log('Build polling stopped');
 });

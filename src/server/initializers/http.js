@@ -6,13 +6,14 @@ const express = require('express');
 const http = require('http');
 const Live = require('live-socket');
 const path = require('path');
+const sockets = require('../utils/sockets');
 const ws = require('uws');
 const {NOT_FOUND} = require('../../shared/constants/errors');
 
 const asyncify = handlers =>
   _.map(_.isArray(handlers) ? handlers : [handlers], handler =>
     async (req, res, next) => {
-      try { await handler(req, res, next); } catch (er) { next(er); }
+      try { await handler({next, req, res}); } catch (er) { next(er); }
     }
   );
 
@@ -30,7 +31,7 @@ const server = http.createServer(
     .use(bodyParser.json())
     .post('/api/pave', asyncify(require('../handlers/http/pave')))
     .post(
-      '/api/envs/:envSlug/webhooks/:sourceId',
+      '/api/envs/:envId/webhooks/:sourceId',
       asyncify(require('../handlers/http/webhook'))
     )
     .use('/api/*', (req, res, next) => next(NOT_FOUND))
@@ -42,7 +43,7 @@ const HANDLERS = _.map(['close', 'open', 'pave'], name => {
   const handler = require(`../handlers/ws/${name}`);
   return socket =>
     socket.on(name, async (params, cb = _.noop) => {
-      try { cb(await handler({params, socket})); } catch (er) { cb(er); }
+      try { cb(null, await handler({params, socket})); } catch (er) { cb(er); }
     });
 });
 
@@ -56,7 +57,11 @@ wss.on('connection', socket => {
 
 process.on('SIGTERM', () => {
   console.log('Closing HTTP server...');
-  server.close(() => console.log('HTTP server closed'));
+  server.close(() => {
+    console.log('HTTP server closed');
+    console.log('Closing sockets...');
+    _.each(sockets, ({socket}) => socket.close());
+  });
 });
 
 module.exports = async () => {

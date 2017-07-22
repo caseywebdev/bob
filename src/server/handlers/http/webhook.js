@@ -2,11 +2,11 @@ const _ = require('underscore');
 const {WRITE} = require('../../../shared/constants/permission-levels');
 const createBuilds = require('../../utils/create-builds');
 const getEnv = require('../../utils/get-env');
-const hasPermission = require('../../utils/has-permission');
+const getRole = require('../../utils/get-role');
 const sources = require('../../sources');
 
-module.exports = async (req, res) => {
-  const {params: {envSlug, sourceId}, query: {token}} = req;
+module.exports = async ({req, res}) => {
+  const {params: {envId, sourceId}, query: {token}} = req;
   const source = sources[sourceId];
   if (!source) {
     throw _.extend(
@@ -15,11 +15,9 @@ module.exports = async (req, res) => {
     );
   }
 
-  const env = await getEnv({slug: envSlug});
-  const auth = `token:${token}`;
-  if (!(await hasPermission({auth, envId: env.id, level: WRITE}))) {
-    throw _.extend(new Error(), {statusCode: 403});
-  }
+  const env = await getEnv({id: envId});
+  const role = await getRole({envId: env.id, userId: `token:${token}`});
+  if (!(role & WRITE)) throw _.extend(new Error(), {statusCode: 403});
 
   const commit = await source.getCommitFromWebhook({env, req});
   if (!commit) return res.send([]);

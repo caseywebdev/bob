@@ -1,10 +1,9 @@
-const _ = require('underscore');
 const getDb = require('./get-db');
 const NOT_FOUND = require('../../shared/constants/errors');
 
-module.exports = async ({id, slug}) => {
+module.exports = async ({id}) => {
   const db = await getDb();
-  const [env] = await db('envs').select().where(_.pick({id, slug}));
+  const [env] = await db('envs').select().where({id});
   if (env) return env;
 
   throw NOT_FOUND;

@@ -23,13 +23,7 @@ module.exports = {
     }
   },
   github: {
-    clientId: {
-      value: env.GITHUB_CLIENT_ID,
-      vault: {
-        path: env.GITHUB_CLIENT_ID_VAULT_PATH,
-        key: env.GITHUB_CLIENT_ID_VAULT_KEY
-      }
-    },
+    clientId: env.GITHUB_CLIENT_ID,
     clientSecret: {
       value: env.GITHUB_CLIENT_SECRET,
       vault: {

@@ -7,27 +7,19 @@ const NAME_REQUIRED_ERROR = _.extend(
   {statusCode: 400}
 );
 
-const SLUG_REQUIRED_ERROR = _.extend(
-  new Error('`slug` is required'),
-  {statusCode: 400}
-);
-
 const CONFIG_REQUIRED_ERROR = _.extend(
   new Error('`config` is required to be an object'),
   {statusCode: 400}
 );
 
 module.exports = async ({env}) => {
-  let {config, id, name, slug} = env;
+  let {config, id, name} = env;
   name = _str.clean(_str.clean(name).slice(0, 32));
   if (!name) throw NAME_REQUIRED_ERROR;
 
-  slug = _str.slugify(_str.slugify(slug).slice(0, 32));
-  if (!slug) throw SLUG_REQUIRED_ERROR;
-
   if (!config || !_.isObject(config)) throw CONFIG_REQUIRED_ERROR;
 
-  env = _.extend({}, env, {name, slug});
+  env = _.extend({}, env, {name});
   const db = await getDb();
   if (!id) return (await db('envs').insert(env).returning('*'))[0];
 

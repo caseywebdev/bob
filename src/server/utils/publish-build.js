@@ -6,9 +6,9 @@ const sources = require('../sources');
 
 module.exports = async ({build}) => {
   try {
-    const env = await getEnv({envId: build.envId});
+    const env = await getEnv({id: build.envId});
     const source = sources[build.sourceId];
-    const url = `${config.bob.url}/envs/${env.slug}/builds/${build.id}`;
+    const url = `${config.bob.url}/builds/${build.id}`;
     await Promise.all(_.map(publishers, publish =>
       publish({build, env, source, url})
     ));
