@@ -19,7 +19,7 @@ const fetch = async ({type, token}) => {
   return PUBLIC_USER;
 };
 
-module.exports = async ({auth}) => {
+module.exports = async ({auth} = {}) => {
   let user = await fetch(auth || {});
   if (user.id === await getRootUserId()) {
     user = _.extend({}, user, {isRoot: true});
