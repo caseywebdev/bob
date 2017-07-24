@@ -9,13 +9,18 @@ const send = (name, data) =>
 
 const store = new Store({
   batchDelay: 1,
+  cache: {
+    auth: disk.get('auth')
+  },
   router: new Router({
     routes: {
       'ui.*': () => {},
 
-      '*': ({query}) => send('pave', {auth: disk.get('auth'), query})
+      '*': ({query}) => send('pave', {auth: store.get(['auth']), query})
     }
   })
 });
+
+store.watch(['auth'], () => disk.set('auth', store.get(['auth'])));
 
 export default store;

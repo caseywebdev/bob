@@ -1,8 +1,7 @@
 const _ = require('underscore');
-const getUser = require('../utils/get-user');
 const {listen, unlisten} = require('../utils/db-channels');
 const getRole = require('../utils/get-role');
-const {FORBIDDEN} = require('../../shared/constants/errors');
+const {FORBIDDEN, NOT_FOUND, WEB_SOCKET_ONLY} = require('../../shared/constants/errors');
 const {ADMIN, READ} = require('../../shared/constants/permission-levels');
 
 const cleanEnv = ({env, role}) => role & ADMIN ? env : _.omit(env, 'config');
@@ -10,16 +9,6 @@ const cleanEnv = ({env, role}) => role & ADMIN ? env : _.omit(env, 'config');
 const getDb = require('../utils/get-db');
 
 module.exports = {
-  'signIn!.*': async ({1: [auth], store: {cache: {socket}}}) => ({
-    user: {$set: (socket || {}).user = await getUser({auth})}
-  }),
-
-  'signOut!': async ({store: {cache: {socket}}}) => ({
-    user: {$set: (socket || {}).user = await getUser()}
-  }),
-
-  user: async ({store: {cache: {user}}}) => ({user: {$set: user}}),
-
   envs: async () => {
     const db = await getDb();
     const envs = await db('envs').select();
@@ -56,7 +45,7 @@ module.exports = {
         $set: _.extend({}, build, {env: {$ref: ['envsById', build.envId]}})
       }))
     };
-  }
+  },
   //   if (user.isRoot) {
   //     envs = await db('envs').select()
   //   const db = await getDb();
@@ -74,9 +63,58 @@ module.exports = {
   //   const env = getEnv({id, user});
   // },
   //
-  // 'listenToBuild!.$key':
-  // async ({1: envId, store: {cache: {socket, user}}}) => {
-  //   const role = await hasPermission({envId, level: READ, userId: user.id});
-  //   if (!allowed) throw FORBIDDEN;
-  // }
+  'listenToBuild!.$key':
+  async ({1: id, store: {cache: {socket, user}}}) => {
+    if (!socket) throw WEB_SOCKET_ONLY;
+
+    const db = await getDb();
+    const builds = await db('builds').select().whereIn('id', ids);
+    const role = await hasPermission({envId, level: READ, userId: user.id});
+    if (!allowed) throw FORBIDDEN;
+  },
+
+  'listenToBuildLogLines!.$key':
+  async ({1: id, store: {cache: {socket, user}}}) => {
+    if (!socket) throw WEB_SOCKET_ONLY;
+
+    const db = await getDb();
+    const [build] = await db('builds').select().where({id});
+    if (!build) throw NOT_FOUND;
+
+    const role = await getRole({envId: build.envId, userId: user.id});
+    if (!(role & READ)) throw FORBIDDEN;
+
+    const channel = `build:${id}:logLine`;
+    if (socket.listeners[channel]) return;
+
+    const cb = logLine =>
+      socket.live.send('pave', {
+        buildsById: {[id]: {logLines: {[logLine.index]: {$set: logLine}}}}
+      });
+    socket.listeners[channel] = cb;
+    try {
+      await listen(channel, cb);
+    } catch (er) {
+      delete socket.listeners[channel];
+      throw er;
+    }
+  },
+
+  'buildsById.$key.logLines':
+  async ({1: buildId, store: {cache: {user}}}) => {
+    const db = await getDb();
+    const [build] = await db('builds').select().where({id: buildId});
+    if (!build) throw NOT_FOUND;
+
+    const role = await getRole({envId: build.envId, userId: user.id});
+    if (!(role & READ)) throw FORBIDDEN;
+
+    return {
+      buildsById: {
+        [buildId]: {
+          logLines: {$merge: await db('logLines').where({buildId})}
+        }
+      }
+    };
+  }
 };

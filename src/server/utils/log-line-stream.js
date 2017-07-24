@@ -37,24 +37,22 @@ module.exports = class extends Writable {
   }
 
   async createLogLine({content}) {
-    const {buildId, logLines, logLines: {length}} = this;
-    if (!content.id) this.idCursor = length;
+    const {buildId, logLines, logLines: {index}} = this;
+    if (!content.id) this.idCursor = index;
 
-    const number = length + 1;
     const db = await getDb();
     const [logLine] = await db('logLines')
-      .insert({buildId, number, content})
+      .insert({buildId, index, content})
       .returning('*');
     logLines.push(logLine);
   }
 
   async updateLogLine({content, index}) {
     const {buildId, logLines} = this;
-    const {number} = logLines[index];
     const db = await getDb();
     const [logLine] = await db('logLines')
       .update({content, updatedAt: new Date()})
-      .where({buildId, number})
+      .where({buildId, index})
       .returning('*');
     logLines[index] = logLine;
   }

@@ -40,11 +40,11 @@ exports.up = db =>
 
     .createTable('logLines', t => {
       t.integer('buildId').notNullable().references('builds.id').onUpdate('CASCADE').onDelete('CASCADE');
-      t.integer('number').notNullable();
+      t.integer('index').notNullable();
       t.json('content').notNullable();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
-      t.primary(['buildId', 'number']);
+      t.primary(['buildId', 'index']);
     })
 
     .raw(
@@ -63,7 +63,7 @@ FOR EACH ROW EXECUTE PROCEDURE build_change_notify();
 CREATE FUNCTION log_line_change_notify() RETURNS trigger AS $$
 DECLARE
 BEGIN
-  PERFORM pg_notify('build:' || NEW."buildId" || ':logLine', '{"table":"logLines","where":{"buildId":' || NEW."buildId" || ',"number":' || NEW.number || '}}');
+  PERFORM pg_notify('build:' || NEW."buildId" || ':logLine', '{"table":"logLines","where":{"buildId":' || NEW."buildId" || ',"index":' || NEW.index || '}}');
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

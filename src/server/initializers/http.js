@@ -42,7 +42,7 @@ const server = http.createServer(
 const HANDLERS = _.map(['close', 'open', 'pave'], name => {
   const handler = require(`../handlers/ws/${name}`);
   return socket =>
-    socket.on(name, async (params, cb = _.noop) => {
+    socket.live.on(name, async (params, cb = _.noop) => {
       try { cb(null, await handler({params, socket})); } catch (er) { cb(er); }
     });
 });
@@ -50,9 +50,9 @@ const HANDLERS = _.map(['close', 'open', 'pave'], name => {
 const wss = new ws.Server({server});
 
 wss.on('connection', socket => {
-  socket = new Live({socket});
-  _.invoke(HANDLERS, 'call', null, socket);
-  socket.trigger('open');
+  socket = {live: new Live({socket})};
+  _.each(HANDLERS, handler => handler(socket));
+  socket.live.trigger('open');
 });
 
 process.on('SIGTERM', () => {
@@ -60,7 +60,7 @@ process.on('SIGTERM', () => {
   server.close(() => {
     console.log('HTTP server closed');
     console.log('Closing sockets...');
-    _.each(sockets, ({socket}) => socket.close());
+    _.each(sockets, ({live}) => live.close());
   });
 });
 
