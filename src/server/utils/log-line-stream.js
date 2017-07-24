@@ -37,7 +37,7 @@ module.exports = class extends Writable {
   }
 
   async createLogLine({content}) {
-    const {buildId, logLines, logLines: {index}} = this;
+    const {buildId, logLines, logLines: {length: index}} = this;
     if (!content.id) this.idCursor = index;
 
     const db = await getDb();

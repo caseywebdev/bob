@@ -1,8 +1,10 @@
-import {Route, Switch} from 'react-router-dom';
+import {Link, Route, Switch} from 'react-router-dom';
 import {withPave} from 'pave-react';
 import config from '../../config';
+import cx from 'classnames';
 import disk from '../../utils/disk';
 import Home from '../home/layout';
+import Logo from '../shared/logo';
 import NotFound from '../shared/not-found';
 import React from 'react';
 import styles from './layout.scss';
@@ -34,8 +36,10 @@ const render = ({props, props: {pave: {error, isLoading, state: {user}}}}) =>
   <div>
     <div className={styles.header}>
       <div className={styles.left}>
-        <img className={styles.logoIcon} src='/gfx/logo.svg' />
-        <div className={styles.logoText}>Bob</div>
+        <Link className={cx(styles.logo, styles.link)} to='/'>
+          <Logo className={styles.logoIcon} />
+          <div className={styles.logoText}>Bob</div>
+        </Link>
       </div>
       <div className={styles.center} />
       <div className={styles.right}>
@@ -45,8 +49,12 @@ const render = ({props, props: {pave: {error, isLoading, state: {user}}}}) =>
             <div className={styles.dropdown}>
               <div className={styles.link}>Sign In</div>
               <div className={styles.options}>
-                <div className={styles.link} onClick={signInGithub}>Github</div>
-                <div className={styles.link} onClick={() => signInToken({props})}>Token</div>
+                <div className={styles.link} onClick={signInGithub}>
+                  with GitHub
+                </div>
+                <div className={styles.link} onClick={() => signInToken({props})}>
+                  with a Token
+                </div>
               </div>
             </div> :
             <div className={styles.dropdown}>
