@@ -21,26 +21,20 @@
   &:hover {
     background: $orange;
 
-    .logoIcon {
+    .bobShape {
       fill: #fff;
     }
   }
 }
 
-.logo {
+.bob {
   align-items: center;
   display: flex;
+  height: 40px;
 }
 
-.logoIcon {
-  margin-right: 10px;
-  width: 24px;
-}
-
-.logoText {
-  color: #fff;
-  font-weight: bold;
-  font-size: 24px;
+.bobShape {
+  height: 30px;
 }
 
 .center {

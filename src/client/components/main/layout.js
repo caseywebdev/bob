@@ -6,7 +6,7 @@ import disk from '../../utils/disk';
 import Home from '../home/layout';
 import Icon from '../shared/icon';
 import Loading from '../shared/loading';
-import Logo from '../shared/logo';
+import Bob from '../shapes/bob';
 import NotFound from '../shared/not-found';
 import React from 'react';
 import EnvsLayout from '../envs/layout';
@@ -44,9 +44,8 @@ const render = ({props, props: {pave: {error, isLoading, state: {user}}}}) =>
   <div>
     <div className={styles.header}>
       <div className={styles.left}>
-        <Link className={cx(styles.logo, styles.link)} to='/'>
-          <Logo className={styles.logoIcon} />
-          <div className={styles.logoText}>Bob</div>
+        <Link className={cx(styles.bob, styles.link)} to='/'>
+          <Bob className={styles.bobShape} />
         </Link>
       </div>
       <div className={styles.center} />
