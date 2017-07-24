@@ -6,6 +6,7 @@ module.exports = new Router({
   routes: _.extend({},
     require('./all'),
     require('./auth'),
+    require('./envs'),
     require('./not-found')
   )
 });

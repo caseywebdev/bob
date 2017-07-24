@@ -7,6 +7,7 @@ const sources = require('../../sources');
 
 module.exports = async ({req, res}) => {
   const {params: {envId, sourceId}, query: {token}} = req;
+  const env = await getEnv({id: envId});
   const source = sources[sourceId];
   if (!source) {
     throw _.extend(
@@ -15,8 +16,7 @@ module.exports = async ({req, res}) => {
     );
   }
 
-  const env = await getEnv({id: envId});
-  const role = await getRole({envId: env.id, userId: `token:${token}`});
+  const role = await getRole({envId, userId: `token:${token}`});
   if (!(role & WRITE)) throw _.extend(new Error(), {statusCode: 403});
 
   const commit = await source.getCommitFromWebhook({env, req});

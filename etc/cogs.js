@@ -17,7 +17,8 @@ const STATIC = {
     }
   ],
   builds: {
-    'src/client/public/**/*': {dir: 'build'}
+    'src/client/public/**/*': {dir: 'build'},
+    'node_modules/font-awesome/fonts/*': {dir: 'build/fonts'}
   }
 };
 
@@ -30,7 +31,7 @@ const STYLES = {
     {
       name: 'local-css',
       only: 'src/**/*.scss',
-      except: 'src/global.scss',
+      except: 'src/client/global.scss',
       options: {base: 'src/client', debug: !MINIFY}
     },
     MINIFY ? {

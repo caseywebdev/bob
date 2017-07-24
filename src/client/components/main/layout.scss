@@ -9,10 +9,27 @@
   height: 40px;
 }
 
+.link {
+  @include ellipsis;
+  cursor: pointer;
+  color: #fff;
+  line-height: 40px;
+  display: block;
+  padding: 0 10px;
+  text-decoration: none;
+
+  &:hover {
+    background: $orange;
+
+    .logoIcon {
+      fill: #fff;
+    }
+  }
+}
+
 .logo {
   align-items: center;
   display: flex;
-  text-decoration: none;
 }
 
 .logoIcon {
@@ -30,27 +47,28 @@
   flex: 1;
 }
 
-.link {
-  cursor: pointer;
-  line-height: 40px;
-  padding: 0 10px;
-
-  &:hover {
-    background: $orange;
-
-    .logoIcon {
-      fill: #fff;
-    }
-  }
-}
-
 .dropdown:hover .options {
   display: block;
 }
 
 .options {
-  background: #333;
-  // display: none;
+  @include box-shadow;
+  background: #fff;
+  border-bottom-left-radius: $border-radius;
+  display: none;
+  overflow: hidden;
   position: absolute;
   right: 0;
+
+  .link {
+    color: $orange;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+.loading {
+  margin-right: 10px;
 }

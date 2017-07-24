@@ -10,7 +10,7 @@ services:
     volumes:
       - pg-data:/var/lib/postgresql/data
 
-  bob: &shared
+  bob:
     command: bin/watch
     depends_on:
       - postgres

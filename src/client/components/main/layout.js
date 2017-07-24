@@ -4,18 +4,26 @@ import config from '../../config';
 import cx from 'classnames';
 import disk from '../../utils/disk';
 import Home from '../home/layout';
+import Icon from '../shared/icon';
+import Loading from '../shared/loading';
 import Logo from '../shared/logo';
 import NotFound from '../shared/not-found';
 import React from 'react';
+import EnvsLayout from '../envs/layout';
 import styles from './layout.scss';
 
 const signInToken = ({props: {pave: {store}}}) => {
-  store.run({query: ['signInToken!', prompt('Enter a token')]})
+  const token = prompt('Token');
+  if (!token) return;
+
+  store
+    .run({query: ['signInToken!', token]})
     .catch(er => console.error(er));
 };
 
 const signOut = ({props: {history, pave: {store}}}) =>
-  store.run({query: ['signOut!']})
+  store
+    .run({query: ['signOut!']})
     .then(() => {
       store.update({$set: {user: store.get(['user'])}});
       history.push('/refresh');
@@ -47,20 +55,33 @@ const render = ({props, props: {pave: {error, isLoading, state: {user}}}}) =>
           user ?
             user.id === 'public' ?
             <div className={styles.dropdown}>
-              <div className={styles.link}>Sign In</div>
+              <div className={styles.link}><Icon name='sign-in' /> Sign In</div>
               <div className={styles.options}>
                 <div className={styles.link} onClick={signInGithub}>
-                  with GitHub
+                  <Icon name='github' /> with GitHub
                 </div>
-                <div className={styles.link} onClick={() => signInToken({props})}>
-                  with a Token
+                <div
+                  className={styles.link}
+                  onClick={() => signInToken({props})}
+                >
+                  <Icon name='key' /> with a Token
                 </div>
               </div>
             </div> :
             <div className={styles.dropdown}>
-              <div className={styles.link} onClick={() => signOut({props})}>Sign Out</div>
+              <div className={styles.link}>
+                <Icon name='user' /> {user.name}
+              </div>
+              <div className={styles.options}>
+                <Link className={styles.link} to='/envs'>
+                  <Icon name='globe' /> Envs
+                </Link>
+                <div className={styles.link} onClick={() => signOut({props})}>
+                  <Icon name='sign-out' /> Sign Out
+                </div>
+              </div>
             </div> :
-          isLoading ? 'Loading...' :
+          isLoading ? <Loading className={styles.loading} /> :
           error ? error.message || error :
           'Something went wrong!'
         }
@@ -68,6 +89,7 @@ const render = ({props, props: {pave: {error, isLoading, state: {user}}}}) =>
     </div>
     <Switch>
       <Route exact path='/' component={Home} />
+      <Route path='/envs' component={EnvsLayout} />
       <Route component={NotFound} />
     </Switch>
   </div>;
