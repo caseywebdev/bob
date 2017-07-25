@@ -1,4 +1,5 @@
 const _ = require('underscore');
+const _str = require('underscore.string');
 const {Writable} = require('stream');
 const getDb = require('./get-db');
 const notify = require('./notify');
@@ -29,7 +30,7 @@ module.exports = class extends Writable {
         }
       } else if (stream) {
         this.buffer += stream;
-        const lines = this.buffer.split('\n');
+        const lines = _str.lines(this.buffer);
         this.buffer = _.last(lines);
         for (let line of _.initial(lines)) {
           await this.createLogLine({content: {stream: line}});
@@ -78,6 +79,7 @@ module.exports = class extends Writable {
       .insert({buildId, index, content})
       .returning('*');
     logLines.push(logLine);
+    await this.notify({index});
   }
 
   async updateLogLine({content, index}) {
@@ -88,11 +90,14 @@ module.exports = class extends Writable {
       .where({buildId, index})
       .returning('*');
     logLines[index] = logLine;
-    try {
-      await notify({
-        channel: `build:${buildId}:logLine`,
-        data: {table: 'logLines', where: {buildId, index}}
-      });
-    } catch (er) {}
+    await this.notify({index});
+  }
+
+  async notify({index}) {
+    const {buildId} = this;
+    await notify({
+      channel: `build:${buildId}:logLine`,
+      data: {table: 'logLines', where: {buildId, index}}
+    });
   }
 };
