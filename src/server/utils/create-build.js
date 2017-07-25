@@ -1,3 +1,4 @@
+const _ = require('underscore');
 const getDb = require('./get-db');
 const publishBuild = require('./publish-build');
 
@@ -14,6 +15,7 @@ module.exports = async ({
   tags
 }) => {
   const db = await getDb();
+  if (meta) meta = _.omit(meta, 'isPublished');
   const [build] = await db('builds')
     .insert({
       buildArgs,

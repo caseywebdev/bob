@@ -63,5 +63,5 @@ module.exports = async ({
   if (ts) return client.chat.update(ts, channel, null, options);
 
   ts = (await client.chat.postMessage(channel, null, options)).ts;
-  _.extend(meta.slack, {channel, message: {buildId, ts}});
+  _.extend(meta.slack, {channel, message: {buildId: id, ts}});
 };
