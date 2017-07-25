@@ -10,30 +10,60 @@ module.exports = class extends Writable {
     this.idCursor = -1;
     this.logLines = [];
     this.errorLogged = false;
+    this.buffer = '';
   }
 
   async _write(content, __, cb) {
     try {
       const {idCursor, logLines} = this;
-      const {id} = content;
+      const {id, stream} = content;
+      if (!stream) await this.flushBuffer();
       if (id) {
         const index = _.findLastIndex(logLines, ({content: {id: _id}}) =>
           _id === id
         );
         if (index > idCursor) {
           await this.updateLogLine({content, index});
-          return cb();
+        } else {
+          await this.createLogLine({content});
+        }
+      } else if (stream) {
+        this.buffer += stream;
+        const lines = this.buffer.split('\n');
+        this.buffer = _.last(lines);
+        for (let line of _.initial(lines)) {
+          await this.createLogLine({content: {stream: line}});
         }
       }
-
-      await this.createLogLine({content});
       cb();
     } catch (er) {
-      if (!this.errorLogged) {
-        console.error(er);
-        this.errorLogged = true;
-      }
+      this.handleError(er);
       cb();
+    }
+  }
+
+  async _final(cb) {
+    try {
+      await this.flushBuffer();
+      cb();
+    } catch (er) {
+      this.handleError(er);
+      cb();
+    }
+  }
+
+  async flushBuffer() {
+    if (!this.buffer) return;
+
+    const stream = this.buffer;
+    this.buffer = '';
+    await this.createLogLine({content: {stream}});
+  }
+
+  async handleError(er) {
+    if (!this.errorLogged) {
+      console.error(er);
+      this.errorLogged = true;
     }
   }
 
