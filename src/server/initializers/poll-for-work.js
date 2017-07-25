@@ -10,6 +10,7 @@ const getBuild = async () => {
       .select('id')
       .from('builds')
       .where({status: PENDING})
+      .andWhereRaw("(meta ->> 'isPublished')::boolean")
       .orderBy('id', 'asc')
       .limit(1)
     )

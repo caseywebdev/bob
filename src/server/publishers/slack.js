@@ -1,6 +1,5 @@
 const _ = require('underscore');
 const {WebClient} = require('@slack/client');
-const getDb = require('../utils/get-db');
 const getVault = require('../utils/get-vault');
 const STATUS_INFO = require('../../shared/constants/status-info');
 
@@ -10,9 +9,9 @@ const getToken = async ({
 }) => value || (await getVault({env}).get(path))[key];
 
 const getChannel = async ({
-  build: {meta},
   client,
-  env: {config: {slack: {channel: defaultChannel}}}
+  env: {config: {slack: {channel: defaultChannel}}},
+  meta
 }) => {
   let {channel} = ((meta || {}).slack || {});
   if (!channel) channel = defaultChannel;
@@ -25,20 +24,19 @@ const getChannel = async ({
 };
 
 module.exports = async ({
-  build,
-  build: {error, id, ref, repo, sha, tags, status, meta},
+  build: {error, id, ref, repo, sha, tags, status},
   env,
   env: {config: {slack}},
+  meta,
   url
 }) => {
   if (!slack) return;
 
   const client = new WebClient(await getToken({env}));
-  const channel = await getChannel({build, client, env});
+  const channel = await getChannel({client, env, meta});
   if (!channel) return;
 
-  if (!meta) meta = {};
-  if (!meta.slack) meta = _.extend({}, meta, {slack: {}});
+  if (!meta.slack) meta.slack = {};
   const {iconEmoji, iconUrl, username} = slack;
   const {color, emojiShortname} = STATUS_INFO[status];
   const title = `:${emojiShortname}: ${repo}#${ref} ${status}`;
@@ -65,9 +63,5 @@ module.exports = async ({
   if (ts) return client.chat.update(ts, channel, null, options);
 
   ts = (await client.chat.postMessage(channel, null, options)).ts;
-  meta = _.extend({}, meta, {
-    slack: _.extend({}, meta.slack, {channel, message: {buildId: id, ts}})
-  });
-  const db = await getDb();
-  return db('builds').update({meta}).where({id});
+  _.extend(meta.slack, {channel, message: {buildId, ts}});
 };
