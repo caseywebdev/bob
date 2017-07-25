@@ -45,44 +45,10 @@ exports.up = db =>
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
       t.primary(['buildId', 'index']);
-    })
-
-    .raw(
-`
-CREATE FUNCTION build_change_notify() RETURNS trigger AS $$
-DECLARE
-BEGIN
-  PERFORM pg_notify('build:' || NEW.id, '{"table":"builds","where":{"id":' || NEW.id || '}}');
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER build_change_trigger AFTER INSERT OR UPDATE ON builds
-FOR EACH ROW EXECUTE PROCEDURE build_change_notify();
-
-CREATE FUNCTION log_line_change_notify() RETURNS trigger AS $$
-DECLARE
-BEGIN
-  PERFORM pg_notify('build:' || NEW."buildId" || ':logLine', '{"table":"logLines","where":{"buildId":' || NEW."buildId" || ',"index":' || NEW.index || '}}');
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER log_line_change_trigger AFTER INSERT OR UPDATE ON "logLines"
-FOR EACH ROW EXECUTE PROCEDURE log_line_change_notify();
-`
-    );
+    });
 
 exports.down = ({schema}) =>
   schema
-    .raw(
-`
-DROP TRIGGER log_line_change_trigger ON "logLines";
-DROP FUNCTION log_line_change_notify();
-DROP TRIGGER build_change_trigger ON builds;
-DROP FUNCTION build_change_notify();
-`
-    )
     .dropTable('logLines')
     .dropTable('builds')
     .dropTable('permissions')

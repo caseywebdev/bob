@@ -1,4 +1,5 @@
 const _ = require('underscore');
+const {FORBIDDEN} = require('../../../shared/constants/errors');
 const {WRITE} = require('../../../shared/constants/permission-levels');
 const createBuilds = require('../../utils/create-builds');
 const getEnv = require('../../utils/get-env');
@@ -17,7 +18,7 @@ module.exports = async ({req, res}) => {
   }
 
   const role = await getRole({envId, userId: `token:${token}`});
-  if (!(role & WRITE)) throw _.extend(new Error(), {statusCode: 403});
+  if (!(role & WRITE)) throw FORBIDDEN;
 
   const commit = await source.getCommitFromWebhook({env, req});
   if (!commit) return res.send([]);

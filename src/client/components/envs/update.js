@@ -1,28 +1,31 @@
 import {withPave} from 'pave-react';
 import React from 'react';
+import Header from '../shared/header';
+import Meta from '../shared/meta';
+import Editor from './editor';
 
-const render = ({props: {pave: {state: {env}}}}) =>
-  <div>
-    <div>Update {env && env.name}</div>
-    <div>Name</div>
-    <pre>
-      {JSON.stringify(env && env.name, null, 2)}
-    </pre>
-    <div>Config</div>
-    <pre>
-      {JSON.stringify(env && env.config, null, 2)}
-    </pre>
-    <div>Permissions</div>
-    <pre>
-      {JSON.stringify(env && env.permissions, null, 2)}
-    </pre>
-  </div>;
+const render = ({
+  props: {match: {params: {id}}, pave: {state: {env}, store}}
+}) =>
+  <Meta title={`Update ${env && env.name || ''}`}>
+    <div>
+      <Header>Update Env</Header>
+      <Editor
+        envId={id}
+        onSave={env =>
+          store.run({query: ['updateEnv!', env]})
+            .then(() => alert('Env updated!'))
+            .catch(er => alert(er))
+        }
+      />
+    </div>
+  </Meta>;
 
 export default withPave(
   props => render({props}),
   {
     getQuery: ({props: {match: {params: {id}}}}) =>
-      ['envsById', id, [[], 'permissions']],
+      ['envsById', id],
 
     getState: ({props: {match: {params: {id}}}, store}) => ({
       env: store.get(['envsById', id])

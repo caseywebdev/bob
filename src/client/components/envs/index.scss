@@ -1,0 +1,14 @@
+@import '../../config';
+
+.root {
+  padding: 20px;
+}
+
+.env {
+  margin-top: 5px;
+}
+
+.envName {
+  color: $orange;
+  font-size: 20px;
+}

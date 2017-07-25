@@ -1,5 +1,6 @@
 module.exports = [
   require('./github-commit-status'),
-  require('./stdout'),
-  require('./slack')
+  require('./notify'),
+  require('./slack'),
+  require('./stdout')
 ];

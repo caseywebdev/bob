@@ -6,8 +6,8 @@ const listeners = {};
 const handleNotifiation = async ({channel, payload}) => {
   const {table, where} = JSON.parse(payload);
   const db = await getDb();
-  const [model] = await db(table).select().where(where);
-  _.each((listeners[channel] || []).slice(), cb => cb(model));
+  const [record] = await db(table).select().where(where);
+  _.each((listeners[channel] || []).slice(), cb => cb(record));
 };
 
 let conn;

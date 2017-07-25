@@ -1,9 +1,6 @@
 const {env} = window;
 
 export default {
-  bob: {
-    url: env.BOB_URL
-  },
   disk: {
     namespace: 'bob'
   },

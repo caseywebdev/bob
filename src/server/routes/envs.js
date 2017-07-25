@@ -1,7 +1,6 @@
 const _ = require('underscore');
-const {listen, unlisten} = require('../utils/db-channels');
 const getRole = require('../utils/get-role');
-const {FORBIDDEN, NOT_FOUND, WEB_SOCKET_ONLY} = require('../../shared/constants/errors');
+const ERRORS = require('../../shared/constants/errors');
 const LEVELS = require('../../shared/constants/permission-levels');
 const ROLES = require('../../shared/constants/permission-roles');
 const saveEnv = require('../utils/save-env');
@@ -21,11 +20,13 @@ const getEnvs = async ({ids, user}) => {
       .select('role')
       .innerJoin('permissions', sql => sql
         .on('envs.id', 'permissions.envId')
-        .andOn('permissions.userId', _.unique([user.id, 'public']))
+        .andOnIn('permissions.userId', _.unique([user.id, 'public']))
       );
   }
   if (ids) sql.whereIn('id', ids);
-  return sql;
+  return _.map(await sql, env =>
+    env.role & LEVELS.ADMIN ? env : _.omit(env, 'config')
+  );
 };
 
 module.exports = {
@@ -44,17 +45,20 @@ module.exports = {
     };
   },
 
-  'envsById.$key.permissions':
+  'envsById.$key.permissionsByUserId':
   async ({1: envId, store: {cache: {user: {id: userId}}}}) => {
     const role = await getRole({envId, userId: userId});
-    if (!(role & ROLES.ADMIN)) throw FORBIDDEN;
+    if (!(role & LEVELS.ADMIN)) throw ERRORS.FORBIDDEN;
 
     const db = await getDb();
     return {
       envsById: {
         [envId]: {
-          permissions: {
-            $set: await db('permissions').select().where({envId})
+          permissionsByUserId: {
+            $set: _.indexBy(
+              await db('permissions').select().where({envId}),
+              'userId'
+            )
           }
         }
       }
@@ -63,27 +67,71 @@ module.exports = {
 
   'createEnv!.$obj':
   async ({1: env, store: {cache: {user: {isRoot}}}}) => {
-    if (!isRoot) throw FORBIDDEN;
+    if (!isRoot) throw ERRORS.FORBIDDEN;
 
-    env = await saveEnv({env: _.omit(env, 'id')});
-    return {envsById: {[env.id]: {$merge: env}}};
+    const {cid} = env;
+    env = await saveEnv({env: _.omit(env, 'cid', 'id')});
+    return {
+      envsById: {[env.id]: {$merge: env}},
+      envsByCid: {[cid]: {$set: {$ref: ['envsById', env.id]}}}
+    };
   },
 
   'updateEnv!.$obj':
   async ({1: env, 1: {id}, store: {cache: {user: {id: userId}}}}) => {
-    const role = await getRole({envId: id, userId: userId});
-    if (!(role & ROLES.ADMIN)) throw FORBIDDEN;
+    const role = await getRole({envId: id, userId});
+    if (!(role & LEVELS.ADMIN)) throw ERRORS.FORBIDDEN;
 
-    env = await saveEnv({env});
-    return {envsById: {[env.id]: {$merge: env}}};
+    return {envsById: {[id]: {$merge: await saveEnv({env})}}};
   },
 
   'deleteEnv!.$key':
   async ({1: id, store: {cache: {user: {isRoot}}}}) => {
-    if (!isRoot) throw FORBIDDEN;
+    if (!isRoot) throw ERRORS.FORBIDDEN;
 
     const db = await getDb();
     await db('envs').del().where({id});
     return {envsById: {[id]: {$set: null}}};
+  },
+
+  'createPermission!.$obj':
+  async ({1: {envId, userId, role}, store: {cache: {user}}}) => {
+    const userRole = await getRole({envId, userId: user.id});
+    if (!(userRole & LEVELS.ADMIN)) throw ERRORS.FORBIDDEN;
+
+    const db = await getDb();
+    const [permission] = await db('permissions')
+      .insert({envId, role, userId})
+      .returning('*');
+    return {
+      envsById: {[envId]: {permissionsByUserId: {[userId]: {$set: permission}}}}
+    };
+  },
+
+  'updatePermission!.$obj':
+  async ({1: {envId, userId, role}, store: {cache: {user}}}) => {
+    const userRole = await getRole({envId, userId: user.id});
+    if (!(userRole & LEVELS.ADMIN)) throw ERRORS.FORBIDDEN;
+
+    const db = await getDb();
+    const [permission] = await db('permissions')
+      .update({role})
+      .where({envId, userId})
+      .returning('*');
+    return {
+      envsById: {[envId]: {permissionsByUserId: {[userId]: {$set: permission}}}}
+    };
+  },
+
+  'deletePermission!.$obj':
+  async ({1: {envId, userId}, store: {cache: {user}}}) => {
+    const role = await getRole({envId, userId: user.id});
+    if (!(role & LEVELS.ADMIN)) throw ERRORS.FORBIDDEN;
+
+    const db = await getDb();
+    await db('permissions').del().where({envId, userId});
+    return {
+      envsById: {[envId]: {permissionsByUserId: {[userId]: {$unset: true}}}}
+    };
   }
 };

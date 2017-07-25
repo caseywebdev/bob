@@ -1,9 +1,9 @@
 import {Link, Route, Switch} from 'react-router-dom';
 import {withPave} from 'pave-react';
 import config from '../../config';
-import cx from 'classnames';
 import disk from '../../utils/disk';
-import Home from '../home/layout';
+import BuildsIndex from '../builds/index';
+import BuildsRead from '../builds/read';
 import Icon from '../shared/icon';
 import Loading from '../shared/loading';
 import Bob from '../shapes/bob';
@@ -44,7 +44,7 @@ const render = ({props, props: {pave: {error, isLoading, state: {user}}}}) =>
   <div>
     <div className={styles.header}>
       <div className={styles.left}>
-        <Link className={cx(styles.bob, styles.link)} to='/'>
+        <Link className={styles.bob} to='/'>
           <Bob className={styles.bobShape} />
         </Link>
       </div>
@@ -87,7 +87,8 @@ const render = ({props, props: {pave: {error, isLoading, state: {user}}}}) =>
       </div>
     </div>
     <Switch>
-      <Route exact path='/' component={Home} />
+      <Route exact path='/' component={BuildsIndex} />
+      <Route path='/builds/:id' component={BuildsRead} />
       <Route path='/envs' component={EnvsLayout} />
       <Route component={NotFound} />
     </Switch>

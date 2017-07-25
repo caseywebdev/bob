@@ -39,7 +39,6 @@ module.exports = async ({
 
   if (!meta) meta = {};
   if (!meta.slack) meta = _.extend({}, meta, {slack: {}});
-  let {ts} = meta.slack;
   const {iconEmoji, iconUrl, username} = slack;
   const {color, emojiShortname} = STATUS_INFO[status];
   const title = `:${emojiShortname}: ${repo}#${ref} ${status}`;
@@ -60,10 +59,15 @@ module.exports = async ({
     parse: 'none',
     username
   };
+
+  let {buildId, ts} = meta.slack.message || {};
+  if (buildId !== id) ts = null;
   if (ts) return client.chat.update(ts, channel, null, options);
 
   ts = (await client.chat.postMessage(channel, null, options)).ts;
-  meta = _.extend({}, meta, {slack: _.extend({}, meta.slack, {channel, ts})});
+  meta = _.extend({}, meta, {
+    slack: _.extend({}, meta.slack, {channel, message: {buildId: id, ts}})
+  });
   const db = await getDb();
   return db('builds').update({meta}).where({id});
 };
