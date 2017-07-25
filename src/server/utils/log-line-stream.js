@@ -17,7 +17,7 @@ module.exports = class extends Writable {
     try {
       const {idCursor, logLines} = this;
       const {id, stream} = content;
-      if (!stream) await this.flushBuffer();
+      if (stream == null) await this.flushBuffer();
       if (id) {
         const index = _.findLastIndex(logLines, ({content: {id: _id}}) =>
           _id === id
@@ -34,6 +34,8 @@ module.exports = class extends Writable {
         for (let line of _.initial(lines)) {
           await this.createLogLine({content: {stream: line}});
         }
+      } else {
+        await this.createLogLine({content});
       }
       cb();
     } catch (er) {
