@@ -1,7 +1,5 @@
 const _ = require('underscore');
 const createBuild = require('./create-build');
-const getDb = require('./get-db');
-const publishBuild = require('./publish-build');
 
 const getTags = ({ref, sha, tags}) => {
   const variables = {REF: ref, SHA: sha};
