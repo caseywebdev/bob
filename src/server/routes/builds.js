@@ -4,11 +4,32 @@ const ERRORS = require('../../shared/constants/errors');
 const getDb = require('../utils/get-db');
 const getRole = require('../utils/get-role');
 const LEVELS = require('../../shared/constants/permission-levels');
+const ROLES = require('../../shared/constants/permission-roles');
+
+const getBuilds = async ({ids, user}) => {
+  const db = await getDb();
+  const sql = db('builds')
+    .distinct(db.raw('ON (id) *'))
+    .orderBy('id', 'desc');
+  if (user.isRoot) {
+    sql.select(db.raw(`${ROLES.ADMIN} as role`));
+  } else {
+    sql
+      .select('role')
+      .innerJoin('permissions', sql => sql
+        .on('builds.envId', 'permissions.envId')
+        .andOnIn('permissions.userId', _.unique([user.id, 'public']))
+      );
+  }
+  if (ids) sql.whereIn('id', ids);
+  return _.map(await sql, env =>
+    env.role & LEVELS.ADMIN ? env : _.omit(env, 'config')
+  );
+};
 
 module.exports = {
-  builds: async () => {
-    const db = await getDb();
-    const builds = await db('builds').select();
+  builds: async ({store: {cache: {user}}}) => {
+    const builds = await getBuilds({user});
     return {
       builds: {$set: _.map(builds, ({id}) => ({$ref: ['buildsById', id]}))},
       buildsById: _.mapObject(_.indexBy(builds, 'id'), build => ({
@@ -17,9 +38,8 @@ module.exports = {
     };
   },
 
-  'buildsById.$keys': async ({1: ids}) => {
-    const db = await getDb();
-    const builds = await db('builds').select().whereIn('id', ids);
+  'buildsById.$keys': async ({1: ids, store: {cache: {user}}}) => {
+    const builds = await getBuilds({ids, user});
     return {
       buildsById: _.mapObject(_.indexBy(builds, 'id'), build => ({
         $set: _.extend({}, build, {env: {$ref: ['envsById', build.envId]}})
