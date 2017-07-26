@@ -44,16 +44,17 @@ module.exports = async ({
     attachments: [{
       color,
       fallback: title,
-      title,
-      title_link: url,
+      fields: !error ? [] : [{title: 'Error', value: error}],
+      mrkdwn_in: ['text'],
       text: [].concat(
         `*SHA* ${sha}`,
         _.map(tags, tag => {
           const [left, ...right] = tag.split(':');
           return `*${left}*:${right.join(':')}`;
-        }),
-        error ? ['', '*Error*', error] : []
+        })
       ).join('\n'),
+      title,
+      title_link: url,
       ts: updatedAt / 1000
     }],
     icon_emoji: iconEmoji,

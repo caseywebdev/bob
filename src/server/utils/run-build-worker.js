@@ -111,7 +111,7 @@ module.exports = async ({buildId}) => {
     await endOutput();
     await update({status: SUCCEEDED, unless: []});
   } catch (er) {
-    const error = `${er}`;
+    const error = `${er.message || er}`;
     await endOutput();
     await update({error, status: FAILED});
   }
