@@ -12,7 +12,7 @@ const fetch = async ({type, token}) => {
     try {
       const github = new Octokat({token});
       const {login, name} = await github.user.fetch();
-      return {id: `github:${login}`, name};
+      return {id: `github:${login}`, name: name || login};
     } catch (er) {}
   }
 

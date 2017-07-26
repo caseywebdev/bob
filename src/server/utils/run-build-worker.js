@@ -83,6 +83,12 @@ module.exports = async ({buildId}) => {
       unless: unless || [CANCELLED],
       onConflict: () => process.exit()
     });
+
+  let output;
+  const endOutput = _.once(() => {
+    if (output) return new Promise(resolve => output.end(resolve));
+  });
+
   try {
     const db = await getDb();
     const [build] = await db('builds').select().where({id: buildId});
@@ -92,7 +98,7 @@ module.exports = async ({buildId}) => {
     const {envId, id, sourceId} = build;
     const env = await getEnv({id: envId});
     const source = sources[sourceId];
-    const output = new OutputStream({buildId: id});
+    output = new OutputStream({buildId: id});
     await update({status: PULLING});
     await pullImages({build, env, output});
 
@@ -102,10 +108,11 @@ module.exports = async ({buildId}) => {
     await update({status: PUSHING});
     await pushImages({build, env, output});
 
-    await new Promise(resolve => output.end(resolve));
+    await endOutput();
     await update({status: SUCCEEDED, unless: []});
   } catch (er) {
     const error = `${er}`;
+    await endOutput();
     await update({error, status: FAILED});
   }
 };
