@@ -21,7 +21,7 @@ services:
       LIVERELOAD_URL: http://localhost:8080
       POSTGRES_URL: pg://postgres:postgres@postgres/postgres
       ROOT_USER_ID:
-    image: quay.io/coderiety/bob:master
+    image: quay.io/coderiety/bob:b74a130ce9fbdda533b083aaa634eb372d165d9f
     ports:
       - 80:80
       - 8080:8080
