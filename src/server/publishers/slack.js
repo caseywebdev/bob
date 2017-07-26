@@ -24,7 +24,7 @@ const getChannel = async ({
 };
 
 module.exports = async ({
-  build: {error, id, ref, repo, sha, tags, status},
+  build: {error, id, ref, repo, sha, tags, status, updatedAt},
   env,
   env: {config: {slack}},
   meta,
@@ -39,18 +39,22 @@ module.exports = async ({
   if (!meta.slack) meta.slack = {};
   const {iconEmoji, iconUrl, username} = slack;
   const {color, emojiShortname} = STATUS_INFO[status];
-  const title = `:${emojiShortname}: ${repo}#${ref} ${status}`;
+  const title = `:${emojiShortname}: Build #${id} ${repo}#${ref} ${status}`;
   const options = {
     attachments: [{
       color,
       fallback: title,
       title,
       title_link: url,
-      fields: [].concat(
-        {title: 'SHA', value: sha},
-        {title: 'Tags', value: tags.join('\n')},
-        error ? {title: 'Error', value: error} : []
-      )
+      text: [].concat(
+        `*SHA* ${sha}`,
+        _.map(tags, tag => {
+          const [left, ...right] = tag.split(':');
+          return `*${left}*:${right.join(':')}`;
+        }),
+        error ? ['', '*Error*', error] : []
+      ).join('\n'),
+      ts: updatedAt / 1000
     }],
     icon_emoji: iconEmoji,
     icon_url: iconUrl,

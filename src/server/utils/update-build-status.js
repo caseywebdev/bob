@@ -3,6 +3,7 @@ const publishBuild = require('./publish-build');
 
 module.exports = async ({buildId, error, status, unless, onConflict}) => {
   const db = await getDb();
+  if (error && error.message) error = error.message;
   const [build] = await db('builds')
     .update({status, error, updatedAt: new Date()})
     .where({id: buildId})
