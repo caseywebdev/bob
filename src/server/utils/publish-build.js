@@ -22,7 +22,9 @@ module.exports = async ({build}) => {
     }
     if (!_.isEqual(meta, build.meta)) {
       const db = await getDb();
-      await db('builds').update({meta}).where({id: build.id});
+      await db('builds')
+        .update({meta, updatedAt: new Date()})
+        .where({id: build.id});
     }
   } catch (er) {
     console.error(er);

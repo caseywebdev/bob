@@ -32,24 +32,15 @@ exports.up = db =>
       t.specificType('sha', 'citext').notNullable().index();
       t.jsonb('tags').notNullable().index();
       t.string('status').notNullable().defaultTo(PENDING);
-      t.string('error');
+      t.text('output');
+      t.text('error');
       t.json('meta');
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
-    })
-
-    .createTable('logLines', t => {
-      t.integer('buildId').notNullable().references('builds.id').onUpdate('CASCADE').onDelete('CASCADE');
-      t.integer('index').notNullable();
-      t.json('content').notNullable();
-      t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
-      t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
-      t.primary(['buildId', 'index']);
     });
 
 exports.down = ({schema}) =>
   schema
-    .dropTable('logLines')
     .dropTable('builds')
     .dropTable('permissions')
     .dropTable('envs');

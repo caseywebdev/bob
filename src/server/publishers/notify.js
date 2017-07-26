@@ -1,9 +1,5 @@
-const _ = require('underscore');
+const {CANCELLED} = require('../../shared/constants/statuses');
 const notify = require('../utils/notify');
 
-module.exports = async ({build: {id}}) => {
-  const data = {table: 'builds', where: {id}};
-  return Promise.all(_.map(['build', `build:${id}`], channel =>
-    notify({channel, data})
-  ));
-};
+module.exports = ({build: {id, status}}) =>
+  status === CANCELLED && notify({channel: `build:${id}:cancelled`});

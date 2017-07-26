@@ -6,7 +6,7 @@ const getDb = require('./get-db');
 const getDocker = require('./get-docker');
 const getEnv = require('./get-env');
 const getRegistryConfig = require('./get-registry-config');
-const LogLineStream = require('./log-line-stream');
+const OutputStream = require('./output-stream');
 const publishBuild = require('./publish-build');
 const sources = require('../sources');
 const updateBuildStatus = require('./update-build-status');
@@ -14,12 +14,12 @@ const uuid = require('uuid/v4');
 
 const call = (obj, key, ...args) => promisify(obj[key].bind(obj))(...args);
 
-const handleStream = ({logLines, stream}) =>
+const handleStream = ({output, stream}) =>
   new Promise(async (resolve, reject) =>
     (await getDocker()).modem.followProgress(
       stream,
       er => er ? reject(er) : resolve(),
-      logLine => logLines.write(logLine)
+      chunk => output.write(chunk)
     )
   );
 
@@ -29,20 +29,20 @@ const getAuthConfig = async ({env, tag}) => {
   return (await getRegistryConfig({env}))[host];
 };
 
-const pullImage = async ({env, logLines, tag}) => {
+const pullImage = async ({env, output, tag}) => {
   const authconfig = await getAuthConfig({env, tag});
   const docker = await getDocker();
   const stream = await call(docker, 'pull', tag, {authconfig});
-  await handleStream({logLines, stream});
+  await handleStream({output, stream});
 };
 
-const pullImages = async ({build: {tags}, logLines, env}) => {
+const pullImages = async ({build: {tags}, output, env}) => {
   for (let tag of tags) {
-    try { await pullImage({env, logLines, tag}); } catch (er) {}
+    try { await pullImage({env, output, tag}); } catch (er) {}
   }
 };
 
-const buildImage = async ({build, env, logLines, source}) => {
+const buildImage = async ({build, env, output, source}) => {
   const t = `tmp:${uuid()}`;
   const {dockerfile, tags} = build;
   const buildArgs = getBuildArgs({build, env});
@@ -56,22 +56,22 @@ const buildImage = async ({build, env, logLines, source}) => {
     registryconfig: await registryConfig,
     t
   });
-  await handleStream({logLines, stream});
+  await handleStream({output, stream});
   return Promise.all(_.map(tags, fullTag => {
     const [repo, tag] = fullTag.split(':');
     return call(docker.getImage(t), 'tag', {repo, tag});
   }));
 };
 
-const pushImage = async ({env, tag, logLines}) => {
+const pushImage = async ({env, tag, output}) => {
   const authconfig = await getAuthConfig({env, tag});
   const docker = await getDocker();
   const stream = await call(docker.getImage(tag), 'push', {authconfig});
-  await handleStream({logLines, stream});
+  await handleStream({output, stream});
 };
 
-const pushImages = async ({build, env, logLines}) => {
-  for (let tag of build.tags) await pushImage({env, logLines, tag});
+const pushImages = async ({build, env, output}) => {
+  for (let tag of build.tags) await pushImage({env, output, tag});
 };
 
 module.exports = async ({buildId}) => {
@@ -92,17 +92,17 @@ module.exports = async ({buildId}) => {
     const {envId, id, sourceId} = build;
     const env = await getEnv({id: envId});
     const source = sources[sourceId];
-    const logLines = new LogLineStream({buildId: id});
+    const output = new OutputStream({buildId: id});
     await update({status: PULLING});
-    await pullImages({build, env, logLines});
+    await pullImages({build, env, output});
 
     await update({status: BUILDING});
-    await buildImage({build, env, logLines, source});
+    await buildImage({build, env, output, source});
 
     await update({status: PUSHING});
-    await pushImages({build, env, logLines});
+    await pushImages({build, env, output});
 
-    await new Promise(resolve => logLines.end(resolve));
+    await new Promise(resolve => output.end(resolve));
     await update({status: SUCCEEDED, unless: []});
   } catch (er) {
     const error = `${er}`;
