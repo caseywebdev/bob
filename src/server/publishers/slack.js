@@ -45,14 +45,11 @@ module.exports = async ({
       color,
       fallback: title,
       fields: !error ? [] : [{title: 'Error', value: error}],
-      mrkdwn_in: ['text'],
-      text: [].concat(
-        `*SHA* ${sha}`,
-        _.map(tags, tag => {
-          const [left, ...right] = tag.split(':');
-          return `*${left}*:${right.join(':')}`;
-        })
-      ).join('\n'),
+      footer: `SHA ${sha}`,
+      text: _.map(tags, tag => {
+        const [left, ...right] = tag.split(':');
+        return `${left}:${right.join(':')}`;
+      }).join('\n'),
       title,
       title_link: url,
       ts: updatedAt / 1000
