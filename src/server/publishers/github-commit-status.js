@@ -1,3 +1,4 @@
+const getBuildDescription = require('../utils/get-build-description');
 const getGithub = require('../utils/get-github');
 const STATUSES = require('../../shared/constants/statuses');
 
@@ -13,6 +14,7 @@ const STATUS_STATES = {
 };
 
 module.exports = async ({
+  build,
   build: {repo, sha, status, tags},
   env,
   source,
@@ -24,7 +26,7 @@ module.exports = async ({
   return github.repos(repo).statuses(sha).create({
     context: tags[0],
     state: STATUS_STATES[status],
-    description: status,
+    description: getBuildDescription({build}),
     target_url: url
   });
 };

@@ -1,4 +1,4 @@
-module.exports = ({build: {id, repo, ref, status, error}}) =>
-  console.log(
-    `Build #${id} ${repo}#${ref} ${status}${error ? ` - ${error}` : ''}`
-  );
+const getBuildDescription = require('../utils/get-build-description');
+
+module.exports = ({build}) =>
+  console.log(getBuildDescription({build, withError: true}));

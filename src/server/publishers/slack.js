@@ -1,5 +1,6 @@
 const _ = require('underscore');
 const {WebClient} = require('@slack/client');
+const getBuildDescription = require('../utils/get-build-description');
 const getVault = require('../utils/get-vault');
 const STATUS_INFO = require('../../shared/constants/status-info');
 
@@ -24,7 +25,8 @@ const getChannel = async ({
 };
 
 module.exports = async ({
-  build: {error, id, ref, repo, sha, tags, status, updatedAt},
+  build,
+  build: {error, id, sha, tags, status, updatedAt},
   env,
   env: {config: {slack}},
   meta,
@@ -38,11 +40,10 @@ module.exports = async ({
 
   if (!meta.slack) meta.slack = {};
   const {iconEmoji, iconUrl, username} = slack;
-  const {color, emojiShortname} = STATUS_INFO[status];
-  const title = `:${emojiShortname}: Build #${id} ${repo}#${ref} ${status}`;
+  const title = getBuildDescription({build, withEmoji: true});
   const options = {
     attachments: [{
-      color,
+      color: STATUS_INFO[status].color,
       fallback: title,
       fields: !error ? [] : [{title: 'Error', value: error}],
       footer: `${sha} SHA`,
