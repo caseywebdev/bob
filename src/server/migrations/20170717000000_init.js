@@ -23,7 +23,7 @@ exports.up = db =>
     .createTable('builds', t => {
       t.increments('id').primary();
       t.integer('envId').notNullable().references('envs.id').onUpdate('CASCADE').onDelete('CASCADE').index();
-      t.string('sourceId').notNullable();
+      t.string('sourceId').notNullable().index();
       t.json('buildArgs');
       t.string('context');
       t.string('dockerfile');
@@ -32,7 +32,7 @@ exports.up = db =>
       t.specificType('sha', 'citext').notNullable().index();
       t.jsonb('tags').notNullable().index();
       t.string('status').notNullable().defaultTo(PENDING);
-      t.text('output');
+      t.json('output');
       t.text('error');
       t.json('meta');
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());

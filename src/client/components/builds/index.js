@@ -10,6 +10,7 @@ const rebuild = ({build: {id}, props: {pave: {store}}}) => {
   const cid = _.uniqueId();
   store.run({query: ['rebuild!', {cid, id}]})
     .then(() => {
+      store.update({builds: {$unset: true}});
       const {id} = store.get(['buildsByCid', cid]);
       history.push(`/builds/${id}`);
     })

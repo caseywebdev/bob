@@ -1,41 +1,57 @@
 const _ = require('underscore');
+const _str = require('underscore.string');
 const {Writable} = require('stream');
 const getDb = require('./get-db');
 
 const SAVE_INTERVAL = 1000;
 
-const handleChunk = ({chunk: {id, progress, status, stream}, chunks}) => {
-  let text = _.compact([id, status, progress, stream]).join(' ');
-  if (!text) return;
-
+const handleChunk = ({at, chunk: {id, progress, status, stream}, lines}) => {
   if (id) {
-    const index = _.findLastIndex(chunks, {id});
-    const minIndex = _.findLastIndex(chunks, ({id}) => !id);
-    if (index > minIndex) return chunks[index] = {id, text};
+    const text = _.compact([id, status, progress]).join(' ');
+    const index = _.findLastIndex(lines, {id});
+    const minIndex = _.findLastIndex(lines, ({id}) => !id);
+    if (index > minIndex) return lines[index] = {at, end: true, id, text};
 
-    return chunks.push({id, text});
+    return lines.push({at, end: true, id, text});
   }
 
-  if (text === status) return chunks.push({status: true, text});
+  if (status) return lines.push({at, end: true, text: status});
 
-  const last = _.last(chunks);
-  if (!last || last.id || last.status) return chunks.push({text});
+  if (stream) {
+    let text = stream;
+    const last = lines.pop() || {text: ''};
+    if (last.end) lines.push(last); else text = last.text + text;
+    return lines.push(..._.map(_str.lines(text), text => ({at, text})));
+  }
+};
 
-  last.text += text;
+const formatLines = lines => {
+  const cleaned = [];
+  let trim = true;
+  for (let i = lines.length - 1; i >= 0; --i) {
+    const {at, end, text} = lines[i];
+    if (!end && trim && !_str.trim(text)) continue;
+
+    trim = !!end;
+    cleaned.unshift([at, text]);
+  }
+  return cleaned;
 };
 
 module.exports = class extends Writable {
   constructor({buildId}) {
     super({objectMode: true});
+    this.at = 0;
     this.buildId = buildId;
-    this.chunks = [];
-    this.lastOutput = '';
+    this.lines = [];
+    this.lastOutput = '[]';
     this.save = this.save.bind(this);
     this.save();
   }
 
   _write(chunk, __, cb) {
-    handleChunk({chunk, chunks: this.chunks});
+    const {at, lines} = this;
+    handleChunk({at, chunk, lines});
     cb();
   }
 
@@ -45,13 +61,14 @@ module.exports = class extends Writable {
   }
 
   async save(final) {
-    const {buildId: id, chunks, saveIntervalId} = this;
+    const {buildId: id, lines, saveIntervalId} = this;
     clearTimeout(saveIntervalId);
-    const output = _.map(chunks, ({text}) => text.trim()).join('\n');
+    const output = JSON.stringify(formatLines(lines));
     if (output !== this.lastOutput) {
       try {
+        ++this.at;
         const db = await getDb();
-        await db('builds').update({output, updatedAt: new Date()}).where({id});
+        await db('builds').update({output}).where({id});
         this.lastOutput = output;
       } catch (er) {
         console.error(er);

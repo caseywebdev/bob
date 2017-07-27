@@ -1,5 +1,4 @@
 import _ from 'underscore';
-import _str from 'underscore.string';
 import {withPave} from 'pave-react';
 import React, {Component} from 'react';
 import Header from '../shared/header';
@@ -23,17 +22,17 @@ const renderLine = ({key, line}) =>
 const render = ({
   props: {
     match: {params: {id}},
-    pave: {state: {build: {status} = {}, lines}}
+    pave: {state: {build: {output, status} = {}}}
   }
 }) =>
   <Meta title={`Build #${id}`}>
     <div className={styles.root}>
       <Header>{`Build #${id}`}</Header>
       <div>Status: {status}</div>
-      <div className={styles.code}>
+      <div className={styles.lines}>
         <ReactList
-          length={_.size(lines)}
-          itemRenderer={i => renderLine({key: i, line: lines[i]})}
+          length={_.size(output)}
+          itemRenderer={i => renderLine({key: i, line: output[i][1]})}
           type='uniform'
         />
       </div>
@@ -47,17 +46,36 @@ export default withPave(
     }
 
     componentWillUnmount() {
+      this.cancelReload();
+    }
+
+    cancelReload() {
       clearTimeout(this.reloadTimeoutId);
     }
 
+    delayReload() {
+      this.cancelReload();
+      this.reloadTimeoutId = setTimeout(this.reload, REFRESH_INTERVAL);
+    }
+
     reload = () => {
-      const {status} = this.props.pave.state.build || {};
+      const {state: {build}, store} = this.props.pave;
+      if (!build) return this.delayReload();
+
+      const {id, output, status, updatedAt} = build;
       if (status === CANCELLED || status === FAILED || status === SUCCEEDED) {
         return;
       }
 
-      this.props.pave.reload();
-      this.reloadTImeoutId = setTimeout(this.reload, REFRESH_INTERVAL);
+      const lastOutputAt = _.max([].concat(-1, _.map(output, '0')));
+      store.run({
+        query: [
+          'getBuildUpdates!',
+          {id, lastOutputAt, lastUpdatedAt: updatedAt}
+        ]
+      })
+        .catch(::console.log)
+        .then(() => this.delayReload());
     }
 
     render() {
@@ -66,12 +84,10 @@ export default withPave(
   },
   {
     getQuery: ({props: {match: {params: {id}}}}) =>
-      ['buildsById', id],
+      ['buildsById', id, [[], ['output']]],
 
-    getState: ({props: {match: {params: {id}}}, store}) => {
-      const build = store.get(['buildsById', id]);
-      const lines = build && _str.lines(build.output);
-      return {build, lines};
-    }
+    getState: ({props: {match: {params: {id}}}, store}) => ({
+      build: store.get(['buildsById', id])
+    })
   }
 );

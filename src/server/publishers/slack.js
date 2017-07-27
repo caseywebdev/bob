@@ -45,7 +45,7 @@ module.exports = async ({
       color,
       fallback: title,
       fields: !error ? [] : [{title: 'Error', value: error}],
-      footer: `SHA ${sha}`,
+      footer: `${sha} SHA`,
       text: _.map(tags, tag => {
         const [left, ...right] = tag.split(':');
         return `${left}:${right.join(':')}`;
