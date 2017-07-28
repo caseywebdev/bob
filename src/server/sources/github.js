@@ -18,7 +18,7 @@ exports.getCommitFromWebhook = async ({
     }
   }
 }) => {
-  if (event !== 'push' || deleted || !repo || !sha) return;
+  if (event !== 'push' || deleted || !repo || !ref) return;
 
   return exports.getCommit({env, ref: ref.split('/')[2], repo, sha});
 };

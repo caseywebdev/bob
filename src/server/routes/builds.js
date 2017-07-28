@@ -4,6 +4,8 @@ const ERRORS = require('../../shared/constants/errors');
 const getDb = require('../utils/get-db');
 const LEVELS = require('../../shared/constants/permission-levels');
 const ROLES = require('../../shared/constants/permission-roles');
+const STATUSES = require('../../shared/constants/statuses');
+const updateBuildStatus = require('../utils/update-build-status');
 
 const getBuilds = async ({ids, user, withOutput}) => {
   const db = await getDb();
@@ -64,7 +66,7 @@ module.exports = {
     if (!build) return ERRORS.NOT_FOUND;
 
     const delta = [];
-    if (lastUpdatedAt && lastUpdatedAt < `${build.updatedAt}`) {
+    if (lastUpdatedAt && new Date(lastUpdatedAt) < build.updatedAt) {
       delta.push({buildsById: {[id]: {$merge: _.omit(build, 'output')}}});
     }
 
@@ -93,5 +95,23 @@ module.exports = {
       buildsById: {[rebuild.id]: {$set: rebuild}},
       buildsByCid: {[cid]: {$set: {$ref: ['buildsById', rebuild.id]}}}
     };
+  },
+
+  'cancelBuild!.$key':
+  async ({1: id, store: {cache: {user}}}) => {
+    let [build] = await getBuilds({ids: [id], user});
+    if (!build) throw ERRORS.NOT_FOUND;
+
+    if (!(build.role & LEVELS.WRITE)) throw ERRORS.FORBIDDEN;
+
+    await updateBuildStatus({
+      buildId: build.id,
+      status: STATUSES.CANCELLED,
+      unless: [STATUSES.CANCELLED, STATUSES.FAILED, STATUSES.SUCCEEDED]
+    });
+    build = (await getBuilds({ids: [id], user}))[0];
+    if (!build) throw ERRORS.NOT_FOUND;
+
+    return {buildsById: {[id]: {$merge: build}}};
   }
 };
