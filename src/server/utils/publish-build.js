@@ -13,13 +13,13 @@ module.exports = async ({build}) => {
     const meta = JSON.parse(JSON.stringify(
       _.extend({}, build.meta, {isPublished: true})
     ));
-    try {
-      await Promise.all(_.map(publishers, publish =>
-        publish({build, env, meta, source, url})
-      ));
-    } catch (er) {
-      console.error(er);
-    }
+    await Promise.all(_.map(publishers, async publish => {
+      try {
+        await publish({build, env, meta, source, url});
+      } catch (er) {
+        console.error(er);
+      }
+    }));
     if (!_.isEqual(meta, build.meta)) {
       const db = await getDb();
       await db('builds')
