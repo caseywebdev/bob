@@ -40,11 +40,7 @@ const STYLES = {
       except: 'src/client/global.scss',
       options: {base: 'src/client', debug: !MINIFY}
     },
-    MINIFY ? {
-      name: 'clean-css',
-      only: '**/*.+(scss|css)',
-      options: {processImport: false}
-    } : []
+    MINIFY ? {name: 'clean-css', only: '**/*.+(scss|css)'} : []
   ),
   builds: {'src/client/index.scss': 'build/index.css'}
 };
