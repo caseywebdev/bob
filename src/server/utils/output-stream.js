@@ -30,10 +30,11 @@ const formatLines = lines => {
   let trim = true;
   for (let i = lines.length - 1; i >= 0; --i) {
     const {at, end, text} = lines[i];
-    if (!end && trim && !_str.trim(text)) continue;
-
-    trim = !!end;
-    cleaned.unshift([at, text]);
+    if (!end && trim && !_str.trim(text)) lines[i].at = this.at + 1;
+    else {
+      trim = !!end;
+      cleaned.push([at, text]);
+    }
   }
   return cleaned;
 };
