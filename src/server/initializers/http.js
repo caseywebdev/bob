@@ -1,14 +1,12 @@
 const _ = require('underscore');
+const {NOT_FOUND} = require('../../shared/constants/errors');
 const {promisify} = require('util');
 const bodyParser = require('body-parser');
-const compression = require('compression');
 const express = require('express');
 const http = require('http');
 const Live = require('live-socket');
-const path = require('path');
 const sockets = require('../utils/sockets');
 const ws = require('uws');
-const {NOT_FOUND} = require('../../shared/constants/errors');
 
 const asyncify = handlers =>
   _.map(_.isArray(handlers) ? handlers : [handlers], handler =>
@@ -17,25 +15,18 @@ const asyncify = handlers =>
     }
   );
 
-const setHeaders = res => res.set('Cache-Control', 'no-cache, public');
-
-const ROOT_PATH = path.resolve('build/index.html');
-
 const server = http.createServer(
   express()
     .enable('case sensitive routing')
     .enable('strict routing')
     .disable('x-powered-by')
-    .use(compression())
-    .use(express.static('build', {setHeaders}))
     .use(bodyParser.json())
     .post('/api/pave', asyncify(require('../handlers/http/pave')))
     .post(
       '/api/envs/:envId/webhooks/:sourceId',
       asyncify(require('../handlers/http/webhook'))
     )
-    .use('/api/*', (req, res, next) => next(NOT_FOUND))
-    .use((req, res) => res.sendFile(ROOT_PATH))
+    .use((req, res, next) => next(NOT_FOUND))
     .use(require('../handlers/http/error'))
 );
 
@@ -55,7 +46,7 @@ wss.on('connection', socket => {
   socket.live.trigger('open');
 });
 
-process.on('SIGTERM', () => {
+process.once('SIGTERM', () => {
   console.log('Closing HTTP server...');
   server.close(() => {
     console.log('HTTP server closed');
@@ -66,6 +57,6 @@ process.on('SIGTERM', () => {
 
 module.exports = async () => {
   console.log('Starting HTTP server...');
-  await promisify(server.listen.bind(server, 80))();
+  await promisify(server.listen.bind(server, 8080))();
   console.log('HTTP server started');
 };

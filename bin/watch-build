@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+exec bin/build -w src/client -w src/shared

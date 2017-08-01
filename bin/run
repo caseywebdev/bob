@@ -1,17 +1,3 @@
 #!/usr/bin/env bash
 
-set -e
-
-if [ "$DOCKER_IN_DOCKER" = "1" ]; then
-  service docker start
-fi
-
-ONLY_STATIC=1 bin/build
-
-if [ "$WATCH" = "1" ]; then
-  bin/build -w src/client -w src/shared &
-  node_modules/.bin/livereload build -p 8080 &
-  exec node_modules/.bin/watchy -w src/server -w src/shared node src/server
-else
-  exec node src/server
-fi
+exec containerpilot -config etc/containerpilot.json

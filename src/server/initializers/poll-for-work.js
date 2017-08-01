@@ -30,7 +30,7 @@ const maybeBuild = async () => {
   if (!sigtermReceived) timeoutId = setTimeout(maybeBuild, 1000);
 };
 
-process.on('SIGTERM', () => {
+process.once('SIGTERM', () => {
   sigtermReceived = true;
   clearTimeout(timeoutId);
   console.log('Build polling stopped');

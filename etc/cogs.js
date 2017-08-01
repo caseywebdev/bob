@@ -1,4 +1,9 @@
-const {env} = process;
+const _ = require('underscore');
+const url = require('url');
+
+let {env} = process;
+const {BOB_URL} = env;
+env = _.extend({}, env, {BOB_URL_HOSTNAME: url.parse(BOB_URL).hostname});
 const MINIFY = env.MINIFY === '1';
 const ONLY_STATIC = env.ONLY_STATIC === '1';
 
@@ -6,7 +11,7 @@ const STATIC = {
   transformers: [
     {
       name: 'replace',
-      only: 'src/client/public/index.html',
+      only: ['src/client/public/index.html', 'etc/nginx.conf'],
       options: {
         flags: 'g',
         patterns: {
@@ -17,8 +22,9 @@ const STATIC = {
     }
   ],
   builds: {
-    'src/client/public/**/*': {dir: 'build'},
-    'node_modules/font-awesome/fonts/*': {dir: 'build/fonts'}
+    'etc/nginx.conf': '/etc/nginx/nginx.conf',
+    'node_modules/font-awesome/fonts/*': {dir: 'build/fonts'},
+    'src/client/public/**/*': {dir: 'build'}
   }
 };
 

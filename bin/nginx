@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-WATCH=1 exec bin/run
+exec nginx

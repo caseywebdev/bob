@@ -8,7 +8,7 @@ const {postgres: {url: {value, vault: {path, key}}}} = config;
 const getUrl = async () => value || (await vault.get(path))[key];
 
 let db;
-process.on('SIGTERM', async () => {
+process.once('SIGTERM', async () => {
   if (db) {
     console.log('Destroying PG connection pool...');
     await db.destroy();
