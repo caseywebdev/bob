@@ -13,7 +13,7 @@ RUN apt-get update && \
       tar xz -C /usr/local/bin/
 
 COPY package.json /code/package.json
-RUN npm install
+RUN npm install --no-save
 
 COPY .eslintrc /code/.eslintrc
 COPY .stylelintrc /code/.stylelintrc
