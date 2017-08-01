@@ -33,7 +33,7 @@ const formatLines = lines => {
     if (!end && trim && !_str.trim(text)) lines[i].at = this.at + 1;
     else {
       trim = !!end;
-      cleaned.push([at, text]);
+      cleaned.unshift([at, text]);
     }
   }
   return cleaned;
