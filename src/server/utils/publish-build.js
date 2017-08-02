@@ -7,6 +7,7 @@ const sources = require('../sources');
 
 module.exports = async ({build}) => {
   try {
+    console.log(`publishBuild called with build: ${JSON.stringify(build, null, 2)}`);
     const env = await getEnv({id: build.envId});
     const source = sources[build.sourceId];
     const url = `${config.bob.url}/builds/${build.id}`;

@@ -1,5 +1,6 @@
 const {PENDING, CLAIMED} = require('../../shared/constants/statuses');
 const getDb = require('../utils/get-db');
+const publishBuild = require('../utils/publish-build');
 const runBuild = require('../utils/run-build');
 
 const getBuild = async () => {
@@ -7,7 +8,7 @@ const getBuild = async () => {
   const [build] = await db('builds')
     .update({status: CLAIMED, updatedAt: new Date()})
     .whereIn('id', sql => sql
-      .select('id')
+      .select()
       .from('builds')
       .where({status: PENDING})
       .andWhereRaw("(meta ->> 'isPublished')::boolean")
@@ -23,11 +24,14 @@ let timeoutId;
 const maybeBuild = async () => {
   try {
     const build = await getBuild();
-    if (build) runBuild({buildId: build.id});
+    if (build) {
+      await publishBuild({build});
+      runBuild({buildId: build.id});
+    }
   } catch (er) {
     console.error(er);
   }
-  if (!sigtermReceived) timeoutId = setTimeout(maybeBuild, 1000);
+  if (!sigtermReceived) timeoutId = setTimeout(maybeBuild, 100);
 };
 
 process.once('SIGTERM', () => {

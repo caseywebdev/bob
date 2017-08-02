@@ -14,7 +14,7 @@ const getChannel = async ({
   env: {config: {slack: {channel: defaultChannel}}},
   meta
 }) => {
-  let {channel} = ((meta || {}).slack || {});
+  let {channel} = (meta || {}).slack || {};
   if (!channel) channel = defaultChannel;
   if (!channel) return;
 
@@ -38,7 +38,6 @@ module.exports = async ({
   const channel = await getChannel({client, env, meta});
   if (!channel) return;
 
-  if (!meta.slack) meta.slack = {};
   const {iconEmoji, iconUrl, username} = slack;
   const title = getBuildDescription({build, withEmoji: true});
   const options = {
@@ -61,7 +60,9 @@ module.exports = async ({
     username
   };
 
-  let {buildId, ts} = meta.slack.message || {};
+  if (!meta.slack) meta.slack = {};
+  if (!meta.slack.message) meta.slack.message = {};
+  let {buildId, ts} = meta.slack.message;
   if (buildId !== id) ts = null;
   if (ts) return client.chat.update(ts, channel, null, options);
 

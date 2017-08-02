@@ -94,7 +94,6 @@ module.exports = async ({buildId}) => {
     const [build] = await db('builds').select().where({id: buildId});
     if (build.status !== CLAIMED) return process.exit(0);
 
-    await publishBuild({build});
     const {envId, id, sourceId} = build;
     const env = await getEnv({id: envId});
     const source = sources[sourceId];
