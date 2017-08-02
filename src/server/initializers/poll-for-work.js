@@ -8,7 +8,7 @@ const getBuild = async () => {
   const [build] = await db('builds')
     .update({status: CLAIMED, updatedAt: new Date()})
     .whereIn('id', sql => sql
-      .select()
+      .select('id')
       .from('builds')
       .where({status: PENDING})
       .andWhereRaw("(meta ->> 'isPublished')::boolean")
