@@ -1,4 +1,9 @@
 {
+  "meta": {
+    "slack": {
+      "channel": "#general"
+    }
+  },
   "tags": [
     "quay.io/coderiety/bob:{{REF}}",
     "quay.io/coderiety/bob:{{SHA}}"
