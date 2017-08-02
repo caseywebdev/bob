@@ -7,5 +7,5 @@ export default {
   github: {
     clientId: env.GITHUB_CLIENT_ID
   },
-  WATCH: env.WATCH === '1'
+  watch: env.WATCH === '1'
 };
