@@ -31,7 +31,7 @@ const maybeBuild = async () => {
   } catch (er) {
     console.error(er);
   }
-  if (!sigtermReceived) timeoutId = setTimeout(maybeBuild, 100);
+  if (!sigtermReceived) timeoutId = setTimeout(maybeBuild, 1000);
 };
 
 process.once('SIGTERM', () => {
