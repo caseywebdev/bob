@@ -7,7 +7,6 @@ const getDocker = require('./get-docker');
 const getEnv = require('./get-env');
 const getRegistryConfig = require('./get-registry-config');
 const OutputStream = require('./output-stream');
-const publishBuild = require('./publish-build');
 const sources = require('../sources');
 const updateBuildStatus = require('./update-build-status');
 const uuid = require('uuid/v4');
@@ -89,6 +88,7 @@ module.exports = async ({buildId}) => {
     if (output) return new Promise(resolve => output.end(resolve));
   });
 
+  let error;
   try {
     const db = await getDb();
     const [build] = await db('builds').select().where({id: buildId});
@@ -106,12 +106,10 @@ module.exports = async ({buildId}) => {
 
     await update({status: PUSHING});
     await pushImages({build, env, output});
-
-    await endOutput();
-    await update({status: SUCCEEDED, unless: []});
   } catch (er) {
-    const error = `${er.message || er}`;
+    error = `${er.message || er}`;
+  } finally {
     await endOutput();
-    await update({error, status: FAILED});
+    await update({error, status: error ? FAILED : SUCCEEDED});
   }
 };

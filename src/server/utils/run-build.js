@@ -17,7 +17,7 @@ module.exports = async ({buildId}) => {
     try {
       await updateBuildStatus({
         buildId,
-        error: `${er}`,
+        error: `${er.message || er}`,
         status: FAILED,
         unless: [CANCELLED, FAILED, SUCCEEDED]
       });
