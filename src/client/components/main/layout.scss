@@ -14,7 +14,7 @@
   text-decoration: none;
 
   &:hover {
-    color: $orange;
+    color: $bob-orange;
   }
 }
 
@@ -24,7 +24,7 @@
   padding: 10px;
 
   &:hover .bShape {
-    fill: $orange;
+    fill: $bob-orange;
   }
 }
 
@@ -48,6 +48,7 @@
   display: none;
   position: absolute;
   right: 10px;
+  z-index: 2;
 }
 
 .loading {

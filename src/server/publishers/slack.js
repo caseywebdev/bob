@@ -1,6 +1,6 @@
 const _ = require('underscore');
 const {WebClient} = require('@slack/client');
-const getBuildDescription = require('../utils/get-build-description');
+const getBuildDescription = require('../../shared/utils/get-build-description');
 const getVault = require('../utils/get-vault');
 const STATUS_INFO = require('../../shared/constants/status-info');
 

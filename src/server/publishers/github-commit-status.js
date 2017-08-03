@@ -1,4 +1,4 @@
-const getBuildDescription = require('../utils/get-build-description');
+const getBuildDescription = require('../../shared/utils/get-build-description');
 const getGithub = require('../utils/get-github');
 const STATUSES = require('../../shared/constants/statuses');
 

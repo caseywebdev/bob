@@ -17,19 +17,32 @@ $red: #cc777d;
 $white: #cbd0d7;
 $yellow: #f0d49c;
 
+.root {
+  position: relative;
+}
+
+.description {
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
 .output {
+  -webkit-font-smoothing: none;
   background: $black;
   color: $white;
+  font-family: Monaco, monospace;
+  font-size: 10px;
+  font-smooth: never;
+  line-height: 14px;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 5px 0;
 }
 
 .outputLine {
-  font-family: Monaco, monospace;
-  font-size: 10px;
   padding: 0 5px;
-  line-height: 16px;
   white-space: pre;
   width: fit-content;
 }

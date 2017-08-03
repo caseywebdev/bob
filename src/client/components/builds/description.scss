@@ -1,0 +1,26 @@
+@import '../../config';
+
+.root {
+  border-left: 5px solid;
+  padding: 10px;
+}
+
+.link {
+  color: #666;
+  font-size: 18px;
+  text-decoration: none;
+
+  &:hover {
+    color: $bob-orange;
+  }
+}
+
+.error {
+  border-radius: $border-radius;
+  background: #dc3d34;
+  color: #fff;
+  margin-top: 10px;
+  font-size: 12px;
+  font-family: Monaco, monospace;
+  padding: 10px;
+}
