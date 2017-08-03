@@ -1,21 +1,66 @@
 @import '../../config';
 
-// .root {
-//   padding: 20px;
-// }
+$black: #393f4c;
+$blue: #a0b1c0;
+$bright-black: #788691;
+$bright-blue: #a0b1c0;
+$bright-cyan: #a6c2c1;
+$bright-green: #b2c89d;
+$bright-magenta: #c2a1bb;
+$bright-red: #cc777d;
+$bright-white: #f2f4f7;
+$bright-yellow: #f0d49c;
+$cyan: #a6c2c1;
+$green: #b2c89d;
+$magenta: #c2a1bb;
+$red: #cc777d;
+$white: #cbd0d7;
+$yellow: #f0d49c;
 
-.lines {
-  background: #393f4c;
-  color: #cbd0d7;
+.output {
+  background: $black;
+  color: $white;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 20px;
-  white-space: nowrap;
 }
 
-.line {
-  font-family: Courier, monospace;
-  font-size: 12px;
+.outputLine {
+  font-family: Monaco, monospace;
+  font-size: 10px;
   line-height: 14px;
   white-space: pre;
 }
+
+.ansi-black-bg { background: $black; }
+.ansi-black-fg { color: $black; }
+.ansi-blue-bg { background: $blue; }
+.ansi-blue-fg { color: $blue; }
+.ansi-bright-black-bg { background: $bright-black; }
+.ansi-bright-black-fg { color: $bright-black; }
+.ansi-bright-blue-bg { background: $bright-blue; }
+.ansi-bright-blue-fg { color: $bright-blue; }
+.ansi-bright-cyan-bg { background: $bright-cyan; }
+.ansi-bright-cyan-fg { color: $bright-cyan; }
+.ansi-bright-green-bg { background: $bright-green; }
+.ansi-bright-green-fg { color: $bright-green; }
+.ansi-bright-magenta-bg { background: $bright-magenta; }
+.ansi-bright-magenta-fg { color: $bright-magenta; }
+.ansi-bright-red-bg { background: $bright-red; }
+.ansi-bright-red-fg { color: $bright-red; }
+.ansi-bright-white-bg { background: $bright-white; }
+.ansi-bright-white-fg { color: $bright-white; }
+.ansi-bright-yellow-bg { background: $bright-yellow; }
+.ansi-bright-yellow-fg { color: $bright-yellow; }
+.ansi-cyan-bg { background: $cyan; }
+.ansi-cyan-fg { color: $cyan; }
+.ansi-green-bg { background: $green; }
+.ansi-green-fg { color: $green; }
+.ansi-magenta-bg { background: $magenta; }
+.ansi-magenta-fg { color: $magenta; }
+.ansi-red-bg { background: $red; }
+.ansi-red-fg { color: $red; }
+.ansi-white-bg { background: $white; }
+.ansi-white-fg { color: $white; }
+.ansi-yellow-bg { background: $yellow; }
+.ansi-yellow-fg { color: $yellow; }

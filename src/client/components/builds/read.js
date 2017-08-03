@@ -2,6 +2,7 @@ import _ from 'underscore';
 import _str from 'underscore.string';
 import {withPave} from 'pave-react';
 import Anser from 'anser';
+import cx from 'classnames';
 import React, {Component} from 'react';
 import Header from '../shared/header';
 import Meta from '../shared/meta';
@@ -12,18 +13,13 @@ import {CANCELLED, FAILED, SUCCEEDED} from '../../../shared/constants/statuses';
 const REFRESH_INTERVAL = 1000;
 
 const renderLine = ({key, line}) =>
-  <div {...{key}} className={styles.line}>
+  <div {...{key}} className={styles.outputLine}>
     {_.map(line, ({bg, content, fg}, key) =>
-      <span
-        {...{key}}
-        style={{
-          backgroundColor: bg ? `rgb(${bg})` : undefined,
-          color: fg ? `rgb(${fg})` : undefined
-        }}
-      >
-        {content || ' '}
+      <span {...{key}} className={cx(styles[`${bg}-bg`], styles[`${fg}-fg`])}>
+        {content}
       </span>
     )}
+    {_.any(line, 'content') ? null : ' '}
   </div>;
 
 const render = ({
@@ -36,7 +32,7 @@ const render = ({
     <div className={styles.root}>
       <Header>{`Build #${id}`}</Header>
       <div>Status: {status}</div>
-      <div className={styles.lines}>
+      <div className={styles.output}>
         <ReactList
           length={lines.length}
           itemRenderer={i => renderLine({key: i, line: lines[i]})}
@@ -50,7 +46,7 @@ const toLines = ({build}) => {
   if (!build) return [];
 
   const ansi = _.map(build.output, 1).join('\n');
-  const chunks = Anser.ansiToJson(ansi);
+  const chunks = Anser.ansiToJson(ansi, {use_classes: true});
   if (!chunks) return [];
 
   const lines = [];
