@@ -29,6 +29,7 @@ $yellow: #f0d49c;
 }
 
 .output {
+  -webkit-overflow-scrolling: touch;
   background: $black;
   color: $white;
   font-family: Monaco, monospace;
