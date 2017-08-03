@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const {BUILDING, CANCELLED, CLAIMED, FAILED, PULLING, PUSHING, SUCCEEDED} = require('../../shared/constants/statuses');
+const {BUILDING, CANCELLED, FAILED, PULLING, PUSHING, SUCCEEDED} = require('../../shared/constants/statuses');
 const {promisify} = require('util');
 const getBuildArgs = require('./get-build-args');
 const getDb = require('./get-db');
@@ -92,8 +92,6 @@ module.exports = async ({buildId}) => {
   try {
     const db = await getDb();
     const [build] = await db('builds').select().where({id: buildId});
-    if (build.status !== CLAIMED) return process.exit(0);
-
     const {envId, id, sourceId} = build;
     const env = await getEnv({id: envId});
     const source = sources[sourceId];
