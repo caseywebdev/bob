@@ -42,7 +42,7 @@ module.exports = {
       );
       token = (await res.json()).access_token;
     } catch (er) {
-      throw UNAUTHORIZED;
+      console.error(er);
     }
 
     if (!token) throw UNAUTHORIZED;
