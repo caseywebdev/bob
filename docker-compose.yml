@@ -18,7 +18,7 @@ services:
       GITHUB_CLIENT_SECRET:
       ROOT_USER_ID:
       WATCH: 1
-    image: quay.io/coderiety/bob:09d189c7110fbc21e72c9b880a7b4dba60680c48
+    image: quay.io/coderiety/bob:aa8ba8b7907f587a1571a75848b04ada61a7e95a
     ports:
       - 80:80
     volumes:

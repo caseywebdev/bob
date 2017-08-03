@@ -12,6 +12,9 @@ import {CANCELLED, FAILED, SUCCEEDED} from '../../../shared/constants/statuses';
 
 const REFRESH_INTERVAL = 1000;
 
+const isDone = ({build: {status}}) =>
+  status === CANCELLED || status === FAILED || status === SUCCEEDED;
+
 const renderLine = ({key, line}) =>
   <div {...{key}} className={styles.outputLine}>
     {_.map(line, ({bg, content, fg}, key) =>
@@ -23,9 +26,12 @@ const renderLine = ({key, line}) =>
   </div>;
 
 const render = ({
-  props: {
-    match: {params: {id}},
-    pave: {state: {build: {status} = {}, lines}}
+  component,
+  component: {
+    props: {
+      match: {params: {id}},
+      pave: {state: {build: {status} = {}, lines}}
+    }
   }
 }) =>
   <Meta title={`Build #${id}`}>
@@ -34,8 +40,9 @@ const render = ({
       <div>Status: {status}</div>
       <div className={styles.output}>
         <ReactList
-          length={lines.length}
           itemRenderer={i => renderLine({key: i, line: lines[i]})}
+          length={lines.length}
+          ref={c => component.output = c}
           type='uniform'
         />
       </div>
@@ -72,14 +79,59 @@ const toLines = ({build}) => {
   return lines;
 };
 
+const getScrollY = () =>
+  Math.max(
+    0,
+    Math.min(
+      window.scrollY,
+      document.body.clientHeight - window.innerHeight
+    )
+  );
+
 export default withPave(
   class extends Component {
+    state = {follow: false};
+
     componentWillMount() {
+      this.scrollY = getScrollY();
       this.reload();
     }
 
+    componentDidMount() {
+      window.addEventListener('scroll', this.handleScroll);
+    }
+
+    componentWillReceiveProps({pave: {state: {build}}}) {
+      if (!this.initialFollowSet && build) {
+        this.initialFollowSet = true;
+        this.setState({follow: !isDone({build})});
+      }
+    }
+
+    componentDidUpdate() {
+      if (this.state.follow) {
+        this.output.scrollAround(this.props.pave.state.lines.length - 1);
+      }
+    }
+
     componentWillUnmount() {
+      window.removeEventListener('scroll', this.handleScroll);
       this.cancelReload();
+    }
+
+    handleScroll = () => {
+      const scrollY = getScrollY();
+      const delta = scrollY - this.scrollY;
+      this.scrollY = scrollY;
+
+      const {follow} = this.state;
+      if (delta < 0) return follow && this.setState({follow: false});
+
+      if (follow) return;
+
+      const last = this.props.pave.state.lines.length - 1;
+      const lastVisible = this.output.getVisibleRange()[1];
+      if (lastVisible === last) this.setState({follow: true});
     }
 
     cancelReload() {
@@ -95,11 +147,9 @@ export default withPave(
       const {state: {build}, store} = this.props.pave;
       if (!build) return this.delayReload();
 
-      const {id, output, status, updatedAt} = build;
-      if (status === CANCELLED || status === FAILED || status === SUCCEEDED) {
-        return;
-      }
+      if (isDone({build})) return;
 
+      const {id, output, updatedAt} = build;
       const lastOutputAt = _.max([].concat(-1, _.map(output, '0')));
       store.run({
         query: [
@@ -112,7 +162,7 @@ export default withPave(
     }
 
     render() {
-      return render({props: this.props});
+      return render({component: this});
     }
   },
   {
