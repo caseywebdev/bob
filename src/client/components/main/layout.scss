@@ -18,17 +18,17 @@
   }
 }
 
-.bob {
+.b {
   align-items: center;
   display: flex;
-  padding: 20px;
+  padding: 10px;
 
-  &:hover .bobShape {
+  &:hover .bShape {
     fill: $orange;
   }
 }
 
-.bobShape {
+.bShape {
   fill: #666;
   height: 32px;
 }

@@ -22,14 +22,16 @@ $yellow: #f0d49c;
   color: $white;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 20px;
+  padding: 5px 0;
 }
 
 .outputLine {
   font-family: Monaco, monospace;
   font-size: 10px;
-  line-height: 14px;
+  padding: 0 5px;
+  line-height: 16px;
   white-space: pre;
+  width: fit-content;
 }
 
 .ansi-black-bg { background: $black; }

@@ -6,7 +6,7 @@ import BuildsIndex from '../builds/index';
 import BuildsRead from '../builds/read';
 import Icon from '../shared/icon';
 import Loading from '../shared/loading';
-import Bob from '../shapes/bob';
+import B from '../shapes/b';
 import NotFound from '../shared/not-found';
 import React from 'react';
 import EnvsLayout from '../envs/layout';
@@ -44,8 +44,8 @@ const render = ({props, props: {pave: {error, isLoading, state: {user}}}}) =>
   <div>
     <div className={styles.header}>
       <div className={styles.left}>
-        <Link className={styles.bob} to='/'>
-          <Bob className={styles.bobShape} />
+        <Link className={styles.b} to='/'>
+          <B className={styles.bShape} />
         </Link>
       </div>
       <div className={styles.center} />
