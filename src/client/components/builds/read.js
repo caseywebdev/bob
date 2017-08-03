@@ -102,16 +102,15 @@ export default withPave(
     }
 
     componentWillReceiveProps({pave: {state: {build}}}) {
-      if (!this.initialFollowSet && build) {
-        this.initialFollowSet = true;
+      if (!this.followSet && build) {
+        this.followSet = true;
         this.setState({follow: !isDone({build})});
       }
     }
 
     componentDidUpdate() {
-      if (this.state.follow) {
-        this.output.scrollAround(this.props.pave.state.lines.length - 1);
-      }
+      const {output, props: {pave: {state: {lines}}}, state: {follow}} = this;
+      if (follow) output.scrollAround(lines.length - 1);
     }
 
     componentWillUnmount() {
@@ -120,18 +119,23 @@ export default withPave(
     }
 
     handleScroll = () => {
+      const {props: {pave: {state: {build, lines}}}, state: {follow}} = this;
+      if (build && isDone({build})) {
+        window.removeEventListener('scroll', this.handleScroll);
+        if (follow) this.setState({follow: false});
+        return;
+      }
+
       const scrollY = getScrollY();
       const delta = scrollY - this.scrollY;
       this.scrollY = scrollY;
+      if (follow) {
+        if (delta < 0) this.setState({follow: false});
+        return;
+      }
 
-      const {follow} = this.state;
-      if (delta < 0) return follow && this.setState({follow: false});
-
-      if (follow) return;
-
-      const last = this.props.pave.state.lines.length - 1;
       const lastVisible = this.output.getVisibleRange()[1];
-      if (lastVisible === last) this.setState({follow: true});
+      if (lastVisible === lines.length - 1) this.setState({follow: true});
     }
 
     cancelReload() {
