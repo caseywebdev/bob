@@ -29,12 +29,10 @@ $yellow: #f0d49c;
 }
 
 .output {
-  -webkit-font-smoothing: none;
   background: $black;
   color: $white;
   font-family: Monaco, monospace;
   font-size: 10px;
-  font-smooth: never;
   line-height: 14px;
   overflow-x: auto;
   overflow-y: hidden;

@@ -1,0 +1,19 @@
+@import '../../config';
+
+.root {
+  display: flex;
+  border-radius: $border-radius;
+  background: $red;
+  color: #fff;
+  font-size: 12px;
+  font-family: Monaco, monospace;
+}
+
+.left {
+  padding: 10px;
+}
+
+.right {
+  flex: 1;
+  padding: 10px 10px 10px 0;
+}

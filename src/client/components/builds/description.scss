@@ -2,7 +2,16 @@
 
 .root {
   border-left: 5px solid;
+  display: flex;
+}
+
+.left {
   padding: 10px;
+}
+
+.right {
+  flex: 1;
+  padding: 10px 10px 10px 0;
 }
 
 .link {
@@ -15,12 +24,11 @@
   }
 }
 
-.error {
-  border-radius: $border-radius;
-  background: #dc3d34;
-  color: #fff;
-  margin-top: 10px;
-  font-size: 12px;
+.tag {
   font-family: Monaco, monospace;
-  padding: 10px;
+  font-size: 10px;
+}
+
+.error {
+  margin-top: 5px;
 }
