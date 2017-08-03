@@ -11,12 +11,13 @@
 
 .right {
   flex: 1;
+  overflow: hidden;
   padding: 10px 10px 10px 0;
 }
 
 .link {
   color: #666;
-  font-size: 18px;
+  font-weight: bold;
   text-decoration: none;
 
   &:hover {
@@ -31,4 +32,22 @@
 
 .error {
   margin-top: 5px;
+}
+
+.button {
+  border-radius: $border-radius;
+  border: 1px solid $light-gray;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 15px;
+  margin-left: 5px;
+  padding: 0 5px;
+  vertical-align: bottom;
+
+  &:hover {
+    border-color: $bob-orange;
+    color: $bob-orange;
+  }
 }

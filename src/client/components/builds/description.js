@@ -6,6 +6,7 @@ import buildIsDone from '../../utils/build-is-done';
 import ErrorComponent from '../shared/error';
 import getBuildDescription from '../../../shared/utils/get-build-description';
 import history from '../../utils/history';
+import Icon from '../shared/icon';
 import React from 'react';
 import STATUS_INFO from '../../../shared/constants/status-info';
 import styles from './description.scss';
@@ -37,9 +38,14 @@ const render = ({props, props: {build, build: {error, id, status, tags}}}) =>
         {getBuildDescription({build})}
       </Link>
       {
-        build.role & WRITE > 0 && buildIsDone({build}) ?
-        <button onClick={() => rebuild({build, props})}>Rebuild</button> :
-        <button onClick={() => cancel({build, props})}>Cancel</button>
+        !(build.role & WRITE) ? null :
+        buildIsDone({build}) ?
+        <span className={styles.button} onClick={() => rebuild({build, props})}>
+          <Icon name='repeat' /> Rebuild
+        </span> :
+        <span className={styles.button} onClick={() => cancel({build, props})}>
+          <Icon name='ban' /> Cancel
+        </span>
       }
       {_.map(tags, (tag, key) =>
         <div {...{key}} className={styles.tag}>{tag}</div>)
