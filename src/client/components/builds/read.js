@@ -12,8 +12,6 @@ import React, {Component} from 'react';
 import ReactList from 'react-list';
 import styles from './read.scss';
 
-const REFRESH_INTERVAL = 1000;
-
 const renderLine = ({key, line}) =>
   <div {...{key}} className={styles.outputLine}>
     {_.map(line, ({bg, content, fg}, key) =>
@@ -40,7 +38,7 @@ const render = ({
         !build ? <Loading /> :
         <div>
           <div className={styles.description}>
-            <Description {...{build}} />
+            <Description buildId={id} withOutput />
           </div>
           {
             !lines.length ? null :
@@ -103,7 +101,6 @@ export default withPave(
 
     componentWillMount() {
       this.scrollY = getScrollY();
-      this.reload();
     }
 
     componentDidMount() {
@@ -124,7 +121,6 @@ export default withPave(
 
     componentWillUnmount() {
       window.removeEventListener('scroll', this.handleScroll);
-      this.cancelReload();
     }
 
     handleScroll = () => {
@@ -150,40 +146,12 @@ export default withPave(
       if (lastVisible === lines.length - 1) this.setState({follow: true});
     }
 
-    cancelReload() {
-      clearTimeout(this.reloadTimeoutId);
-    }
-
-    delayReload() {
-      this.cancelReload();
-      this.reloadTimeoutId = setTimeout(this.reload, REFRESH_INTERVAL);
-    }
-
-    reload = () => {
-      const {state: {build}, store} = this.props.pave;
-      if (!build) return this.delayReload();
-
-      if (buildIsDone({build})) return;
-
-      const {id, output, updatedAt} = build;
-      const lastOutputAt = _.max([].concat(-1, _.map(output, '0')));
-      store.run({
-        query: [
-          'getBuildUpdates!',
-          {id, lastOutputAt, lastUpdatedAt: updatedAt}
-        ]
-      })
-        .catch(::console.log)
-        .then(() => this.delayReload());
-    }
-
     render() {
       return render({component: this});
     }
   },
   {
-    getQuery: ({props: {match: {params: {id}}}}) =>
-      ['buildsById', id, [[], ['output']]],
+    getQuery: ({props: {match: {params: {id}}}}) => ['buildsById', id],
 
     getState: ({props: {match: {params: {id}}}, store}) => {
       const build = store.get(['buildsById', id]);

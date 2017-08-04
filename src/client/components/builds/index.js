@@ -2,15 +2,20 @@ import _ from 'underscore';
 import {withPave} from 'pave-react';
 import Description from './description';
 import React from 'react';
+import ReactList from 'react-list';
 import styles from './index.scss';
 
-const renderBuild = build =>
-  <div className={styles.build} key={build.id}>
-    <Description {...{build}} />
+const renderBuild = ({build: {id}}) =>
+  <div className={styles.build} key={id}>
+    <Description buildId={id} />
   </div>;
 
 const render = ({props: {pave: {state: {builds}}}}) =>
-  <div className={styles.root}>{_.map(builds, renderBuild)}</div>;
+  <ReactList
+    itemRenderer={index => renderBuild({build: builds[index]})}
+    length={builds.length}
+    threshold={1000}
+  />;
 
 export default withPave(
   props => render({props}),
