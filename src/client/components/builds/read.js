@@ -115,12 +115,18 @@ export default withPave(
     }
 
     componentDidUpdate() {
-      const {output, props: {pave: {state: {lines}}}, state: {follow}} = this;
-      if (output && follow) output.scrollAround(lines.length - 1);
+      const {output, state: {follow}} = this;
+      if (output && follow) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = requestAnimationFrame(() =>
+          output.scrollAround(this.props.pave.state.lines.length - 1)
+        );
+      }
     }
 
     componentWillUnmount() {
       window.removeEventListener('scroll', this.handleScroll);
+      cancelAnimationFrame(this.rafId);
     }
 
     handleScroll = () => {
