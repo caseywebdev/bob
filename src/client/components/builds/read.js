@@ -35,22 +35,19 @@ const render = ({
     <div className={styles.root}>
       {
         error ? <ErrorComponent {...{error}} /> :
-        !build ? <Loading /> :
-        <div>
+        !build ? <div className={styles.loading}><Loading /></div> :
+        <div className={styles.content}>
           <div className={styles.description}>
-            <Description buildId={id} withOutput />
+            <Description buildId={build.id} withOutput />
           </div>
-          {
-            !lines.length ? null :
-            <div className={styles.output}>
-              <ReactList
-                itemRenderer={i => renderLine({key: i, line: lines[i]})}
-                length={lines.length}
-                ref={c => component.output = c}
-                type='uniform'
-                />
-            </div>
-          }
+          <div className={styles.output}>
+            <ReactList
+              itemRenderer={i => renderLine({key: i, line: lines[i]})}
+              length={lines.length}
+              ref={c => component.output = c}
+              type='uniform'
+              />
+          </div>
         </div>
       }
     </div>
@@ -86,31 +83,30 @@ const toLines = ({build}) => {
   return lines;
 };
 
-const getScrollY = () =>
-  Math.max(
-    0,
-    Math.min(
-      window.scrollY,
-      document.body.clientHeight - window.innerHeight
-    )
-  );
-
 export default withPave(
   class extends Component {
     state = {follow: false};
 
     componentWillMount() {
-      this.scrollY = getScrollY();
+      this.scrollY = 0;
     }
 
     componentDidMount() {
+      this.setScrollListener();
       window.addEventListener('scroll', this.handleScroll);
     }
 
     componentWillReceiveProps({pave: {state: {build}}}) {
-      if (!this.followSet && build) {
-        this.followSet = true;
-        this.setState({follow: !buildIsDone({build})});
+      if (build) {
+        const current = this.props.pave.state.build;
+        if (current && current.id !== build.id) {
+          this.followSet = false;
+          this.scrollY = 0;
+        }
+        if (!this.followSet) {
+          this.followSet = true;
+          this.setState({follow: !buildIsDone({build})});
+        }
       }
     }
 
@@ -122,11 +118,27 @@ export default withPave(
           output.scrollAround(this.props.pave.state.lines.length - 1)
         );
       }
+      this.setScrollListener();
     }
 
     componentWillUnmount() {
-      window.removeEventListener('scroll', this.handleScroll);
+      const {output} = this;
+      if (output) {
+        const scrollParent = output.getScrollParent();
+        scrollParent.removeEventListener('scroll', this.handleScroll);
+      }
       cancelAnimationFrame(this.rafId);
+    }
+
+    setScrollListener() {
+      const {output, props: {pave: {state: {build}}}} = this;
+      if (!output) return;
+
+      const scrollParent = output.getScrollParent();
+      scrollParent.removeEventListener('scroll', this.handleScroll);
+      if (build && buildIsDone({build})) return;
+
+      scrollParent.addEventListener('scroll', this.handleScroll);
     }
 
     handleScroll = () => {
@@ -138,15 +150,17 @@ export default withPave(
         return;
       }
 
-      const scrollY = getScrollY();
+      if (!output) return;
+
+      const {clientHeight, scrollHeight, scrollTop} = output.getScrollParent();
+      const scrollY =
+        Math.max(0, Math.min(scrollTop, scrollHeight - clientHeight));
       const delta = scrollY - this.scrollY;
       this.scrollY = scrollY;
       if (follow) {
         if (delta < 0) this.setState({follow: false});
         return;
       }
-
-      if (!output) return;
 
       const lastVisible = this.output.getVisibleRange()[1];
       if (lastVisible === lines.length - 1) this.setState({follow: true});

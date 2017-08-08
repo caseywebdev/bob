@@ -3,15 +3,25 @@ import {Link} from 'react-router-dom';
 import {withPave} from 'pave-react';
 import {WRITE} from '../../../shared/constants/permission-levels';
 import buildIsDone from '../../utils/build-is-done';
-import ErrorComponent from '../shared/error';
+import cx from 'classnames';
 import getBuildDescription from '../../../shared/utils/get-build-description';
 import history from '../../utils/history';
 import Icon from '../shared/icon';
 import React, {Component} from 'react';
-import STATUS_INFO from '../../../shared/constants/status-info';
 import styles from './description.scss';
 
 const REFRESH_INTERVAL = 1000;
+
+const ICONS = {
+  pending: 'clock-o',
+  claimed: 'briefcase',
+  pulling: 'download',
+  building: 'wrench',
+  pushing: 'upload',
+  cancelled: 'ban',
+  succeeded: 'check-circle',
+  failed: 'exclamation-circle'
+};
 
 const rebuild = ({props: {pave: {state: {build: {id}}, store}}}) => {
   const cid = _.uniqueId();
@@ -31,41 +41,43 @@ const render = ({
   props,
   props: {pave: {state: {build, build: {error, id, status, tags}}}}
 }) =>
-  <div
-    className={styles.root}
-    style={{borderLeftColor: STATUS_INFO[status].color}}
-  >
-    <div className={styles.left}>
-      {STATUS_INFO[status].emoji}
-    </div>
-    <div className={styles.right}>
+  <div className={cx(styles.root, styles[`status-${status}`])}>
+    <div className={styles.content}>
       <Link className={styles.link} to={`/builds/${id}`}>
-        {getBuildDescription({build})}
+        <div className={styles.left}><Icon name={ICONS[status]} /></div>
+        <div className={styles.center}>
+          <div className={styles.title}>{getBuildDescription({build})}</div>
+          {_.map(tags, (tag, key) =>
+            <div {...{key}} className={styles.tag}>{tag}</div>)
+          }
+        </div>
       </Link>
       {
         !(build.role & WRITE) ? null :
-        buildIsDone({build}) ?
-        <span className={styles.button} onClick={() => rebuild({props})}>
-          <Icon name='repeat' /> Rebuild
-        </span> :
-        <span className={styles.button} onClick={() => cancel({props})}>
-          <Icon name='ban' /> Cancel
-        </span>
-      }
-      {_.map(tags, (tag, key) =>
-        <div {...{key}} className={styles.tag}>{tag}</div>)
-      }
-      {
-        !error ? null :
-        <div className={styles.error}><ErrorComponent {...{error}} /></div>
+        <div className={styles.right}>
+          {
+            buildIsDone({build}) ?
+            <span className={styles.button} onClick={() => rebuild({props})}>
+              <Icon name='repeat' />
+            </span> :
+            <span className={styles.button} onClick={() => cancel({props})}>
+              <Icon name='ban' />
+            </span>
+          }
+        </div>
       }
     </div>
+    {error && <div className={styles.error}>{error}</div>}
   </div>;
 
 export default withPave(
   class extends Component {
     componentWillMount() {
       this.reload();
+    }
+
+    componentDidUpdate({buildId}) {
+      if (buildId !== this.props.buildId) this.reload();
     }
 
     componentWillUnmount() {
@@ -82,6 +94,7 @@ export default withPave(
     }
 
     reload = () => {
+      this.cancelReload();
       const {pave: {state: {build}, store}, withOutput} = this.props;
       if (!build) return this.delayReload();
 

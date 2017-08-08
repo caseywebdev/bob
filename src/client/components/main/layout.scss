@@ -1,56 +1,50 @@
 @import '../../config';
 
-.header {
-  align-items: center;
-  border-bottom: 1px solid $light-gray;
+.root {
   display: flex;
+  height: 100%;
+  overflow: hidden;
 }
 
-.link {
+.nav {
+  display: flex;
+  flex-direction: column;
+  width: 40px;
+}
+
+.navItem {
+  align-items: center;
+  color: $dark-gray;
   cursor: pointer;
-  color: #666;
-  display: block;
-  padding: 10px;
+  display: flex;
+  font-size: 20px;
+  height: 40px;
+  justify-content: center;
   text-decoration: none;
 
   &:hover {
     color: $bob-orange;
-  }
-}
 
-.b {
-  align-items: center;
-  display: flex;
-  padding: 10px;
-
-  &:hover .bShape {
-    fill: $bob-orange;
+    .bShape {
+      fill: $bob-orange;
+    }
   }
 }
 
 .bShape {
-  fill: #666;
-  height: 32px;
-}
-
-.center {
-  flex: 1;
-}
-
-.dropdown:hover .options {
-  display: block;
-}
-
-.options {
-  @include box-shadow;
-  background: #fff;
-  border-radius: $border-radius;
-  display: none;
-  position: absolute;
-  right: 10px;
-  z-index: 2;
+  fill: $dark-gray;
+  width: 20px;
 }
 
 .loading {
   margin-right: 10px;
+}
+
+.content {
+  @include box-shadow;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  overflow: auto;
+  height: 100%;
+  position: relative;
 }

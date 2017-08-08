@@ -1,42 +1,38 @@
 @import '../../config';
 
-$black: #393f4c;
-$blue: #a0b1c0;
-$bright-black: #788691;
-$bright-blue: #a0b1c0;
-$bright-cyan: #a6c2c1;
-$bright-green: #b2c89d;
-$bright-magenta: #c2a1bb;
-$bright-red: #cc777d;
-$bright-white: #f2f4f7;
-$bright-yellow: #f0d49c;
-$cyan: #a6c2c1;
-$green: #b2c89d;
-$magenta: #c2a1bb;
-$red: #cc777d;
-$white: #cbd0d7;
-$yellow: #f0d49c;
-
 .root {
-  position: relative;
+  height: 100%;
+}
+
+.loading {
+  align-items: center;
+  display: flex;
+  font-size: 50px;
+  height: 100%;
+  justify-content: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .description {
-  background: #fff;
-  position: sticky;
-  top: 0;
+  @include box-shadow;
+  position: relative;
   z-index: 1;
 }
 
 .output {
   -webkit-overflow-scrolling: touch;
-  background: $black;
-  color: $white;
+  background: $ansi-black;
+  color: $ansi-white;
+  flex: 1;
   font-family: Monaco, monospace;
   font-size: 10px;
   line-height: 14px;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: auto;
   padding: 5px 0;
 }
 
@@ -46,35 +42,35 @@ $yellow: #f0d49c;
   width: fit-content;
 }
 
-.ansi-black-bg { background: $black; }
-.ansi-black-fg { color: $black; }
-.ansi-blue-bg { background: $blue; }
-.ansi-blue-fg { color: $blue; }
-.ansi-bright-black-bg { background: $bright-black; }
-.ansi-bright-black-fg { color: $bright-black; }
-.ansi-bright-blue-bg { background: $bright-blue; }
-.ansi-bright-blue-fg { color: $bright-blue; }
-.ansi-bright-cyan-bg { background: $bright-cyan; }
-.ansi-bright-cyan-fg { color: $bright-cyan; }
-.ansi-bright-green-bg { background: $bright-green; }
-.ansi-bright-green-fg { color: $bright-green; }
-.ansi-bright-magenta-bg { background: $bright-magenta; }
-.ansi-bright-magenta-fg { color: $bright-magenta; }
-.ansi-bright-red-bg { background: $bright-red; }
-.ansi-bright-red-fg { color: $bright-red; }
-.ansi-bright-white-bg { background: $bright-white; }
-.ansi-bright-white-fg { color: $bright-white; }
-.ansi-bright-yellow-bg { background: $bright-yellow; }
-.ansi-bright-yellow-fg { color: $bright-yellow; }
-.ansi-cyan-bg { background: $cyan; }
-.ansi-cyan-fg { color: $cyan; }
-.ansi-green-bg { background: $green; }
-.ansi-green-fg { color: $green; }
-.ansi-magenta-bg { background: $magenta; }
-.ansi-magenta-fg { color: $magenta; }
-.ansi-red-bg { background: $red; }
-.ansi-red-fg { color: $red; }
-.ansi-white-bg { background: $white; }
-.ansi-white-fg { color: $white; }
-.ansi-yellow-bg { background: $yellow; }
-.ansi-yellow-fg { color: $yellow; }
+.ansi-black-bg { background: $ansi-black; }
+.ansi-black-fg { color: $ansi-black; }
+.ansi-blue-bg { background: $ansi-blue; }
+.ansi-blue-fg { color: $ansi-blue; }
+.ansi-bright-black-bg { background: $ansi-bright-black; }
+.ansi-bright-black-fg { color: $ansi-bright-black; }
+.ansi-bright-blue-bg { background: $ansi-bright-blue; }
+.ansi-bright-blue-fg { color: $ansi-bright-blue; }
+.ansi-bright-cyan-bg { background: $ansi-bright-cyan; }
+.ansi-bright-cyan-fg { color: $ansi-bright-cyan; }
+.ansi-bright-green-bg { background: $ansi-bright-green; }
+.ansi-bright-green-fg { color: $ansi-bright-green; }
+.ansi-bright-magenta-bg { background: $ansi-bright-magenta; }
+.ansi-bright-magenta-fg { color: $ansi-bright-magenta; }
+.ansi-bright-red-bg { background: $ansi-bright-red; }
+.ansi-bright-red-fg { color: $ansi-bright-red; }
+.ansi-bright-white-bg { background: $ansi-bright-white; }
+.ansi-bright-white-fg { color: $ansi-bright-white; }
+.ansi-bright-yellow-bg { background: $ansi-bright-yellow; }
+.ansi-bright-yellow-fg { color: $ansi-bright-yellow; }
+.ansi-cyan-bg { background: $ansi-cyan; }
+.ansi-cyan-fg { color: $ansi-cyan; }
+.ansi-green-bg { background: $ansi-green; }
+.ansi-green-fg { color: $ansi-green; }
+.ansi-magenta-bg { background: $ansi-magenta; }
+.ansi-magenta-fg { color: $ansi-magenta; }
+.ansi-red-bg { background: $ansi-red; }
+.ansi-red-fg { color: $ansi-red; }
+.ansi-white-bg { background: $ansi-white; }
+.ansi-white-fg { color: $ansi-white; }
+.ansi-yellow-bg { background: $ansi-yellow; }
+.ansi-yellow-fg { color: $ansi-yellow; }

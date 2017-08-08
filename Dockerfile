@@ -2,14 +2,14 @@ FROM node:8.2.1
 
 WORKDIR /code
 
-ENV CONTAINERPILOT_VERSION 3.3.1
+ENV CONTAINERPILOT_VERSION 3.3.3
 RUN apt-get update && \
     apt-get install -y software-properties-common && \
-    curl -L https://nginx.org/keys/nginx_signing.key | apt-key add - && \
+    curl -fLsS https://nginx.org/keys/nginx_signing.key | apt-key add - && \
     add-apt-repository "deb http://nginx.org/packages/mainline/debian/ `lsb_release -cs` nginx" && \
     apt-get update && \
     apt-get install -y nginx && \
-    curl -L https://github.com/joyent/containerpilot/releases/download/$CONTAINERPILOT_VERSION/containerpilot-$CONTAINERPILOT_VERSION.tar.gz | \
+    curl -fLsS https://github.com/joyent/containerpilot/releases/download/$CONTAINERPILOT_VERSION/containerpilot-$CONTAINERPILOT_VERSION.tar.gz | \
       tar xz -C /usr/local/bin/
 
 COPY package.json /code/package.json

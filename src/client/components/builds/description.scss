@@ -1,28 +1,84 @@
 @import '../../config';
 
 .root {
-  border-left: 5px solid;
+  background: #fff;
+  overflow: hidden;
+}
+
+.status-pending {
+  .link { border-left-color: $yellow; }
+  .left { color: $yellow; }
+}
+
+.status-claimed {
+  .link { border-left-color: $orange; }
+  .left { color: $orange; }
+}
+
+.status-pulling {
+  .link { border-left-color: $teal-blue; }
+  .left { color: $teal-blue; }
+}
+
+.status-building {
+  .link { border-left-color: $blue; }
+  .left { color: $blue; }
+}
+
+.status-pushing {
+  .link { border-left-color: $purple; }
+  .left { color: $purple; }
+}
+
+.status-succeeded {
+  .link { border-left-color: $green; }
+  .left { color: $green; }
+}
+
+.status-cancelled {
+  .link { border-left-color: $light-gray; }
+  .left { color: $light-gray; }
+}
+
+.status-failed {
+  .link { border-left-color: $red; }
+  .left { color: $red; }
+}
+
+.content {
   display: flex;
 }
 
-.left {
-  padding: 10px;
-}
-
-.right {
+.link {
+  border-left: 5px solid;
+  color: $dark-gray;
+  display: flex;
   flex: 1;
   overflow: hidden;
-  padding: 10px 10px 10px 0;
-}
-
-.link {
-  color: #666;
-  font-weight: bold;
   text-decoration: none;
 
-  &:hover {
+  &:hover .title {
     color: $bob-orange;
   }
+}
+
+.left {
+  font-size: 16px;
+  padding: 5px 0;
+  overflow: hidden;
+  text-align: center;
+  width: 24px;
+}
+
+.center {
+  align-self: center;
+  flex: 1;
+  overflow: hidden;
+  padding: 5px 5px 5px 0;
+}
+
+.title {
+  font-weight: bold;
 }
 
 .tag {
@@ -31,20 +87,26 @@
 }
 
 .error {
-  margin-top: 5px;
+  background: $red;
+  color: #fff;
+  font-family: Monaco, monospace;
+  font-size: 12px;
+  max-height: 100px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.right {
+  padding: 5px;
 }
 
 .button {
   border-radius: $border-radius;
   border: 1px solid $light-gray;
   cursor: pointer;
-  display: inline-block;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 15px;
-  margin-left: 5px;
-  padding: 0 5px;
-  vertical-align: bottom;
+  display: block;
+  padding: 0 3px;
 
   &:hover {
     border-color: $bob-orange;

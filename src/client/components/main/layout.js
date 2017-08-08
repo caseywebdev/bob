@@ -1,15 +1,16 @@
 import {Link, Route, Switch} from 'react-router-dom';
 import {withPave} from 'pave-react';
-import config from '../../config';
-import disk from '../../utils/disk';
+import B from '../shapes/b';
 import BuildsIndex from '../builds/index';
 import BuildsRead from '../builds/read';
+import config from '../../config';
+import disk from '../../utils/disk';
+import EnvsLayout from '../envs/layout';
+import ErrorComponent from '../shared/error';
 import Icon from '../shared/icon';
 import Loading from '../shared/loading';
-import B from '../shapes/b';
 import NotFound from '../shared/not-found';
 import React from 'react';
-import EnvsLayout from '../envs/layout';
 import styles from './layout.scss';
 
 const signInToken = ({props: {pave: {store}}}) => {
@@ -41,57 +42,48 @@ const signInGithub = () => {
 };
 
 const render = ({props, props: {pave: {error, isLoading, state: {user}}}}) =>
-  <div>
-    <div className={styles.header}>
-      <div className={styles.left}>
-        <Link className={styles.b} to='/'>
-          <B className={styles.bShape} />
-        </Link>
-      </div>
-      <div className={styles.center} />
-      <div className={styles.right}>
-        {
-          user ?
-            user.id === 'public' ?
-            <div className={styles.dropdown}>
-              <div className={styles.link}><Icon name='sign-in' /> Sign In</div>
-              <div className={styles.options}>
-                <div className={styles.link} onClick={signInGithub}>
-                  <Icon name='github' /> with GitHub
-                </div>
-                <div
-                  className={styles.link}
-                  onClick={() => signInToken({props})}
-                >
-                  <Icon name='key' /> with a Token
-                </div>
-              </div>
-            </div> :
-            <div className={styles.dropdown}>
-              <div className={styles.link}>
-                <Icon name='user' /> {user.name}
-              </div>
-              <div className={styles.options}>
-                <Link className={styles.link} to='/envs'>
-                  <Icon name='globe' /> Envs
-                </Link>
-                <div className={styles.link} onClick={() => signOut({props})}>
-                  <Icon name='sign-out' /> Sign Out
-                </div>
-              </div>
-            </div> :
-          isLoading ? <Loading className={styles.loading} /> :
-          error ? error.message || error :
-          'Something went wrong!'
-        }
-      </div>
+  <div className={styles.root}>
+    <div className={styles.nav}>
+      <Link className={styles.navItem} to='/'>
+        <B className={styles.bShape} />
+      </Link>
+      {
+        user ?
+          user.id === 'public' ? [
+            <div className={styles.navItem} key='0' onClick={signInGithub}>
+              <Icon name='github' />
+            </div>,
+            <div
+              className={styles.navItem}
+              key='1'
+              onClick={() => signInToken({props})}
+            >
+              <Icon name='key' />
+            </div>
+          ] : [
+            <Link className={styles.navItem} key='0' to='/envs'>
+              <Icon name='globe' />
+            </Link>,
+            <div
+              className={styles.navItem}
+              key='1'
+              onClick={() => signOut({props})}
+            >
+              <Icon name='sign-out' />
+            </div>
+          ] :
+          isLoading ? <div className={styles.navItem}><Loading /></div> :
+        <ErrorComponent {...{error}} />
+      }
     </div>
-    <Switch>
-      <Route exact path='/' component={BuildsIndex} />
-      <Route path='/builds/:id' component={BuildsRead} />
-      <Route path='/envs' component={EnvsLayout} />
-      <Route component={NotFound} />
-    </Switch>
+    <div className={styles.content}>
+      <Switch>
+        <Route exact path='/' component={BuildsIndex} />
+        <Route path='/builds/:id' component={BuildsRead} />
+        <Route path='/envs' component={EnvsLayout} />
+        <Route component={NotFound} />
+      </Switch>
+    </div>
   </div>;
 
 export default withPave(
