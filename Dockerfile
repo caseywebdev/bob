@@ -25,7 +25,9 @@ COPY bin /code/bin
 COPY etc /code/etc
 COPY src /code/src
 
-ENV POSTGRES_URL='pg://postgres:postgres@postgres/postgres'
+ENV \
+  CONSUL_SERVICE_NAME='bob' \
+  POSTGRES_URL='pg://postgres:postgres@postgres/postgres'
 
 EXPOSE 80
 

@@ -23,7 +23,7 @@
       restarts: 'unlimited'
     },
     {
-      name: 'nginx',
+      name: '{{.CONSUL_SERVICE_NAME}}',
       exec: 'bin/nginx',
       when: {source: 'setup', once: 'exitSuccess'},
       {{- if .CONSUL_URL}}
@@ -37,6 +37,9 @@
       consul: {
         deregisterCriticalServiceAfter: '10m'
       },
+      {{- end}}
+      {{- if .CONSUL_TAGS}}
+      tags: ["{{join (split .CONSUL_TAGS ",") "\", \"}}"],
       {{- end}}
       restarts: 'unlimited'
     }
