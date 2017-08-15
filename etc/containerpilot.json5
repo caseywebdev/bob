@@ -1,0 +1,44 @@
+{
+  consul: '{{.CONSUL_URL}}',
+  jobs: [
+    {name: 'setup', exec: 'bin/setup'},
+    {{if (eq .WATCH 1)}}
+    {
+      name: 'watch-build',
+      exec: 'bin/watch-build',
+      when: {source: 'setup', once: 'exitSuccess'},
+      restarts: 'unlimited'
+    },
+    {
+      name: 'livereload',
+      exec: 'bin/livereload',
+      when: {source: 'setup', once: 'exitSuccess'},
+      restarts: 'unlimited'
+    },
+    {{end}}
+    {
+      name: 'api',
+      exec: 'bin/api',
+      when: {source: 'setup', once: 'exitSuccess'},
+      restarts: 'unlimited'
+    },
+    {
+      name: 'nginx',
+      exec: 'bin/nginx',
+      when: {source: 'setup', once: 'exitSuccess'},
+      {{- if .CONSUL_URL}}
+      port: 80,
+      health: {
+        exec: 'curl -fsSo /dev/null localhost',
+        interval: 5,
+        ttl: 10,
+        timeout: '5s'
+      },
+      consul: {
+        deregisterCriticalServiceAfter: '10m'
+      },
+      {{- end}}
+      restarts: 'unlimited'
+    }
+  ]
+}
