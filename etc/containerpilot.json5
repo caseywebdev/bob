@@ -1,8 +1,8 @@
 {
-  consul: '{{.CONSUL_URL}}',
+  consul: '{{env "CONSUL_URL"}}',
   jobs: [
     {name: 'setup', exec: 'bin/setup'},
-    {{if (eq .WATCH "1")}}
+    {{if (eq env "WATCH" "1")}}
     {
       name: 'watch-build',
       exec: 'bin/watch-build',
@@ -23,10 +23,10 @@
       restarts: 'unlimited'
     },
     {
-      name: '{{.CONSUL_SERVICE_NAME}}',
+      name: '{{env "CONSUL_SERVICE_NAME"}}',
       exec: 'bin/nginx',
       when: {source: 'setup', once: 'exitSuccess'},
-      {{- if .CONSUL_URL}}
+      {{- if env "CONSUL_URL"}}
       port: 80,
       health: {
         exec: 'curl -fsSo /dev/null localhost',
@@ -38,8 +38,8 @@
         deregisterCriticalServiceAfter: '10m'
       },
       {{- end}}
-      {{- if .CONSUL_SERVICE_TAGS}}
-      tags: ["{{.CONSUL_SERVICE_TAGS | split "," | join "\", \""}}"],
+      {{- if env "CONSUL_SERVICE_TAGS"}}
+      tags: ["{{env "CONSUL_SERVICE_TAGS" | split "," | join "\", \""}}"],
       {{- end}}
       restarts: 'unlimited'
     }
