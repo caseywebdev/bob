@@ -5,7 +5,7 @@ WORKDIR /code
 ENV CONTAINERPILOT_VERSION='3.3.4'
 
 RUN \
-  apk --no-cache add curl nginx && \
+  apk --no-cache add curl libc6-compat nginx && \
   mkdir -p /run/nginx && \
   curl -fLsS https://github.com/joyent/containerpilot/releases/download/$CONTAINERPILOT_VERSION/containerpilot-$CONTAINERPILOT_VERSION.tar.gz | \
     tar xz -C /usr/local/bin/
