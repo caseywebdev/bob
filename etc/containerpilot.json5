@@ -38,8 +38,8 @@
         deregisterCriticalServiceAfter: '10m'
       },
       {{- end}}
-      {{- if .CONSUL_TAGS}}
-      tags: ["{{join (split .CONSUL_TAGS ",") "\", \"}}"],
+      {{- if .CONSUL_SERVICE_TAGS}}
+      tags: ["{{join (split .CONSUL_SERVICE_TAGS ",") "\", \"}}"],
       {{- end}}
       restarts: 'unlimited'
     }

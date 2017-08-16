@@ -27,6 +27,7 @@ COPY src /code/src
 
 ENV \
   CONSUL_SERVICE_NAME='bob' \
+  CONSUL_SERVICE_TAGS='' \
   POSTGRES_URL='pg://postgres:postgres@postgres/postgres'
 
 EXPOSE 80
