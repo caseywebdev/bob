@@ -2,7 +2,7 @@
   consul: '{{env "CONSUL_URL"}}',
   jobs: [
     {name: 'setup', exec: 'bin/setup'},
-    {{if (eq env "WATCH" "1")}}
+    {{if (eq (env "WATCH") "1")}}
     {
       name: 'watch-build',
       exec: 'bin/watch-build',
