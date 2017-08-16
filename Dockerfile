@@ -1,7 +1,5 @@
 FROM node:8.3.0-alpine
 
-WORKDIR /code
-
 ENV CONTAINERPILOT_VERSION='3.3.4'
 
 RUN \
@@ -10,22 +8,23 @@ RUN \
   curl -fLsS https://github.com/joyent/containerpilot/releases/download/$CONTAINERPILOT_VERSION/containerpilot-$CONTAINERPILOT_VERSION.tar.gz | \
     tar xz -C /usr/local/bin/
 
-COPY package.json /code/package.json
+WORKDIR /code
+
+COPY package.json ./
 RUN npm install --no-save
 
-COPY .eslintrc /code/.eslintrc
-COPY .stylelintrc /code/.stylelintrc
-COPY bin/build /code/bin/build
-COPY etc/cogs.js /code/etc/cogs.js
-COPY etc/nginx.conf /code/etc/nginx.conf
-COPY src/client /code/src/client
-COPY src/shared /code/src/shared
+COPY .eslintrc .stylelintrc ./
+COPY bin/build bin/
+COPY etc/cogs.js etc/
+COPY etc/nginx.conf etc/
+COPY src/client src/client
+COPY src/shared src/shared
 ENV BOB_URL='http://localhost'
 RUN MINIFY=1 bin/build
 
-COPY bin /code/bin
-COPY etc /code/etc
-COPY src /code/src
+COPY bin bin
+COPY etc etc
+COPY src src
 
 ENV \
   CONSUL_SERVICE_NAME='bob' \
