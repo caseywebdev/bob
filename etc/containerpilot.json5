@@ -39,7 +39,7 @@
       },
       {{- end}}
       {{- if .CONSUL_SERVICE_TAGS}}
-      tags: ["{{join (split .CONSUL_SERVICE_TAGS ",") "\", \""}}"],
+      tags: ["{{.CONSUL_SERVICE_TAGS | split "," | join "\", \""}}"],
       {{- end}}
       restarts: 'unlimited'
     }
