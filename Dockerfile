@@ -4,9 +4,11 @@ WORKDIR /code
 
 ENV CONTAINERPILOT_VERSION='3.3.4'
 
-RUN apk --no-cache add curl nginx && \
-    curl -fLsS https://github.com/joyent/containerpilot/releases/download/$CONTAINERPILOT_VERSION/containerpilot-$CONTAINERPILOT_VERSION.tar.gz | \
-      tar xz -C /usr/local/bin/
+RUN \
+  apk --no-cache add curl nginx && \
+  mkdir -p /run/nginx && \
+  curl -fLsS https://github.com/joyent/containerpilot/releases/download/$CONTAINERPILOT_VERSION/containerpilot-$CONTAINERPILOT_VERSION.tar.gz | \
+    tar xz -C /usr/local/bin/
 
 COPY package.json /code/package.json
 RUN npm install --no-save
