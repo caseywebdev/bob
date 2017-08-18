@@ -1,5 +1,6 @@
 const _ = require('underscore');
 const {BUILDING, CANCELLED, FAILED, PULLING, PUSHING, SUCCEEDED} = require('../../shared/constants/statuses');
+const {docker: {buildMemory}} = require('../config');
 const {promisify} = require('util');
 const getBuildArgs = require('./get-build-args');
 const getDb = require('./get-db');
@@ -52,6 +53,7 @@ const buildImage = async ({build, env, output, source}) => {
     buildargs: await buildArgs,
     cachefrom: tags,
     dockerfile,
+    memory: buildMemory || undefined,
     registryconfig: await registryConfig,
     t
   });
