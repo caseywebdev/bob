@@ -24,7 +24,7 @@
     },
     {
       name: '{{env "CONSUL_SERVICE_NAME"}}',
-      exec: 'bin/nginx',
+      exec: 'nginx',
       when: {source: 'setup', once: 'exitSuccess'},
       {{- if env "CONSUL_URL"}}
       port: 80,

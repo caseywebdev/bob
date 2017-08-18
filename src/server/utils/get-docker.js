@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const config = require('../config');
 const Docker = require('dockerode');
-const vault = require('./root-vault');
+const getValue = require('./get-value');
 const memoize = require('./memoize');
 
 const {docker} = config;
@@ -15,10 +15,7 @@ const normalize = async options => {
   options = compact(options);
   for (let key in options) {
     let value = options[key];
-    if (!_.isObject(value)) continue;
-
-    if (value.value) options[key] = value.value;
-    else options[key] = (await vault.get(value.vault.path))[value.vault.key];
+    if (_.isObject(value)) options[key] = await getValue({value});
   }
   return options;
 };

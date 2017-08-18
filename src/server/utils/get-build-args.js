@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const getVault = require('./get-vault');
+const getValue = require('./get-value');
 
 module.exports = async ({
   build: {buildArgs, ref, sha},
@@ -10,8 +10,7 @@ module.exports = async ({
 
   const vars = {REF: ref, SHA: sha};
   for (let key in buildVariables) {
-    const {value, vault: {path, key: vaultKey} = {}} = buildVariables[key];
-    vars[key] = value || (await getVault({env}).get(path))[vaultKey];
+    vars[key] = await getValue({env, value: buildVariables[key]});
   }
 
   return _.mapObject(buildArgs, str =>

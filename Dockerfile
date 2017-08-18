@@ -29,8 +29,9 @@ COPY src src
 ENV \
   CONSUL_SERVICE_NAME='bob' \
   CONSUL_SERVICE_TAGS='' \
+  CONTAINERPILOT='/code/etc/containerpilot.json5' \
   POSTGRES_URL='pg://postgres:postgres@postgres/postgres'
 
 EXPOSE 80
 
-CMD ["bin/run"]
+CMD ["containerpilot"]

@@ -1,13 +1,11 @@
 const _ = require('underscore');
 const {WebClient} = require('@slack/client');
 const getBuildDescription = require('../../shared/utils/get-build-description');
-const getVault = require('../utils/get-vault');
+const getValue = require('../utils/get-value');
 const STATUS_INFO = require('../../shared/constants/status-info');
 
-const getToken = async ({
-  env,
-  env: {config: {slack: {token: {value, vault: {path, key} = {}}}}}
-}) => value || (await getVault({env}).get(path))[key];
+const getToken = async ({env, env: {config: {slack: {token}}}}) =>
+  getValue({env, value: token});
 
 const getChannel = async ({
   client,

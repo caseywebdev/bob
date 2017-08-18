@@ -2,14 +2,12 @@ const {UNAUTHORIZED} = require('../../shared/constants/errors');
 const config = require('../config');
 const fetch = require('node-fetch');
 const getUser = require('../utils/get-user');
-const rootVault = require('../utils/root-vault');
+const getValue = require('../utils/get-value');
+const memoize = require('../utils/memoize');
 
 const {clientId, clientSecret} = config.github;
 
-const getClientSecret = async () => {
-  const {value, vault: {path, key}} = clientSecret;
-  return value || (path && key && (await rootVault.get(path))[key]);
-};
+const getClientSecret = memoize(async () => getValue({value: clientSecret}));
 
 module.exports = {
   user: async ({store: {cache: {user}}}) => ({user: {$set: user}}),

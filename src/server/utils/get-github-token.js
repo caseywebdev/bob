@@ -1,6 +1,4 @@
-const getVault = require('./get-vault');
+const getValue = require('./get-value');
 
-module.exports = async ({
-  env,
-  env: {config: {github: {token: {value, vault: {path, key} = {}}}}}
-}) => value || (await getVault({env}).get(path))[key];
+module.exports = async ({env, env: {config: {github: {token}}}}) =>
+  getValue({env, value: token});

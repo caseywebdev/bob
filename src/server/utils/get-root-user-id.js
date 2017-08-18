@@ -1,6 +1,7 @@
 const config = require('../config');
-const vault = require('./root-vault');
+const getValue = require('./get-value');
+const memoize = require('./memoize');
 
-const {rootUserId: {value, vault: {path, key}}} = config;
+const {rootUserId} = config;
 
-module.exports = async () => value || (await vault.get(path))[key];
+module.exports = memoize(async () => getValue({value: rootUserId}));

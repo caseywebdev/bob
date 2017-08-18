@@ -1,6 +1,4 @@
-const getVault = require('./get-vault');
+const getValue = require('./get-value');
 
-module.exports = async ({
-  env,
-  env: {config: {docker: {registryConfig: {value, vault: {path, key} = {}}}}}
-}) => value || JSON.parse((await getVault({env}).get(path))[key]);
+module.exports = async ({env, env: {config: {docker: {registryConfig}}}}) =>
+  getValue({env, value: registryConfig});

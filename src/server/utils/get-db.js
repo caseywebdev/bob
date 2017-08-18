@@ -1,11 +1,9 @@
 const config = require('../config');
+const getValue = require('./get-value');
 const knex = require('knex');
 const memoize = require('./memoize');
-const vault = require('./root-vault');
 
-const {postgres: {url: {value, vault: {path, key}}}} = config;
-
-const getUrl = async () => value || (await vault.get(path))[key];
+const {postgres: {url}} = config;
 
 let db;
 process.once('SIGTERM', async () => {
@@ -17,5 +15,5 @@ process.once('SIGTERM', async () => {
 });
 
 module.exports = memoize(async () =>
-  db = knex({client: 'pg', connection: await getUrl()})
+  db = knex({client: 'pg', connection: await getValue({value: url})})
 );
