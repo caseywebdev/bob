@@ -1,6 +1,6 @@
 const _ = require('underscore');
 const {BUILDING, CANCELLED, FAILED, PULLING, PUSHING, SUCCEEDED} = require('../../shared/constants/statuses');
-const {docker: {buildMemory}} = require('../config');
+const {docker: {buildOptions}} = require('../config');
 const {promisify} = require('util');
 const getBuildArgs = require('./get-build-args');
 const getDb = require('./get-db');
@@ -49,14 +49,17 @@ const buildImage = async ({build, env, output, source}) => {
   const registryConfig = getRegistryConfig({env});
   const tarStream = source.getTarStream({build, env});
   const docker = await getDocker();
-  const stream = await call(docker, 'buildImage', await tarStream, {
-    buildargs: await buildArgs,
-    cachefrom: tags,
-    dockerfile,
-    memory: buildMemory || undefined,
-    registryconfig: await registryConfig,
-    t
-  });
+  const stream = await call(docker, 'buildImage', await tarStream, _.extend(
+    {},
+    buildOptions,
+    {
+      buildargs: await buildArgs,
+      cachefrom: tags,
+      dockerfile,
+      registryconfig: await registryConfig,
+      t
+    }
+  ));
   await handleStream({output, stream});
   return Promise.all(_.map(tags, fullTag => {
     const [repo, tag] = fullTag.split(':');

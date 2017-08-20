@@ -22,11 +22,11 @@ http {
   }
 
   server {
-    return {{env.literal.BOB_URL}}$request_uri;
+    return {{env "BOB_URL"}}$request_uri;
   }
 
   server {
-    server_name {{env.literal.BOB_URL_HOSTNAME}};
+    server_name {{index (env "BOB_URL" | split "://") 1}};
     root /code/build;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection $connection_upgrade;

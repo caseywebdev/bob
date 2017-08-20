@@ -11,7 +11,7 @@ const STATIC = {
   transformers: [
     {
       name: 'replace',
-      only: ['src/client/public/index.html', 'etc/nginx.conf'],
+      only: 'src/client/public/index.html',
       options: {
         flags: 'g',
         patterns: {
@@ -22,7 +22,6 @@ const STATIC = {
     }
   ],
   builds: {
-    'etc/nginx.conf': '/etc/nginx/nginx.conf',
     'node_modules/font-awesome/fonts/*': {dir: 'build/fonts'},
     'src/client/public/**/*': {dir: 'build'}
   }

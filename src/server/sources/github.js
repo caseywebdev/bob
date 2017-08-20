@@ -25,7 +25,7 @@ exports.getCommitFromWebhook = async ({
 
 exports.getCommit = async ({env, ref, repo, sha}) => {
   const github = await getGithub({env});
-  if (!sha) sha = (await github.repos(repo).commits(sha || ref).fetch()).sha;
+  if (!sha) sha = (await github.repos(repo).commits().fetch({sha: ref})).sha;
   return {ref, repo, sha};
 };
 

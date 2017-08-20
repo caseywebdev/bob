@@ -1,3 +1,3 @@
 #!/bin/sh
 
-exec node_modules/.bin/livereload build -p 8081
+exec /code/node_modules/.bin/livereload /code/build -p 8081

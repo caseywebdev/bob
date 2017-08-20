@@ -1,24 +1,24 @@
 {
   consul: '{{env "CONSUL_URL"}}',
   jobs: [
-    {name: 'setup', exec: 'bin/setup'},
-    {{if (eq (env "WATCH") "1")}}
+    {name: 'setup', exec: '/code/bin/setup'},
+{{-if (eq (env "WATCH") "1")}}
     {
       name: 'watch-build',
-      exec: 'bin/watch-build',
+      exec: '/code/bin/watch-build',
       when: {source: 'setup', once: 'exitSuccess'},
       restarts: 'unlimited'
     },
     {
       name: 'livereload',
-      exec: 'bin/livereload',
+      exec: '/code/bin/livereload',
       when: {source: 'setup', once: 'exitSuccess'},
       restarts: 'unlimited'
     },
-    {{end}}
+{{-end}}
     {
       name: 'api',
-      exec: 'bin/api',
+      exec: '/code/bin/api',
       when: {source: 'setup', once: 'exitSuccess'},
       restarts: 'unlimited'
     },
@@ -26,7 +26,7 @@
       name: '{{env "CONSUL_SERVICE_NAME"}}',
       exec: 'nginx',
       when: {source: 'setup', once: 'exitSuccess'},
-      {{- if env "CONSUL_URL"}}
+{{- if env "CONSUL_URL"}}
       port: 80,
       health: {
         exec: 'curl -fsSo /dev/null localhost',
@@ -37,10 +37,10 @@
       consul: {
         deregisterCriticalServiceAfter: '10m'
       },
-      {{- end}}
-      {{- if env "CONSUL_SERVICE_TAGS"}}
+{{- end}}
+{{- if env "CONSUL_SERVICE_TAGS"}}
       tags: ["{{env "CONSUL_SERVICE_TAGS" | split "," | join "\", \""}}"],
-      {{- end}}
+{{- end}}
       restarts: 'unlimited'
     }
   ]

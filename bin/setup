@@ -1,3 +1,9 @@
 #!/bin/sh
 
-ONLY_STATIC=1 exec bin/build
+set -e
+
+consul-template \
+  -once \
+  -template /code/etc/nginx.conf.gotmpl:/etc/nginx/nginx.conf
+
+ONLY_STATIC=1 exec /code/bin/build

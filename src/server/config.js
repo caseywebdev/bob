@@ -8,7 +8,7 @@ module.exports = {
     url: env.CONSUL_URL
   },
   docker: {
-    buildMemory: parseInt(env.DOCKER_BUILD_MEMORY),
+    buildOptions: JSON.parse(env.DOCKER_BUILD_OPTIONS || '{}'),
     socketPath: env.DOCKER_SOCKET_PATH,
     protocol: env.DOCKER_PROTOCOL,
     host: env.DOCKER_HOST,

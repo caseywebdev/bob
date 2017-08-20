@@ -3,7 +3,10 @@
 set -e
 
 if [ "$WATCH" = "1" ]; then
-  exec node_modules/.bin/watchy -w src/server -w src/shared node src/server
+  exec /code/node_modules/.bin/watchy \
+    -w /code/src/server \
+    -w /code/src/shared \
+    -- node /code/src/server
 else
-  exec node src/server
+  exec node /code/src/server
 fi
