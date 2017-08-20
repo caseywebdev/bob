@@ -1,9 +1,4 @@
-const _ = require('underscore');
-const url = require('url');
-
-let {env} = process;
-const {BOB_URL} = env;
-env = _.extend({}, env, {BOB_URL_HOSTNAME: url.parse(BOB_URL).hostname});
+const {env} = process;
 const MINIFY = env.MINIFY === '1';
 const ONLY_STATIC = env.ONLY_STATIC === '1';
 
