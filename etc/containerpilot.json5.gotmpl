@@ -37,9 +37,9 @@
       consul: {
         deregisterCriticalServiceAfter: '10m'
       },
-{{- end}}
-{{- if env "CONSUL_SERVICE_TAGS"}}
+  {{- if env "CONSUL_SERVICE_TAGS"}}
       tags: ["{{env "CONSUL_SERVICE_TAGS" | split "," | join "\", \""}}"],
+  {{- end}}
 {{- end}}
       restarts: 'unlimited'
     }

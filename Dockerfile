@@ -32,6 +32,7 @@ ENV \
   BOB_URL='http://localhost' \
   CONSUL_SERVICE_NAME='bob' \
   CONSUL_SERVICE_TAGS='' \
+  CONSUL_URL='' \
   CONTAINERPILOT='/code/etc/containerpilot.json5.gotmpl' \
   POSTGRES_URL='pg://postgres:postgres@postgres/postgres'
 
