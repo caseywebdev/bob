@@ -1,9 +1,8 @@
+const _ = require('underscore');
 const getConsulValue = require('./get-consul-value');
-const getVault = require('./get-vault');
-const rootVault = require('./root-vault');
+const getVaultValue = require('./get-vault-value');
 
 module.exports = async ({env, value: {consul = {}, value, vault = {}}}) =>
   consul.path ? getConsulValue(consul) :
-  vault.key && vault.path ?
-    (await (env ? getVault({env}) : rootVault).get(vault.path))[vault.key] :
+  vault.key && vault.path ? getVaultValue(_.extend({}, vault, {env})) :
   value;
