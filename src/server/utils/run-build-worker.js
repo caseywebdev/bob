@@ -43,7 +43,6 @@ const pullImages = async ({build: {tags}, output, env}) => {
 };
 
 const buildImage = async ({build, env, output, source}) => {
-  const t = `tmp:${uuid()}`;
   const {dockerfile, tags} = build;
   const buildArgs = getBuildArgs({build, env});
   const registryConfig = getRegistryConfig({env});
@@ -57,14 +56,10 @@ const buildImage = async ({build, env, output, source}) => {
       cachefrom: tags,
       dockerfile,
       registryconfig: await registryConfig,
-      t
+      t: tags
     }
   ));
   await handleStream({output, stream});
-  return Promise.all(_.map(tags, fullTag => {
-    const [repo, tag] = fullTag.split(':');
-    return call(docker.getImage(t), 'tag', {repo, tag});
-  }));
 };
 
 const pushImage = async ({env, tag, output}) => {
