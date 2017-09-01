@@ -43,7 +43,7 @@ exports.readFile = async ({commit: {repo, sha}, env, filename}) => {
 exports.getTarStream = async ({build: {context, repo, sha}, env}) => {
   const token = await getGithubToken({env});
   const apiUrl = `https://api.github.com/repos/${repo}/tarball/${sha}`;
-  const res = await fetch(`${apiUrl}?access_token=${token}`);
+  const res = await fetch(apiUrl, {headers: {Authorization: `token ${token}`}});
   return res.body
     .pipe(zlib.createGunzip())
     .pipe(new TarStripStream({base: context, strip: 1}));
