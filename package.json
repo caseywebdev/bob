@@ -1,7 +1,7 @@
 {
   "private": true,
   "dependencies": {
-    "@slack/client": "3.11.0",
+    "@slack/client": "3.12.0",
     "anser": "1.4.1",
     "babel-eslint": "7.2.3",
     "babel-polyfill": "6.26.0",
@@ -40,8 +40,8 @@
     "pave": "0.4.7",
     "pg": "7.2.0",
     "react-dom": "15.6.1",
-    "react-list": "0.8.6",
-    "react-router-dom": "4.1.2",
+    "react-list": "0.8.7",
+    "react-router-dom": "4.2.2",
     "react": "15.6.1",
     "store": "2.0.12",
     "stylelint": "8.0.0",
