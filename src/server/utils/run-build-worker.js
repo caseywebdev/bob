@@ -10,7 +10,6 @@ const getRegistryConfig = require('./get-registry-config');
 const OutputStream = require('./output-stream');
 const sources = require('../sources');
 const updateBuildStatus = require('./update-build-status');
-const uuid = require('uuid/v4');
 
 const call = (obj, key, ...args) => promisify(obj[key].bind(obj))(...args);
 
