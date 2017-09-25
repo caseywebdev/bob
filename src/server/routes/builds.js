@@ -20,27 +20,34 @@ const getBuilds = async ({
   const db = await getDb();
   const sql = db('builds');
 
-  if (justLength) sql.countDistinct('id as length');
-  else sql.distinct(db.raw('ON (id) *')).orderBy('id', 'desc');
-
-  if (user.isRoot) {
-    sql.select(db.raw(`${ROLES.ADMIN} as role`));
+  if (justLength) {
+    sql.countDistinct('id as length');
   } else {
     sql
-      .select('role')
+      .distinct(db.raw('ON (id) *'))
+      .orderBy('id', 'desc')
+      .select(user.isRoot ? db.raw(`${ROLES.ADMIN} as role`) : 'role');
+  }
+
+  if (!user.isRoot) {
+    sql
       .innerJoin('permissions', sql => sql
         .on('builds.envId', 'permissions.envId')
         .onIn('permissions.userId', _.unique([user.id, 'public']))
         .on(db.raw('permissions.role & ? > 0', [LEVELS.READ]))
       );
   }
+
   if (ids) sql.whereIn('id', ids);
-  if (before) sql.where('createdAt', '<', before);
+
+  if (before) sql.where('builds.createdAt', '<', before);
 
   if (justLength) return parseInt((await sql)[0].length);
 
   if (offset) sql.offset(offset);
+
   if (limit) sql.limit(limit);
+
   const builds = _.map(await sql, build =>
     _.extend(
       {},
