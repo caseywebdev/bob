@@ -58,7 +58,7 @@ export default withPave(
     params: {size: 100},
 
     getQuery: ({params: {before, size}, setParams}) => {
-      if (!before) setParams({before: before = new Date()});
+      if (!before) setParams({before: before = (new Date()).toJSON()});
       return ['builds', {before}, _.range(0, size).concat('length')];
     },
 
