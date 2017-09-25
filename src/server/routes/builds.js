@@ -1,4 +1,5 @@
 const _ = require('underscore');
+const {toKey} = require('pave');
 const createBuild = require('../utils/create-build');
 const ERRORS = require('../../shared/constants/errors');
 const getDb = require('../utils/get-db');
@@ -7,11 +8,21 @@ const ROLES = require('../../shared/constants/permission-roles');
 const STATUSES = require('../../shared/constants/statuses');
 const updateBuildStatus = require('../utils/update-build-status');
 
-const getBuilds = async ({ids, user, withOutput}) => {
+const getBuilds = async ({
+  before,
+  ids,
+  justLength,
+  limit,
+  offset,
+  user,
+  withOutput
+}) => {
   const db = await getDb();
-  const sql = db('builds')
-    .distinct(db.raw('ON (id) *'))
-    .orderBy('id', 'desc');
+  const sql = db('builds');
+
+  if (justLength) sql.countDistinct('id as length');
+  else sql.distinct(db.raw('ON (id) *')).orderBy('id', 'desc');
+
   if (user.isRoot) {
     sql.select(db.raw(`${ROLES.ADMIN} as role`));
   } else {
@@ -24,17 +35,54 @@ const getBuilds = async ({ids, user, withOutput}) => {
       );
   }
   if (ids) sql.whereIn('id', ids);
+  if (before) sql.where('createdAt', '<', before);
+
+  if (justLength) return (await sql)[0].length;
+
+  if (offset) sql.offset(offset);
+  if (limit) sql.limit(limit);
   const builds = _.map(await sql, build =>
-    _.extend({}, build, {env: {$ref: ['envsById', build.envId]}})
+    _.extend(
+      {},
+      withOutput ? build : _.omit(build, 'output'),
+      {env: {$ref: ['envsById', build.envId]}}
+    )
   );
-  return withOutput ? builds : _.map(builds, build => _.omit(build, 'output'));
+
+  return builds;
 };
 
 module.exports = {
-  builds: async ({store: {cache: {user}}}) => {
-    const builds = await getBuilds({user});
+  'builds.$obj.$keys': async ({
+    1: options,
+    1: {before},
+    2: indices,
+    store: {cache: {user}}
+  }) => {
+    let length;
+    if (_.contains(indices, 'length')) {
+      length = await getBuilds({before, indices, justLength: true, user});
+    }
+
+    indices = _.reject(indices, isNaN);
+    const min = _.min(indices);
+    const max = _.max(indices);
+    const builds = await getBuilds({
+      before,
+      limit: max - min,
+      offset: min,
+      user
+    });
     return {
-      builds: {$set: _.map(builds, ({id}) => ({$ref: ['buildsById', id]}))},
+      builds: {
+        [toKey(options)]: _.extend(
+          {},
+          length == null ? {} : {length: {$set: length}},
+          _.mapObject(builds, ({id}) => ({
+            $set: {$ref: ['buildsById', id]}
+          }))
+        )
+      },
       buildsById: _.mapObject(_.indexBy(builds, 'id'), build => ({
         $merge: build
       }))
