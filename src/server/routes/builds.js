@@ -37,7 +37,7 @@ const getBuilds = async ({
   if (ids) sql.whereIn('id', ids);
   if (before) sql.where('createdAt', '<', before);
 
-  if (justLength) return (await sql)[0].length;
+  if (justLength) return parseInt((await sql)[0].length);
 
   if (offset) sql.offset(offset);
   if (limit) sql.limit(limit);
