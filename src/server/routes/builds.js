@@ -67,12 +67,12 @@ module.exports = {
     indices = _.reject(indices, isNaN);
     const min = _.min(indices);
     const max = _.max(indices);
-    const builds = await getBuilds({
+    const builds = indices.length ? await getBuilds({
       before,
-      limit: max - min,
+      limit: max - min + 1,
       offset: min,
       user
-    });
+    }) : [];
     return {
       builds: {
         [toKey(options)]: _.extend(
