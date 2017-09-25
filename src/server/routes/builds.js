@@ -85,9 +85,9 @@ module.exports = {
         [toKey(options)]: _.extend(
           {},
           length == null ? {} : {length: {$set: length}},
-          _.mapObject(builds, ({id}) => ({
-            $set: {$ref: ['buildsById', id]}
-          }))
+          _.reduce(builds, (obj, {id}, index) => _.extend(obj, {
+            [min + index]: {$set: {$ref: ['buildsById', id]}}
+          }), {})
         )
       },
       buildsById: _.mapObject(_.indexBy(builds, 'id'), build => ({

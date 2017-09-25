@@ -1,6 +1,7 @@
 import _ from 'underscore';
 import {withPave} from 'pave-react';
 import Description from './description';
+import Loading from '../shared/loading';
 import React, {Component} from 'react';
 import ReactList from 'react-list';
 import styles from './index.scss';
@@ -21,7 +22,7 @@ const renderBuild = ({
   <div className={styles.build} key={index}>
     {
       builds[index] ? <Description buildId={builds[index].id} /> :
-      component.setSize(index + 1) || 'Loading...'
+      component.setSize(index + 1) || <Loading />
     }
   </div>;
 
