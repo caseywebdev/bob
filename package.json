@@ -22,7 +22,7 @@
     "cogs-transformer-sass": "3.0.1",
     "cogs-transformer-stylelint": "3.1.0",
     "cogs-transformer-uglify-js": "3.1.1",
-    "cogs": "3.1.5",
+    "cogs": "3.1.6",
     "dockerode": "2.5.1",
     "eslint-plugin-react": "7.4.0",
     "eslint": "4.6.1",
