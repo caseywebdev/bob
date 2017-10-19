@@ -1,11 +1,11 @@
 const _ = require('underscore');
-const getRole = require('../utils/get-role');
+const getRole = require('../functions/get-role');
 const ERRORS = require('../../shared/constants/errors');
 const LEVELS = require('../../shared/constants/permission-levels');
 const ROLES = require('../../shared/constants/permission-roles');
-const saveEnv = require('../utils/save-env');
+const saveEnv = require('../functions/save-env');
 
-const getDb = require('../utils/get-db');
+const getDb = require('../functions/get-db');
 
 const getEnvs = async ({ids, user}) => {
   const db = await getDb();

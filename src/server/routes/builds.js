@@ -1,32 +1,34 @@
 const _ = require('underscore');
 const {toKey} = require('pave');
-const createBuild = require('../utils/create-build');
+const createBuild = require('../functions/create-build');
 const ERRORS = require('../../shared/constants/errors');
-const getDb = require('../utils/get-db');
+const getDb = require('../functions/get-db');
 const LEVELS = require('../../shared/constants/permission-levels');
 const ROLES = require('../../shared/constants/permission-roles');
 const STATUSES = require('../../shared/constants/statuses');
-const updateBuildStatus = require('../utils/update-build-status');
+const updateBuildStatus = require('../functions/update-build-status');
 
 const getBuilds = async ({
   before,
   ids,
   justLength,
+  keys,
   limit,
   offset,
-  user,
-  withOutput
+  user
 }) => {
   const db = await getDb();
   const sql = db('builds');
 
   if (justLength) {
-    sql.countDistinct('id as length');
+    sql.countDistinct('builds.id as length');
   } else {
     sql
-      .distinct(db.raw('ON (id) *'))
-      .orderBy('id', 'desc')
+      .distinct(db.raw('ON (builds.id) builds.id'))
+      .select('builds.envId')
+      .orderBy('builds.id', 'desc')
       .select(user.isRoot ? db.raw(`${ROLES.ADMIN} as role`) : 'role');
+    if (keys) sql.select(_.map(keys, key => `builds.${key}`));
   }
 
   if (!user.isRoot) {
@@ -38,7 +40,7 @@ const getBuilds = async ({
       );
   }
 
-  if (ids) sql.whereIn('id', ids);
+  if (ids) sql.whereIn('builds.id', ids);
 
   if (before) sql.where('builds.createdAt', '<', before);
 
@@ -48,22 +50,17 @@ const getBuilds = async ({
 
   if (limit) sql.limit(limit);
 
-  const builds = _.map(await sql, build =>
-    _.extend(
-      {},
-      withOutput ? build : _.omit(build, 'output'),
-      {env: {$ref: ['envsById', build.envId]}}
-    )
+  return _.map(await sql, build =>
+    _.extend({}, build, {env: {$ref: ['envsById', build.envId]}})
   );
-
-  return builds;
 };
 
 module.exports = {
-  'builds.$obj.$keys': async ({
+  'builds.$obj.$keys.$keys': async ({
     1: options,
     1: {before},
     2: indices,
+    3: keys,
     store: {cache: {user}}
   }) => {
     let length;
@@ -76,6 +73,7 @@ module.exports = {
     const max = _.max(indices);
     const builds = indices.length ? await getBuilds({
       before,
+      keys,
       limit: max - min + 1,
       offset: min,
       user
@@ -96,8 +94,12 @@ module.exports = {
     };
   },
 
-  'buildsById.$keys': async ({1: ids, store: {cache: {user}}}) => {
-    const builds = await getBuilds({ids, user});
+  'buildsById.$keys.$keys': async ({
+    1: ids,
+    2: keys,
+    store: {cache: {user}}
+  }) => {
+    const builds = await getBuilds({ids, keys, user});
     return {
       buildsById: _.mapObject(_.indexBy(builds, 'id'), build => ({
         $merge: build
@@ -105,19 +107,13 @@ module.exports = {
     };
   },
 
-  'buildsById.$keys.output': async ({1: ids, store: {cache: {user}}}) => {
-    const builds = await getBuilds({ids, user, withOutput: true});
-    return {
-      buildsById: _.mapObject(_.indexBy(builds, 'id'), build => ({
-        $merge: build
-      }))
-    };
-  },
-
-  'getBuildUpdates!.$obj':
-  async ({1: {id, lastOutputAt, lastUpdatedAt}, store: {cache: {user}}}) => {
-    const withOutput = lastOutputAt != null;
-    const [build] = await getBuilds({ids: [id], user, withOutput});
+  'getBuildUpdates!.$obj.$keys':
+  async ({
+    1: {id, lastOutputAt, lastUpdatedAt},
+    2: keys,
+    store: {cache: {user}}
+  }) => {
+    const [build] = await getBuilds({ids: [id], keys, user});
     if (!build) return ERRORS.NOT_FOUND;
 
     const delta = [];
@@ -125,7 +121,7 @@ module.exports = {
       delta.push({buildsById: {[id]: {$merge: _.omit(build, 'output')}}});
     }
 
-    if (withOutput) {
+    if (_.contains(keys, 'output') && lastOutputAt != null) {
       const output = _.pick(
         _.map(build.output, ([at, text]) =>
           at > lastOutputAt && {$set: [at, text]}
@@ -140,14 +136,14 @@ module.exports = {
 
   'rebuild!.$obj':
   async ({1: {cid, id}, store: {cache: {user}}}) => {
-    const [build] = await getBuilds({ids: [id], user});
+    const [build] = await getBuilds({ids: [id], keys: ['*'], user});
     if (!build) throw ERRORS.NOT_FOUND;
 
     if (!(build.role & LEVELS.WRITE)) throw ERRORS.FORBIDDEN;
 
     const rebuild = await createBuild(build);
     return {
-      buildsById: {[rebuild.id]: {$set: rebuild}},
+      buildsById: {[rebuild.id]: {$set: _.omit(rebuild, 'build')}},
       buildsByCid: {[cid]: {$set: {$ref: ['buildsById', rebuild.id]}}}
     };
   },
@@ -159,13 +155,12 @@ module.exports = {
 
     if (!(build.role & LEVELS.WRITE)) throw ERRORS.FORBIDDEN;
 
-    await updateBuildStatus({
+    build = await updateBuildStatus({
       buildId: build.id,
       status: STATUSES.CANCELLED,
       unless: [STATUSES.CANCELLED, STATUSES.FAILED, STATUSES.SUCCEEDED]
     });
-    build = (await getBuilds({ids: [id], user}))[0];
-    if (!build) throw ERRORS.NOT_FOUND;
+    if (!build) throw ERRORS.FORBIDDEN;
 
     return {buildsById: {[id]: {$merge: build}}};
   }

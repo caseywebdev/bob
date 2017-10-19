@@ -1,9 +1,9 @@
 const {UNAUTHORIZED} = require('../../shared/constants/errors');
 const config = require('../config');
 const fetch = require('node-fetch');
-const getUser = require('../utils/get-user');
-const getValue = require('../utils/get-value');
-const memoize = require('../utils/memoize');
+const getUser = require('../functions/get-user');
+const getValue = require('../functions/get-value');
+const memoize = require('../functions/memoize');
 
 const {clientId, clientSecret} = config.github;
 

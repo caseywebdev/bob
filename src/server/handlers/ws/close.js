@@ -1,5 +1,5 @@
-const {unlisten} = require('../../utils/db-channels');
-const sockets = require('../../utils/sockets');
+const {unlisten} = require('../../functions/db-channels');
+const sockets = require('../../functions/sockets');
 
 module.exports = async ({socket}) => {
   const {id, listeners} = socket;

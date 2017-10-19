@@ -1,14 +1,13 @@
 import _ from 'underscore';
 import {Link} from 'react-router-dom';
-import {withPave} from 'pave-react';
+
 import {WRITE} from '../../../shared/constants/permission-levels';
-import buildIsDone from '../../utils/build-is-done';
+import buildIsDone from '../../functions/build-is-done';
 import cx from 'classnames';
-import getBuildDescription from '../../../shared/utils/get-build-description';
-import history from '../../utils/history';
+import getBuildDescription from '../../../shared/functions/get-build-description';
+import history from '../../constants/history';
 import Icon from '../shared/icon';
 import React, {Component} from 'react';
-import styles from './description.scss';
 
 const REFRESH_INTERVAL = 1000;
 
@@ -106,7 +105,18 @@ export default withPave(
       store.run({
         query: [
           'getBuildUpdates!',
-          {id, lastOutputAt, lastUpdatedAt: updatedAt}
+          {id, lastOutputAt, lastUpdatedAt: updatedAt},
+          [].concat(
+            'createdAt',
+            'error',
+            'id',
+            'ref',
+            'repo',
+            'status',
+            'tags',
+            'updatedAt',
+            withOutput ? 'output' : []
+          )
         ]
       })
         .catch(::console.error)
@@ -118,10 +128,21 @@ export default withPave(
     }
   },
   {
-    getQuery: ({props: {buildId, withOutput}}) => [].concat(
-      ['buildsById', buildId],
-      withOutput ? [[[], ['output']]] : [],
-    ),
+    getQuery: ({props: {buildId, withOutput}}) => [
+      'buildsById',
+      buildId,
+      [].concat(
+        'createdAt',
+        'error',
+        'id',
+        'ref',
+        'repo',
+        'status',
+        'tags',
+        'updatedAt',
+        withOutput ? 'output' : []
+      )
+    ],
 
     getState: ({props: {buildId}, store}) => ({
       build: store.get(['buildsById', buildId])

@@ -1,12 +1,11 @@
 import {Route, Router, Switch} from 'react-router-dom';
-import {withPave} from 'pave-react';
-import history from '../../utils/history';
+
+import history from '../../constants/history';
 import MainLayout from '../main/layout';
 import Meta from '../shared/meta';
 import React from 'react';
 import Refresh from './refresh';
 import SignInGithub from '../sign-in/github';
-import store from '../../utils/store';
 
 const render = () =>
   <Router {...{history}}>

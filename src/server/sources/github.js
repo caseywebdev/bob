@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
-const getGithub = require('../utils/get-github');
-const getGithubToken = require('../utils/get-github-token');
-const TarStripStream = require('../utils/tar-strip-stream');
+const getGithub = require('../functions/get-github');
+const getGithubToken = require('../functions/get-github-token');
+const TarStripStream = require('../functions/tar-strip-stream');
 const zlib = require('zlib');
 
 exports.id = 'github';

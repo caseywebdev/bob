@@ -1,4 +1,4 @@
-import {withPave} from 'pave-react';
+
 import React from 'react';
 import Header from '../shared/header';
 import Meta from '../shared/meta';

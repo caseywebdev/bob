@@ -1,7 +1,7 @@
 const {PENDING, CLAIMED} = require('../../shared/constants/statuses');
-const getDb = require('../utils/get-db');
-const publishBuild = require('../utils/publish-build');
-const runBuild = require('../utils/run-build');
+const getDb = require('../functions/get-db');
+const publishBuild = require('../functions/publish-build');
+const runBuild = require('../functions/run-build');
 
 const getBuild = async () => {
   const db = await getDb();

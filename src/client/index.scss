@@ -1,1 +1,19 @@
-// = require ./**/*.scss
+$fa-font-path: '/fonts';
+@import '../../node_modules/font-awesome/scss/font-awesome';
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+body {
+  color: $dark-gray;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 0;
+  text-size-adjust: 100%;
+  word-wrap: break-word;
+}

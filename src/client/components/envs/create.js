@@ -1,8 +1,8 @@
 import _ from 'underscore';
-import {withPave} from 'pave-react';
+
 import Editor from './editor';
 import Header from '../shared/header';
-import history from '../../utils/history';
+import history from '../../constants/history';
 import Meta from '../shared/meta';
 import React from 'react';
 

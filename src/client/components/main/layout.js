@@ -1,17 +1,16 @@
 import {Link, Route, Switch} from 'react-router-dom';
-import {withPave} from 'pave-react';
+
 import B from '../shapes/b';
 import BuildsIndex from '../builds/index';
 import BuildsRead from '../builds/read';
 import config from '../../config';
-import disk from '../../utils/disk';
+import disk from '../../constants/disk';
 import EnvsLayout from '../envs/layout';
 import ErrorComponent from '../shared/error';
 import Icon from '../shared/icon';
 import Loading from '../shared/loading';
 import NotFound from '../shared/not-found';
 import React from 'react';
-import styles from './layout.scss';
 
 const signInToken = ({props: {pave: {store}}}) => {
   const token = prompt('Token');

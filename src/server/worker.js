@@ -1,8 +1,8 @@
 (async () => {
   try {
-    const {listen} = require('./utils/db-channels');
+    const {listen} = require('./functions/db-channels');
     const {worker: {buildId}} = require('./config');
-    const runBuildWorker = require('./utils/run-build-worker');
+    const runBuildWorker = require('./functions/run-build-worker');
 
     await listen(`build:${buildId}:cancelled`, () => process.exit());
     await runBuildWorker({buildId});

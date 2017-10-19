@@ -17,9 +17,9 @@ WORKDIR /code
 COPY package.json ./
 RUN npm install --no-save
 
-COPY .eslintrc .stylelintrc ./
+COPY .eslintrc ./
 COPY bin/build bin/
-COPY etc/cogs.js etc/
+COPY etc/webpack.config.js etc/
 COPY src/client src/client
 COPY src/shared src/shared
 RUN MINIFY=1 bin/build

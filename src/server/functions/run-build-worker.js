@@ -73,14 +73,13 @@ const pushImages = async ({build, env, output}) => {
 };
 
 module.exports = async ({buildId}) => {
-  const update = ({error, status, unless}) =>
-    updateBuildStatus({
+  const update = async ({error, status}) =>
+    await updateBuildStatus({
       buildId,
       error,
       status,
-      unless: unless || [CANCELLED],
-      onConflict: () => process.exit()
-    });
+      unless: _.without([CANCELLED, FAILED, SUCCEEDED], status)
+    }) || process.exit();
 
   let output;
   const endOutput = _.once(() => {

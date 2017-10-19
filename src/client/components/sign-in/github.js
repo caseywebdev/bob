@@ -1,5 +1,5 @@
-import {withPave} from 'pave-react';
-import disk from '../../utils/disk';
+
+import disk from '../../constants/disk';
 import React, {Component} from 'react';
 
 export default withPave(

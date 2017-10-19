@@ -1,4 +1,4 @@
-const getDb = require('../utils/get-db');
+const getDb = require('../functions/get-db');
 
 module.exports = async () => {
   const db = await getDb();

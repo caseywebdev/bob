@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const {WebClient} = require('@slack/client');
-const getBuildDescription = require('../../shared/utils/get-build-description');
-const getValue = require('../utils/get-value');
+const getBuildDescription = require('../../shared/functions/get-build-description');
+const getValue = require('../functions/get-value');
 const STATUS_INFO = require('../../shared/constants/status-info');
 
 const getToken = async ({env, env: {config: {slack: {token}}}}) =>

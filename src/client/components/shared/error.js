@@ -1,6 +1,5 @@
 import Icon from './icon';
 import React from 'react';
-import styles from './error.scss';
 
 export default ({error}) =>
   <div className={styles.root}>

@@ -1,9 +1,9 @@
 const _ = require('underscore');
 const {FORBIDDEN} = require('../../../shared/constants/errors');
 const {WRITE} = require('../../../shared/constants/permission-levels');
-const createBuilds = require('../../utils/create-builds');
-const getEnv = require('../../utils/get-env');
-const getRole = require('../../utils/get-role');
+const createBuilds = require('../../functions/create-builds');
+const getEnv = require('../../functions/get-env');
+const getRole = require('../../functions/get-role');
 const sources = require('../../sources');
 
 module.exports = async ({req, res}) => {

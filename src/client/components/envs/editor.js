@@ -1,6 +1,4 @@
 import _ from 'underscore';
-import {toDelta} from 'pave';
-import {withPave} from 'pave-react';
 import React from 'react';
 import Loading from '../shared/loading';
 import ErrorComponent from '../shared/error';

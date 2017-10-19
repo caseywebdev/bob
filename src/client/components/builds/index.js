@@ -1,10 +1,9 @@
 import _ from 'underscore';
-import {withPave} from 'pave-react';
+
 import Description from './description';
 import Loading from '../shared/loading';
 import React, {Component} from 'react';
 import ReactList from 'react-list';
-import styles from './index.scss';
 
 const renderBuild = ({
   component,
@@ -60,7 +59,21 @@ export default withPave(
 
     getQuery: ({params: {before, size}, setParams}) => {
       if (!before) setParams({before: before = (new Date()).toJSON()});
-      return ['builds', {before}, _.range(0, size).concat('length')];
+      return [
+        'builds',
+        {before},
+        _.range(0, size).concat('length'),
+        [
+          'createdAt',
+          'error',
+          'id',
+          'ref',
+          'repo',
+          'status',
+          'tags',
+          'updatedAt'
+        ]
+      ];
     },
 
     getState: ({params: {before}, store}) => ({
