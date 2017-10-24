@@ -17,8 +17,8 @@
     <link href='/index.css' rel='stylesheet'>
     <script>
       window.env = {
-        GITHUB_CLIENT_ID: {{env.escaped.GITHUB_CLIENT_ID}},
-        WATCH: {{env.escaped.WATCH}}
+        GITHUB_CLIENT_ID: '{{env "GITHUB_CLIENT_ID"}}',
+        WATCH: '{{env "WATCH"}}'
       };
     </script>
   </head>
