@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import React, {Component} from 'react';
+import {Component} from 'react';
 
 let components = [];
 
@@ -30,6 +30,6 @@ export default class extends Component {
   }
 
   render() {
-    return React.Children.only(this.props.children);
+    return this.props.children;
   }
 }

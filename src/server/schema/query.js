@@ -1,3 +1,5 @@
+const getDb = require('../functions/get-db');
+
 exports.dependencies = [
   require('./build'),
   require('./json')
@@ -5,7 +7,7 @@ exports.dependencies = [
 
 exports.typeDefs = `
 type Query {
-  build(test: JSON): Build
+  build(id: ID!): Build
   builds: [Build]
   echo(say: String!): String
 }
@@ -13,7 +15,13 @@ type Query {
 
 exports.resolvers = {
   Query: {
-    build: () => ({status: 'pending', buildArgs: {foo: 'bar'}, id: 'foo'}),
+    build: async (__, {id}) => {
+      const db = await getDb();
+      const [build] = await db('builds').where({id});
+      if (!build) throw new Error(`Build ${id} not found`);
+
+      return build;
+    },
     builds: () => [{id: 'foo'}],
     echo: (__, {say}) => say
   }

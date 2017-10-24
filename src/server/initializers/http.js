@@ -4,9 +4,7 @@ const {promisify} = require('util');
 const bodyParser = require('body-parser');
 const express = require('express');
 const http = require('http');
-const Live = require('live-socket');
 const sockets = require('../functions/sockets');
-const ws = require('uws');
 const schema = require('../schema');
 const {graphqlExpress, graphiqlExpress} = require('graphql-server-express');
 
@@ -24,7 +22,7 @@ const server = http.createServer(
     .disable('x-powered-by')
     .use(bodyParser.json())
     .use('/api/graphql', graphqlExpress({schema}))
-    .use('/docs/graphiql', graphiqlExpress({endpointURL: '/api/graphql'}))
+    .use('/api/graphiql', graphiqlExpress({endpointURL: '/api/graphql'}))
     .post(
       '/api/envs/:envId/webhooks/:sourceId',
       asyncify(require('../handlers/http/webhook'))

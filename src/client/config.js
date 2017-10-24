@@ -32,7 +32,9 @@ export default {
       yellow: '#f2cb30'
     },
     borderRadius: '3px',
-    boxShadow: 'box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25)',
+    boxShadow: `
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    `,
     ellipsis: `
       overflow: hidden;
       text-overflow: ellipsis;
