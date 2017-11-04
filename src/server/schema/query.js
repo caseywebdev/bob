@@ -22,7 +22,7 @@ exports.resolvers = {
 
       return build;
     },
-    builds: () => [{id: 'foo'}],
+    builds: async () => (await getDb())('builds'),
     echo: (__, {say}) => say
   }
 };
