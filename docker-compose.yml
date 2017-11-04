@@ -18,7 +18,7 @@ services:
       GITHUB_CLIENT_SECRET:
       ROOT_USER_ID:
       WATCH: 1
-    image: coderiety/bob:da36ae9eed17f4efbaa9c857dec3ce798b284ec3
+    image: coderiety/bob:00494aeb025b195ab7d5fca5c5dbc88a1def1bcb
     ports:
       - 80:80
     volumes:

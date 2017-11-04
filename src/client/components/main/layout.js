@@ -40,9 +40,10 @@ import NotFound from '../shared/not-found';
 //   );
 // };
 
-import styled, {css} from 'react-emotion';
-import {gql, graphql} from 'react-apollo';
+import {graphql} from 'react-apollo';
+import gql from 'graphql-tag';
 import React from 'react';
+import styled, {css} from 'react-emotion';
 
 const Root = styled('div')`
   display: flex;
