@@ -3,6 +3,7 @@
   "dependencies": {
     "@slack/client": "3.14.1",
     "anser": "1.4.4",
+    "apollo-client": "2.0.1",
     "babel-core": "6.26.0",
     "babel-eslint": "8.0.1",
     "babel-loader": "7.1.2",
