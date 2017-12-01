@@ -13,14 +13,6 @@ http {
     default upgrade;
   }
 
-  upstream api {
-    server localhost:8080;
-  }
-
-  upstream livereload {
-    server localhost:8081;
-  }
-
   server {
     return {{env "BOB_URL"}}$request_uri;
   }
@@ -33,11 +25,11 @@ http {
     add_header Cache-Control 'no-cache, public';
 
     location /api {
-      proxy_pass http://api;
+      proxy_pass http://localhost:8080;
     }
 
     location /livereload {
-      proxy_pass http://livereload;
+      proxy_pass http://localhost:8081;
     }
 
     location / {

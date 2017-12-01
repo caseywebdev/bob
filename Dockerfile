@@ -1,8 +1,8 @@
-FROM node:9.0.0-alpine
+FROM node:9.2.0
 
 ENV \
   CONSUL_TEMPLATE_VERSION='0.19.4' \
-  CONTAINERPILOT_VERSION='3.5.1'
+  CONTAINERPILOT_VERSION='3.6.0'
 
 RUN \
   apk --no-cache add curl libc6-compat nginx && \
@@ -17,9 +17,9 @@ WORKDIR /code
 COPY package.json ./
 RUN npm install --no-save
 
-COPY .eslintrc ./
+COPY .eslintrc .stylelintrc ./
 COPY bin/build bin/
-COPY etc/webpack.config.js etc/
+COPY etc/cogs.js etc/
 COPY src/client src/client
 COPY src/shared src/shared
 RUN MINIFY=1 bin/build

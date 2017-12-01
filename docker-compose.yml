@@ -18,11 +18,12 @@ services:
       GITHUB_CLIENT_SECRET:
       ROOT_USER_ID:
       WATCH: 1
-    image: coderiety/bob:00494aeb025b195ab7d5fca5c5dbc88a1def1bcb
+    image: coderiety/bob:59b6f01b3294e099c5e5d4591405d8e5969b6d25
     ports:
       - 80:80
     volumes:
       - ./.eslintrc:/code/.eslintrc
+      - ./.stylelintrc:/code/.stylelintrc
       - ./bin:/code/bin
       - ./etc:/code/etc
       - ./package.json:/code/package.json

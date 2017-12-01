@@ -93,6 +93,13 @@ const Content = styled('div')`
 const query = gql`
   query {
     echo(say: "foo")
+    foo: builds {
+      sha
+    }
+    builds {
+      id
+      repo
+    }
   }
 `;
 
