@@ -1,4 +1,4 @@
-FROM node:9.2.0
+FROM node:9.2.0-alpine
 
 ENV \
   CONSUL_TEMPLATE_VERSION='0.19.4' \
