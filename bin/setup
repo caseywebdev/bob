@@ -4,6 +4,6 @@ set -e
 
 consul-template \
   -once \
-  -template /code/etc/nginx.conf.gotmpl:/etc/nginx/nginx.conf
+  -template etc/nginx.conf.gotmpl:/etc/nginx/nginx.conf
 
-ONLY_STATIC=1 exec /code/bin/build
+ONLY_STATIC=1 exec bin/build

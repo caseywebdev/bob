@@ -7,12 +7,12 @@ import Meta from '../shared/meta';
 import React from 'react';
 // import SignInGithub from '../sign-in/github';
 
+// <Route exact path='/sign-in/github' component={SignInGithub} />
 export default () =>
   <ApolloProvider client={apolloClient}>
     <Router {...{history}}>
       <Meta title='Bob'>
         <Switch>
-          {/* <Route exact path='/sign-in/github' component={SignInGithub} /> */}
           <Route component={MainLayout} />
         </Switch>
       </Meta>

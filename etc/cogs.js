@@ -2,8 +2,8 @@ const {env} = process;
 const MINIFY = env.MINIFY === '1';
 const ONLY_STATIC = env.ONLY_STATIC === '1';
 
-const STATIC = {
-  transformers: [
+module.exports = {
+  transformers: [].concat(
     {
       name: 'replace',
       only: 'src/client/public/index.html',
@@ -14,40 +14,10 @@ const STATIC = {
           '{{env.literal.(\\w+)}}': (_, key) => env[key]
         }
       }
-    }
-  ],
-  builds: {
-    'node_modules/font-awesome/fonts/*': {dir: 'build/fonts'},
-    'src/client/public/**/*': {dir: 'build'}
-  }
-};
-
-const STYLES = {
-  transformers: [].concat(
+    },
     {name: 'stylelint', only: 'src/**/*.scss', options: {syntax: 'scss'}},
-    {name: 'directives', only: 'src/**/*.scss'},
     {name: 'sass', only: '**/*.scss'},
-    'autoprefixer',
-    {
-      name: 'local-css',
-      only: 'src/**/*.scss',
-      except: 'src/client/global.scss',
-      options: {base: 'src/client', debug: !MINIFY}
-    },
-    MINIFY ? {name: 'clean-css', only: '**/*.+(scss|css)'} : []
-  ),
-  builds: {'src/client/index.scss': 'build/index.css'}
-};
-
-const JAVASCRIPT = {
-  transformers: [].concat(
-    {name: 'sass', only: '**/*.scss'},
-    {
-      name: 'local-css',
-      only: 'src/**/*.scss',
-      options: {base: 'src/client', debug: !MINIFY, export: true}
-    },
-    {name: 'json', only: '**/*.+(json|scss)'},
+    {name: 'autoprefixer', only: '**/*.css'},
     {name: 'eslint', only: 'src/**/*.js'},
     {
       name: 'replace',
@@ -61,24 +31,29 @@ const JAVASCRIPT = {
     },
     {
       name: 'babel',
-      only: 'src/**/*.+(js|json|scss)',
+      only: 'src/**/*.js',
       options: {presets: ['es2015', 'stage-0', 'react']}
     },
     {
       name: 'concat-commonjs',
-      only: '**/*.+(js|json|scss)',
-      options: {
-        entry: 'src/client/index.js',
-        extensions: ['.js', '.scss']
-      }
+      only: '**/*.js',
+      options: {entry: 'src/client/index.js'}
     },
-    MINIFY ? {
-      name: 'uglify-js',
-      only: '**/*.+(js|json|scss)',
-      except: '**/*+(-|_|.)min.js'
-    } : []
+    MINIFY ? [
+      {name: 'clean-css', only: '**/*.+(scss|css)'},
+      {
+        name: 'uglify-js',
+        only: '**/*.js',
+        except: '**/*+(-|_|.)min.js'
+      }
+    ] : []
   ),
-  builds: {'src/client/index.js': 'build/index.js'}
+  builds: {
+    'node_modules/font-awesome/fonts/*': {dir: 'build/fonts'},
+    'src/client/public/**/*': {dir: 'build'},
+    ...(ONLY_STATIC ? {} : {
+      'src/client/index.scss': 'build/index.css',
+      'src/client/index.js': 'build/index.js'
+    })
+  }
 };
-
-module.exports = ONLY_STATIC ? [STATIC] : [JAVASCRIPT, STATIC, STYLES];

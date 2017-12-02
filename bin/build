@@ -1,3 +1,3 @@
 #!/bin/sh
 
-exec /code/node_modules/.bin/cogs -c /code/etc/cogs.js "$@"
+exec node_modules/.bin/cogs -c etc/cogs.js "$@"

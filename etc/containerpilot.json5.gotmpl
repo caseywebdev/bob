@@ -1,24 +1,24 @@
 {
   consul: '{{env "CONSUL_URL"}}',
   jobs: [
-    {name: 'setup', exec: '/code/bin/setup'},
+    {name: 'setup', exec: 'bin/setup'},
 {{- if (eq (env "WATCH") "1")}}
     {
       name: 'watch-build',
-      exec: '/code/bin/watch-build',
+      exec: 'bin/watch-build',
       when: {source: 'setup', once: 'exitSuccess'},
       restarts: 'unlimited'
     },
     {
       name: 'livereload',
-      exec: '/code/bin/livereload',
+      exec: 'bin/livereload',
       when: {source: 'setup', once: 'exitSuccess'},
       restarts: 'unlimited'
     },
 {{- end}}
     {
       name: 'api',
-      exec: '/code/bin/api',
+      exec: 'bin/api',
       when: {source: 'setup', once: 'exitSuccess'},
       restarts: 'unlimited'
     },

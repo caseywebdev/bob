@@ -103,44 +103,47 @@ const query = gql`
   }
 `;
 
-const render = ({props}) =>
+// {/* {
+//   user ?
+//     user.id === 'public' ? [
+//       <div className={styles.navItem} key='0' onClick={signInGithub}>
+//         <Icon name='github' />
+//       </div>,
+//       <div
+//         className={styles.navItem}
+//         key='1'
+//         onClick={() => signInToken({props})}
+//       >
+//         <Icon name='key' />
+//       </div>
+//     ] : [
+//       <Link className={styles.navItem} key='0' to='/envs'>
+//         <Icon name='globe' />
+//       </Link>,
+//       <div
+//         className={styles.navItem}
+//         key='1'
+//         onClick={() => signOut({props})}
+//       >
+//         <Icon name='sign-out' />
+//       </div>
+//     ] :
+//     isLoading ? <div className={styles.navItem}><Loading /></div> :
+//   <ErrorComponent {...{error}} />
+// } */}
+
+// {/* <Route exact path='/' component={BuildsIndex} />
+// <Route path='/builds/:id' component={BuildsRead} />
+// <Route path='/envs' component={EnvsLayout} /> */}
+
+const render = () =>
   <Root>
     <Nav>
       <NavItem to='/'><B className={bClass} /></NavItem>
-      {/* {
-        user ?
-          user.id === 'public' ? [
-            <div className={styles.navItem} key='0' onClick={signInGithub}>
-              <Icon name='github' />
-            </div>,
-            <div
-              className={styles.navItem}
-              key='1'
-              onClick={() => signInToken({props})}
-            >
-              <Icon name='key' />
-            </div>
-          ] : [
-            <Link className={styles.navItem} key='0' to='/envs'>
-              <Icon name='globe' />
-            </Link>,
-            <div
-              className={styles.navItem}
-              key='1'
-              onClick={() => signOut({props})}
-            >
-              <Icon name='sign-out' />
-            </div>
-          ] :
-          isLoading ? <div className={styles.navItem}><Loading /></div> :
-        <ErrorComponent {...{error}} />
-      } */}
     </Nav>
     <Content>
       <Switch>
-        {/* <Route exact path='/' component={BuildsIndex} />
-        <Route path='/builds/:id' component={BuildsRead} />
-        <Route path='/envs' component={EnvsLayout} /> */}
+
         <Route component={NotFound} />
       </Switch>
     </Content>
