@@ -49,7 +49,11 @@ module.exports = {
       name: 'concat-commonjs',
       only: '**/*+(js|css|scss)',
       options: {
-        base: 'src/client',
+        alias: {
+          react:
+            MINIFY ? 'react/cjs/react.production.min.js' :
+            'react/cjs/react.development.js'
+        },
         entry: 'src/client/index.js',
         extensions: ['.js', '.css', '.scss']
       }
