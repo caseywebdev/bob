@@ -1,7 +1,9 @@
 import _ from 'underscore';
-import React from 'react';
-import Loading from '../shared/loading';
+import {toDelta} from 'pave';
+import {withPave} from 'pave-react';
 import ErrorComponent from '../shared/error';
+import Loading from '../shared/loading';
+import React from 'react';
 
 const render = ({
   props: {

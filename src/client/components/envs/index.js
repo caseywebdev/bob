@@ -1,10 +1,11 @@
 import _ from 'underscore';
 import {Link} from 'react-router-dom';
-
+import {withPave} from 'pave-react';
 import ErrorComponent from '../shared/error';
 import Header from '../shared/header';
 import Loading from '../shared/loading';
 import React from 'react';
+import styles from './index.scss';
 import SubHeader from '../shared/sub-header';
 
 const renderEnv = ({env: {id, name, role}}) =>

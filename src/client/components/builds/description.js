@@ -1,6 +1,6 @@
 import _ from 'underscore';
 import {Link} from 'react-router-dom';
-
+import {withPave} from 'pave-react';
 import {WRITE} from '../../../shared/constants/permission-levels';
 import buildIsDone from '../../functions/build-is-done';
 import cx from 'classnames';
@@ -8,6 +8,7 @@ import getBuildDescription from '../../../shared/functions/get-build-description
 import history from '../../constants/history';
 import Icon from '../shared/icon';
 import React, {Component} from 'react';
+import styles from './description.scss';
 
 const REFRESH_INTERVAL = 1000;
 

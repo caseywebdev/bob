@@ -1,5 +1,4 @@
-$fa-font-path: '/fonts';
-
+@import 'config';
 @import 'node_modules/font-awesome/scss/font-awesome';
 
 html,
@@ -11,7 +10,7 @@ body,
 }
 
 body {
-  color: #333;
+  color: $dark-gray;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 14px;
   margin: 0;

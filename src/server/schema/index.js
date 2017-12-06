@@ -1,5 +1,12 @@
 const {makeExecutableSchema} = require('graphql-tools');
 
+const merge = (a, b) => {
+  for (let key in b) {
+    if (a[key]) merge(a[key], b[key]);
+    else a[key] = b[key];
+  }
+};
+
 const reduce = (
   node,
   result = {typeDefs: [], resolvers: []},
@@ -9,7 +16,7 @@ const reduce = (
 
   seen.add(node);
   result.typeDefs.push(node.typeDefs || '');
-  Object.assign(result.resolvers, node.resolvers);
+  merge(result.resolvers, node.resolvers);
   (node.dependencies || []).forEach(node => reduce(node, result, seen));
   return result;
 };

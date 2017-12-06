@@ -1,5 +1,5 @@
 import _ from 'underscore';
-
+import {withPave} from 'pave-react';
 import Editor from './editor';
 import Header from '../shared/header';
 import history from '../../constants/history';

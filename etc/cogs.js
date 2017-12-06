@@ -17,7 +17,18 @@ module.exports = {
     },
     {name: 'stylelint', only: 'src/**/*.scss', options: {syntax: 'scss'}},
     {name: 'sass', only: '**/*.scss'},
-    {name: 'autoprefixer', only: '**/*.css'},
+    {name: 'autoprefixer', only: '**/*.+(css|scss)'},
+    {
+      name: 'local-css',
+      only: '**/*.scss',
+      except: 'src/client/global.scss',
+      options: {debug: !MINIFY}
+    },
+    {
+      name: 'local-css',
+      only: 'src/client/global.scss',
+      options: {debug: !MINIFY, rename: false}
+    },
     {name: 'eslint', only: 'src/**/*.js'},
     {
       name: 'replace',
@@ -31,29 +42,31 @@ module.exports = {
     },
     {
       name: 'babel',
-      only: 'src/**/*.js',
+      only: 'src/**/*.+(js|css|scss)',
       options: {presets: ['es2015', 'stage-0', 'react']}
     },
     {
       name: 'concat-commonjs',
-      only: '**/*.js',
-      options: {entry: 'src/client/index.js'}
-    },
-    MINIFY ? [
-      {name: 'clean-css', only: '**/*.+(scss|css)'},
-      {
-        name: 'uglify-js',
-        only: '**/*.js',
-        except: '**/*+(-|_|.)min.js'
+      only: '**/*+(js|css|scss)',
+      options: {
+        base: 'src/client',
+        entry: 'src/client/index.js',
+        extensions: ['.js', '.css', '.scss']
       }
-    ] : []
+    },
+    MINIFY ? {
+      name: 'uglify-js',
+      only: '**/*.+(js|css|scss)',
+      except: '**/*+(-|_|.)min.js'
+    } : []
   ),
+  manifestPath: 'build/manifest.json',
   builds: {
-    'node_modules/font-awesome/fonts/*': {dir: 'build/fonts'},
-    'src/client/public/**/*': {dir: 'build'},
-    ...(ONLY_STATIC ? {} : {
-      'src/client/index.scss': 'build/index.css',
-      'src/client/index.js': 'build/index.js'
-    })
+    'node_modules/font-awesome/fonts/*': {
+      base: 'node_modules/font-awesome',
+      dir: 'build'
+    },
+    'src/client/public/**/*': {base: 'src/client/public', dir: 'build'},
+    ...(ONLY_STATIC ? {} : {'src/client/index.js': 'build/index.js'})
   }
 };

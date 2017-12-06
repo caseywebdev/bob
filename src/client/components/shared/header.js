@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import styles from './header.scss';
 import React from 'react';
 
 export default ({children, className, ...rest}) =>

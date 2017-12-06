@@ -1,6 +1,6 @@
 import _ from 'underscore';
 import _str from 'underscore.string';
-
+import {withPave} from 'pave-react';
 import Anser from 'anser';
 import buildIsDone from '../../functions/build-is-done';
 import cx from 'classnames';
@@ -10,6 +10,7 @@ import Loading from '../shared/loading';
 import Meta from '../shared/meta';
 import React, {Component} from 'react';
 import ReactList from 'react-list';
+import styles from './read.scss';
 
 const renderLine = ({key, line}) =>
   <div {...{key}} className={styles.outputLine}>
