@@ -23,7 +23,7 @@ const handleStream = ({output, stream}) =>
   );
 
 const getAuthConfig = async ({env, tag}) => {
-  let host = tag.split('/').slice(-3, -2)[0];
+  let [host] = tag.split('/').slice(-3, -2);
   if (!host) host = 'https://index.docker.io/v1/';
   return (await getRegistryConfig({env}))[host];
 };
