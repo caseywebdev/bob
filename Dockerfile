@@ -19,7 +19,7 @@ RUN npm install --no-save
 
 COPY .eslintrc .stylelintrc ./
 COPY bin/build bin/
-COPY etc/cogs.js etc/
+COPY etc/cogs.js etc/nginx.conf etc/
 COPY src/client src/client
 COPY src/shared src/shared
 ENV BOB_URL='http://localhost'
