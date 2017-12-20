@@ -6,9 +6,9 @@
 import {graphql} from 'react-apollo';
 import {Link, Route, Switch} from 'react-router-dom';
 import B from '../shapes/b';
-import BuildsIndex from '../builds/index';
-import BuildsRead from '../builds/read';
-import EnvsLayout from '../envs/layout';
+// import BuildsIndex from '../builds/index';
+// import BuildsRead from '../builds/read';
+// import EnvsLayout from '../envs/layout';
 import gql from 'graphql-tag';
 import NotFound from '../shared/not-found';
 import React from 'react';
@@ -84,7 +84,7 @@ const query = gql`
 //   <ErrorComponent {...{error}} />
 // } */}
 
-const render = () =>
+const render = props =>
   <div className={styles.root}>
     <div className={styles.nav}>
       <Link className={styles.navItem} to='/'>
@@ -92,13 +92,14 @@ const render = () =>
       </Link>
     </div>
     <div className={styles.content}>
+      <pre>{JSON.stringify(props, null, 2)}</pre>
       <Switch>
-        <Route exact path='/' component={BuildsIndex} />
-        <Route path='/builds/:id' component={BuildsRead} />
-        <Route path='/envs' component={EnvsLayout} />
         <Route component={NotFound} />
       </Switch>
     </div>
   </div>;
+  // <Route exact path='/' component={BuildsIndex} />
+  // <Route path='/builds/:id' component={BuildsRead} />
+  // <Route path='/envs' component={EnvsLayout} />
 
 export default graphql(query)(props => render({props}));

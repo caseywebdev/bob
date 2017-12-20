@@ -1,8 +1,8 @@
-FROM node:9.2.0-alpine
+FROM node:9.3.0-alpine
 
 ENV \
   CONSUL_TEMPLATE_VERSION='0.19.4' \
-  CONTAINERPILOT_VERSION='3.6.0'
+  CONTAINERPILOT_VERSION='3.6.1'
 
 RUN \
   apk --no-cache add curl libc6-compat nginx && \
