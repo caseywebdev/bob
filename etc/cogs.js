@@ -1,23 +1,29 @@
 const {env} = process;
-const MINIFY = env.MINIFY === '1';
-const ONLY_STATIC = env.ONLY_STATIC === '1';
+const url = require('url');
 
-module.exports = {
+const {BOB_URL} = env;
+const MINIFY = env.MINIFY === '1';
+const ONLY_FINAL = env.ONLY_FINAL === '1';
+
+const BOB_HOSTNAME = url.parse(BOB_URL).hostname;
+
+const FINAL = {
+  transformers: {
+    name: 'underscore-template',
+    options: {data: {BOB_HOSTNAME, BOB_URL}}
+  },
+  builds: {
+    'etc/nginx.conf': {base: 'etc', dir: '/etc/nginx'},
+    'src/client/index.html': {base: 'src/client', dir: 'dist'}
+  }
+};
+
+const FULL = {
   transformers: [].concat(
-    {
-      name: 'replace',
-      only: 'src/client/public/index.html',
-      options: {
-        flags: 'g',
-        patterns: {
-          '{{env.escaped.(\\w+)}}': (_, key) => JSON.stringify(env[key]),
-          '{{env.literal.(\\w+)}}': (_, key) => env[key]
-        }
-      }
-    },
     {name: 'stylelint', only: 'src/**/*.scss', options: {syntax: 'scss'}},
     {name: 'sass', only: '**/*.scss'},
     {name: 'autoprefixer', only: '**/*.+(css|scss)'},
+    MINIFY ? {name: 'clean-css', only: '**/*.+(scss|css)'} : [],
     {
       name: 'local-css',
       only: '**/*.scss',
@@ -64,13 +70,16 @@ module.exports = {
       except: '**/*+(-|_|.)min.js'
     } : []
   ),
-  manifestPath: 'build/manifest.json',
   builds: {
     'node_modules/font-awesome/fonts/*': {
       base: 'node_modules/font-awesome',
-      dir: 'build'
+      dir: 'dist'
     },
-    'src/client/public/**/*': {base: 'src/client/public', dir: 'build'},
-    ...(ONLY_STATIC ? {} : {'src/client/index.js': 'build/index.js'})
-  }
+    'src/client/public/**/*': {base: 'src/client/public', dir: 'dist'},
+    'src/client/index.js': {base: 'src/client', dir: 'dist'}
+  },
+  manifestPath: 'dist/manifest.json',
+  then: FINAL
 };
+
+module.exports = ONLY_FINAL ? FINAL : FULL;

@@ -1,0 +1,46 @@
+<%
+  const manifest = _.mapObject(
+    JSON.parse(await include('dist/manifest.json')),
+    path => path.slice(4)
+  );
+%><!doctype html>
+
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta
+      name='viewport'
+      content='
+        initial-scale=1.0,
+        maximum-scale=1.0,
+        minimum-scale=1.0,
+        shrink-to-fit=no,
+        user-scalable=no,
+        width=device-width'
+    >
+    <title>Bob</title>
+    <script>
+      window.env = <%= JSON.stringify(_.pick(
+        process.env,
+        'GITHUB_CLIENT_ID',
+        'WATCH'
+      )) %>;
+      window.COGS_MANIFEST = <%= JSON.stringify(manifest) %>;
+    </script>
+    <style>
+    :root {
+      --my-var: #F00;
+    }
+    </style>
+    <style>
+    body {
+      background-color: var(--my-var);
+    }
+    </style>
+  </head>
+
+  <body>
+    <div id='root'></div>
+    <script src='<%- manifest['src/client/index.js'] %>'></script>
+  </body>
+</html>

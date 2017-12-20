@@ -2,8 +2,4 @@
 
 set -e
 
-consul-template \
-  -once \
-  -template etc/nginx.conf.gotmpl:/etc/nginx/nginx.conf
-
-ONLY_STATIC=1 exec bin/build
+ONLY_FINAL=1 exec bin/build
