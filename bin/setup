@@ -2,4 +2,4 @@
 
 set -e
 
-ONLY_FINAL=1 exec bin/build
+ONLY_FINAL=1 bin/build

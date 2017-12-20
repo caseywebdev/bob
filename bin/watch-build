@@ -1,6 +1,6 @@
 #!/bin/sh
 
-exec bin/build \
+bin/build \
   -w dist/manifest.json \
   -w etc/nginx.conf \
   -w src/client \

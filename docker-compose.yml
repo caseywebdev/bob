@@ -1,7 +1,6 @@
 version: '3'
 
 volumes:
-  dist:
   pg-data:
 
 services:
@@ -18,7 +17,7 @@ services:
       GITHUB_CLIENT_SECRET:
       ROOT_USER_ID:
       WATCH: 1
-    image: coderiety/bob:5d049beb5b455781655816cebfb87423f7089d63
+    image: coderiety/bob:c855e5c3fee9ee3837dc685863a3347fa4aab506
     ports:
       - 80:80
     volumes:
@@ -29,4 +28,3 @@ services:
       - ./package.json:/code/package.json
       - ./src:/code/src
       - /var/run/docker.sock:/var/run/docker.sock
-      - dist:/code/dist
