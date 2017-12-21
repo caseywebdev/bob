@@ -1,14 +1,9 @@
 FROM node:9.3.0-alpine
 
-ENV \
-  CONSUL_TEMPLATE_VERSION='0.19.4' \
-  CONTAINERPILOT_VERSION='3.6.1'
-
+ENV CONTAINERPILOT_VERSION='3.6.1'
 RUN \
   apk --no-cache add curl libc6-compat nginx && \
   mkdir -p /run/nginx && \
-  curl -fLsS https://releases.hashicorp.com/consul-template/$CONSUL_TEMPLATE_VERSION/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.tgz | \
-    tar xz -C /usr/local/bin && \
   curl -fLsS https://github.com/joyent/containerpilot/releases/download/$CONTAINERPILOT_VERSION/containerpilot-$CONTAINERPILOT_VERSION.tar.gz | \
     tar xz -C /usr/local/bin
 
