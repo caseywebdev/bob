@@ -52,7 +52,7 @@ const query = gql`
       id
       repo
     }
-    clientFoo @client
+    token @client
   }
 `;
 

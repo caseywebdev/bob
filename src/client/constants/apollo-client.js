@@ -1,23 +1,37 @@
 import {ApolloClient} from 'apollo-client';
 import {ApolloLink} from 'apollo-link';
-import {HttpLink} from 'apollo-link-http';
+import {createHttpLink} from 'apollo-link-http';
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import {withClientState} from 'apollo-link-state';
+import disk from './disk';
 
 const cache = new InMemoryCache();
 
-export default new ApolloClient({
+const stateLink = withClientState({
   cache,
-  link: new ApolloLink([
-    withClientState({
-      cache,
-      resolvers: {
-        Query: {
-          clientFoo: (__, ___, {cache}) =>
-            cache.writeData({data: 'bar'})
-        }
+  resolvers: {
+    Query: {
+      token: () => disk.get('token') || null
+    },
+    Mutation: {
+      updateToken: (__, {token}, {cache}) => {
+        disk.set('token', token);
+        cache.writeData({data: {token}});
       }
-    }),
-    new HttpLink({uri: '/api/graphql'})
-  ])
+    }
+  }
 });
+
+const authLink = new ApolloLink((operation, forward) => {
+  const token = disk.get('token');
+  if (token) {
+    operation.setContext({headers: {Authorization: `Bearer ${token}`}});
+  }
+  return forward(operation);
+});
+
+const httpLink = createHttpLink({uri: '/api/graphql'});
+
+const link = ApolloLink.from([stateLink, authLink, httpLink]);
+
+export default new ApolloClient({cache, link});
