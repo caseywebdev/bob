@@ -54,6 +54,7 @@ const buildImage = async ({build, env, output, source}) => {
       buildargs: await buildArgs,
       cachefrom: tags,
       dockerfile,
+      pull: true,
       registryconfig: await registryConfig,
       t: tags
     }
