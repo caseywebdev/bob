@@ -11,7 +11,7 @@ const OutputStream = require('./output-stream');
 const sources = require('../sources');
 const updateBuildStatus = require('./update-build-status');
 
-const call = (obj, key, ...args) => promisify(obj[key].bind(obj))(...args);
+const toPromise = (obj, key) => promisify(obj[key].bind(obj));
 
 const handleStream = ({output, stream}) =>
   new Promise(async (resolve, reject) =>
@@ -31,7 +31,7 @@ const getAuthConfig = async ({env, tag}) => {
 const pullImage = async ({env, output, tag}) => {
   const authconfig = await getAuthConfig({env, tag});
   const docker = await getDocker();
-  const stream = await call(docker, 'pull', tag, {authconfig});
+  const stream = await toPromise(docker, 'pull')(tag, {authconfig});
   await handleStream({output, stream});
 };
 
@@ -47,25 +47,22 @@ const buildImage = async ({build, env, output, source}) => {
   const registryConfig = getRegistryConfig({env});
   const tarStream = source.getTarStream({build, env});
   const docker = await getDocker();
-  const stream = await call(docker, 'buildImage', await tarStream, _.extend(
-    {},
-    buildOptions,
-    {
-      buildargs: await buildArgs,
-      cachefrom: tags,
-      dockerfile,
-      pull: true,
-      registryconfig: await registryConfig,
-      t: tags
-    }
-  ));
+  const stream = await toPromise(docker, 'buildImage')(await tarStream, {
+    ...buildOptions,
+    buildargs: await buildArgs,
+    cachefrom: tags,
+    dockerfile,
+    pull: true,
+    registryconfig: await registryConfig,
+    t: tags
+  });
   await handleStream({output, stream});
 };
 
 const pushImage = async ({env, tag, output}) => {
   const authconfig = await getAuthConfig({env, tag});
   const docker = await getDocker();
-  const stream = await call(docker.getImage(tag), 'push', {authconfig});
+  const stream = await toPromise(docker.getImage(tag), 'push')({authconfig});
   await handleStream({output, stream});
 };
 

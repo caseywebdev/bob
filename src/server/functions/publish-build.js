@@ -10,9 +10,7 @@ module.exports = async ({build}) => {
     const env = await getEnv({id: build.envId});
     const source = sources[build.sourceId];
     const url = `${config.bob.url}/builds/${build.id}`;
-    const meta = JSON.parse(JSON.stringify(
-      _.extend({}, build.meta, {isPublished: true})
-    ));
+    const meta = JSON.parse(JSON.stringify({...build.meta, isPublished: true}));
     await Promise.all(_.map(publishers, async publish => {
       try {
         await publish({build, env, meta, source, url});
