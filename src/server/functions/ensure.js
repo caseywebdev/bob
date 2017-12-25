@@ -5,7 +5,7 @@ const ensure = module.exports = async fn => {
     return await fn();
   } catch (er) {
     console.error(er);
-    await sleep(10000);
+    await sleep(10);
     return ensure(fn);
   }
 };

@@ -1,3 +1,5 @@
 const {promisify} = require('util');
 
-module.exports = promisify(setTimeout);
+const sleepInMs = promisify(setTimeout);
+
+module.exports = async n => sleepInMs(n * 1000);
