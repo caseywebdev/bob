@@ -42,6 +42,11 @@
   {{- end}}
 {{- end}}
       restarts: 'unlimited'
-    }
+    },
+    {
+      name: 'exitOnSetupFail',
+      exec: 'pkill -signal SIGTERM containerpilot',
+      when: {source: 'setup', once: 'exitFailed'}
+     }
   ]
 }
