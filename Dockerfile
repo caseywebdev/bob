@@ -17,7 +17,6 @@ COPY bin/build bin/
 COPY etc/cogs.js etc/nginx.conf etc/
 COPY src/client src/client
 COPY src/shared src/shared
-ENV BOB_URL='http://localhost'
 RUN MINIFY=1 bin/build
 
 COPY bin bin
@@ -25,6 +24,7 @@ COPY etc etc
 COPY src src
 
 ENV \
+  BOB_URL='http://localhost' \
   CONSUL_SERVICE_NAME='bob' \
   CONSUL_SERVICE_TAGS='' \
   CONSUL_URL='' \
