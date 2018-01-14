@@ -50,7 +50,7 @@ const FULL = {
     {
       name: 'babel',
       only: 'src/**/*.+(js|css|scss)',
-      options: {presets: ['es2015', 'stage-0', 'react']}
+      options: {presets: ['env', 'stage-0', 'react']}
     },
     {
       name: 'concat-commonjs',
