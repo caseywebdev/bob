@@ -1,6 +1,6 @@
-FROM node:9.3.0-alpine
+FROM node:9.4.0-alpine
 
-ENV CONTAINERPILOT_VERSION='3.6.1'
+ENV CONTAINERPILOT_VERSION='3.6.2'
 RUN \
   apk --no-cache add curl libc6-compat nginx && \
   mkdir -p /run/nginx && \
