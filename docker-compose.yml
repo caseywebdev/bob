@@ -17,7 +17,7 @@ services:
       GITHUB_CLIENT_SECRET:
       ROOT_USER_ID:
       WATCH: 1
-    image: coderiety/bob:graphql
+    image: coderiety/bob:54b5f8afbd8fc7b7b376b59874807c59f36b48f4
     ports:
       - 80:80
     volumes:
