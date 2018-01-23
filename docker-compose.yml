@@ -5,7 +5,7 @@ volumes:
 
 services:
   postgres:
-    image: postgres:9.6.3
+    image: postgres:10.1-alpine
     volumes:
       - pg-data:/var/lib/postgresql/data
 
@@ -17,7 +17,7 @@ services:
       GITHUB_CLIENT_SECRET:
       ROOT_USER_ID:
       WATCH: 1
-    image: coderiety/bob:3d954692618e91ce1b0db47078683bc7b422e983
+    image: coderiety/bob:cd4209879f4a2352441a9a7a9b6f26b9ba3b2e0b
     ports:
       - 80:80
     volumes:
