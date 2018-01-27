@@ -61,8 +61,7 @@ const FULL = {
       options: {
         alias: {
           react:
-            MINIFY ? 'react/cjs/react.production.min.js' :
-            'react/cjs/react.development.js'
+            `react/cjs/react.${MINIFY ? 'production.min' : 'development'}.js`
         },
         entry: 'src/client/index.js',
         extensions: ['.js', '.css', '.scss']

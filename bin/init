@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+docker-compose up -d postgres
+
+sleep 5
+
+docker-compose up -d

@@ -8,12 +8,11 @@ const sockets = require('../functions/sockets');
 const schema = require('../schema');
 const {graphqlExpress, graphiqlExpress} = require('graphql-server-express');
 
-const asyncify = handlers =>
-  _.map(_.isArray(handlers) ? handlers : [handlers], handler =>
-    async (req, res, next) => {
-      try { await handler({next, req, res}); } catch (er) { next(er); }
-    }
-  );
+const asyncify = handler =>
+  _.isArray(handler) ? _.map(handler, asyncify) :
+  async (req, res, next) => {
+    try { await handler({next, req, res}); } catch (er) { next(er); }
+  };
 
 const server = http.createServer(
   express()

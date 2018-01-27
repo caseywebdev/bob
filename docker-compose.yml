@@ -10,6 +10,7 @@ services:
       - pg-data:/var/lib/postgresql/data
 
   bob:
+    build: .
     depends_on:
       - postgres
     environment:
@@ -17,7 +18,6 @@ services:
       GITHUB_CLIENT_SECRET:
       ROOT_USER_ID:
       WATCH: 1
-    image: coderiety/bob:cd4209879f4a2352441a9a7a9b6f26b9ba3b2e0b
     ports:
       - 80:80
     volumes:
