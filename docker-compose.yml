@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 
 volumes:
   pg-data:
@@ -9,9 +9,10 @@ services:
     volumes:
       - pg-data:/var/lib/postgresql/data
 
-  bob:
+  bob: &bob
     build: .
     depends_on:
+      - bob-inotify-fix
       - postgres
     environment:
       GITHUB_CLIENT_ID:
@@ -28,3 +29,10 @@ services:
       - ./package.json:/code/package.json
       - ./src:/code/src
       - /var/run/docker.sock:/var/run/docker.sock
+
+  # HACK: Until https://github.com/docker/for-mac/issues/681 is fixed
+  bob-inotify-fix:
+    <<: *bob
+    command: ["tail", "-f", "/dev/null"]
+    depends_on: []
+    ports: []
