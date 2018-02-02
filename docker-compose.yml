@@ -36,3 +36,4 @@ services:
     command: ["tail", "-f", "/dev/null"]
     depends_on: []
     ports: []
+    stop_signal: SIGKILL
