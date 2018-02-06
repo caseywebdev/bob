@@ -2,6 +2,11 @@
   consul: '{{env "CONSUL_URL"}}',
   jobs: [
     {name: 'setup', exec: 'bin/setup'},
+    {
+      name: 'exitOnSetupFail',
+      exec: 'pkill containerpilot',
+      when: {source: 'setup', once: 'exitFailed'}
+     },
 {{- if (eq (env "WATCH") "1")}}
     {
       name: 'watch-build',
@@ -42,11 +47,6 @@
   {{- end}}
 {{- end}}
       restarts: 'unlimited'
-    },
-    {
-      name: 'exitOnSetupFail',
-      exec: 'pkill -signal SIGTERM containerpilot',
-      when: {source: 'setup', once: 'exitFailed'}
-     }
+    }
   ]
 }
