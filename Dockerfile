@@ -1,4 +1,4 @@
-FROM node:9.4.0-alpine
+FROM node:9.5.0-alpine
 
 ENV CONTAINERPILOT_VERSION='3.6.2'
 RUN \
