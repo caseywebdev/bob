@@ -1,7 +1,7 @@
 const {env} = process;
 const url = require('url');
 
-const {BOB_URL = 'http://localhost'} = env;
+const {BOB_URL} = env;
 const MINIFY = env.MINIFY === '1';
 const ONLY_FINAL = env.ONLY_FINAL === '1';
 const WATCH = env.WATCH === '1';
