@@ -2,8 +2,8 @@
 
 if [ "$WATCH" = "1" ]; then
   node_modules/.bin/watchy \
-    -w src/server \
-    -w src/shared \
+    -w 'src/server/**/*' \
+    -w 'src/shared/**/*' \
     -- node src/server
 else
   node src/server

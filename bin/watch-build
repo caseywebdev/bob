@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 bin/build \
-  -w 'dist/**/manifest.json' \
-  -w 'etc/**/nginx.conf' \
-  -w src/client \
-  -w src/shared
+  -w 'src/client/**/*' \
+  -w 'src/shared/**/*' \
+  -w dist/manifest.json \
+  -w etc/nginx.conf
