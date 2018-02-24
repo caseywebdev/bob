@@ -3,6 +3,6 @@ const Build = require('../build');
 const getDb = require('../../functions/get-db');
 
 module.exports = {
-  type: GraphQLNonNull(GraphQLList(Build)),
+  type: new GraphQLNonNull(new GraphQLList(Build)),
   resolve: async () => (await getDb())('builds')
 };

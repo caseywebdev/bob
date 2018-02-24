@@ -10,11 +10,11 @@ const GraphQLTypeJSON = require('graphql-type-json');
 module.exports = new GraphQLObjectType({
   name: 'Env',
   fields: () => ({
-    config: {type: GraphQLNonNull(GraphQLTypeJSON)},
-    createdAt: {type: GraphQLNonNull(GraphQLString)},
-    id: {type: GraphQLNonNull(GraphQLID)},
-    name: {type: GraphQLNonNull(GraphQLString)},
-    permissions: {type: GraphQLNonNull(GraphQLList(GraphQLNonNull(require('../permission'))))},
-    updatedAt: {type: GraphQLNonNull(GraphQLString)}
+    config: {type: new GraphQLNonNull(GraphQLTypeJSON)},
+    createdAt: {type: new GraphQLNonNull(GraphQLString)},
+    id: {type: new GraphQLNonNull(GraphQLID)},
+    name: {type: new GraphQLNonNull(GraphQLString)},
+    permissions: {type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(require('../permission'))))},
+    updatedAt: {type: new GraphQLNonNull(GraphQLString)}
   })
 });
