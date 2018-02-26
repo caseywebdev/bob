@@ -1,5 +1,11 @@
 const {env} = process;
 
+const fromEnv = key => ({
+  consul: {path: env[`${key}_CONSUL_PATH`], key: env[`${key}_CONSUL_KEY`]},
+  value: env[key],
+  vault: {path: env[`${key}_VAULT_PATH`], key: env[`${key}_VAULT_KEY`]}
+});
+
 module.exports = {
   bob: {
     url: env.BOB_URL
@@ -13,63 +19,16 @@ module.exports = {
     protocol: env.DOCKER_PROTOCOL,
     host: env.DOCKER_HOST,
     port: parseInt(env.DOCKER_PORT),
-    ca: {
-      consul: {path: env.DOCKER_CA_CONSUL_PATH, key: env.DOCKER_CA_CONSUL_KEY},
-      value: env.DOCKER_CA,
-      vault: {path: env.DOCKER_CA_VAULT_PATH, key: env.DOCKER_CA_VAULT_KEY}
-    },
-    cert: {
-      consul: {
-        path: env.DOCKER_CERT_CONSUL_PATH,
-        key: env.DOCKER_CERT_CONSUL_KEY
-      },
-      value: env.DOCKER_CERT,
-      vault: {path: env.DOCKER_CERT_VAULT_PATH, key: env.DOCKER_CERT_VAULT_KEY}
-    },
-    key: {
-      consul: {
-        path: env.DOCKER_KEY_CONSUL_PATH,
-        key: env.DOCKER_KEY_CONSUL_KEY
-      },
-      value: env.DOCKER_KEY,
-      vault: {path: env.DOCKER_KEY_VAULT_PATH, key: env.DOCKER_KEY_VAULT_KEY}
-    }
+    ca: fromEnv('DOCKER_CA'),
+    cert: fromEnv('DOCKER_CERT'),
+    key: fromEnv('DOCKER_KEY')
   },
   github: {
     clientId: env.GITHUB_CLIENT_ID,
-    clientSecret: {
-      consul: {
-        path: env.GITHUB_CLIENT_SECRET_CONSUL_PATH,
-        key: env.GITHUB_CLIENT_SECRET_CONSUL_KEY
-      },
-      value: env.GITHUB_CLIENT_SECRET,
-      vault: {
-        path: env.GITHUB_CLIENT_SECRET_VAULT_PATH,
-        key: env.GITHUB_CLIENT_SECRET_VAULT_KEY
-      }
-    }
+    clientSecret: fromEnv('DOCKER_GITHUB_SECRET')
   },
-  postgres: {
-    url: {
-      consul: {
-        path: env.POSTGRES_URL_CONSUL_PATH,
-        key: env.POSTGRES_URL_CONSUL_KEY
-      },
-      value: env.POSTGRES_URL,
-      vault: {
-        path: env.POSTGRES_URL_VAULT_PATH,
-        key: env.POSTGRES_URL_VAULT_KEY
-      }
-    }
-  },
-  rootUserId: {
-    consul: {
-      path: env.ROOT_USER_ID_CONSUL_PATH,
-      key: env.ROOT_USER_ID_CONSUL_KEY
-    },
-    value: env.ROOT_USER_ID,
-    vault: {path: env.ROOT_USER_ID_VAULT_PATH, key: env.ROOT_USER_ID_VAULT_KEY}
-  },
+  postgres: {url: fromEnv('POSTGRES_URL')},
+  rootUserId: fromEnv('ROOT_USER_ID'),
   vault: {
     auth: {
       data: JSON.parse(env.VAULT_AUTH_DATA || '{}'),
