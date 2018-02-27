@@ -14,13 +14,12 @@ module.exports = async ({
       const [email, password] =
         Buffer.from(token, 'base64').toString().split(':');
       if (email && password) {
-        const match = await bcrypt.compare(password, passwordHash);
+        // const match = await bcrypt.compare(password, passwordHash);
 
       } else {
         token = email || password;
       }
     } catch (er) {}
   }
-  console.log(email, password, token);
   res.send(await graphql(schema, query));
 };

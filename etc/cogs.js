@@ -1,4 +1,5 @@
 const {env} = process;
+const path = require('path');
 const url = require('url');
 
 const {BOB_URL} = env;
@@ -22,34 +23,25 @@ const FINAL = {
 const FULL = {
   transformers: [].concat(
     {name: 'stylelint', only: 'src/**/*.scss', options: {syntax: 'scss'}},
-    {name: 'sass', only: '**/*.scss'},
+    {name: 'sass', only: 'src/**/*.scss'},
     {name: 'autoprefixer', only: '**/*.+(css|scss)'},
-    MINIFY ? {name: 'clean-css', only: '**/*.+(scss|css)'} : [],
+    MINIFY ? {name: 'clean-css', only: '**/*.+(css|scss)'} : [],
     {
       name: 'local-css',
-      only: '**/*.scss',
+      only: 'src/**/*.scss',
       except: 'src/client/global.scss',
       options: {debug: !MINIFY}
     },
     {
       name: 'local-css',
-      only: 'src/client/global.scss',
+      only: ['**/*.css', 'src/client/global.scss'],
       options: {debug: !MINIFY, rename: false}
     },
     {name: 'eslint', only: 'src/**/*.js'},
-    {
-      name: 'replace',
-      only: '**/*.js',
-      options: {
-        flags: 'g',
-        patterns: {
-          'process.env.NODE_ENV': MINIFY ? "'production'" : "'development'"
-        }
-      }
-    },
+    {name: 'json', only: ['**/*.json']},
     {
       name: 'babel',
-      only: 'src/**/*.+(js|css|scss)',
+      only: ['src/**/*.+(js|scss)', '**/*.+(css|json)'],
       options: {
         plugins: ['transform-runtime'],
         presets: ['env', 'stage-0', 'react']
@@ -57,7 +49,7 @@ const FULL = {
     },
     {
       name: 'concat-commonjs',
-      only: '**/*+(js|css|scss)',
+      only: '**/*+(css|js|json|scss)',
       options: {
         alias: {
           react:
@@ -69,7 +61,7 @@ const FULL = {
     },
     MINIFY ? {
       name: 'uglify-js',
-      only: '**/*.+(js|css|scss)',
+      only: '**/*.+(css|js|scss)',
       except: '**/*+(-|_|.)min.js'
     } : []
   ),

@@ -7,5 +7,6 @@ export default {
   github: {
     clientId: env.GITHUB_CLIENT_ID
   },
+  minify: env.MINIFY === '1',
   watch: env.WATCH === '1'
 };
