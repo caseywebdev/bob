@@ -1,6 +1,6 @@
 {
   "tags": [
     "coderiety/bob:{{REF}}",
-    "coderiety/bob:{{HASH}}"
+    "coderiety/bob:{{SHA}}"
   ]
 }
