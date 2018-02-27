@@ -1,5 +1,4 @@
 const {env} = process;
-const path = require('path');
 const url = require('url');
 
 const {BOB_URL} = env;
