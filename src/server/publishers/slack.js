@@ -24,7 +24,7 @@ const getChannel = async ({
 
 module.exports = async ({
   build,
-  build: {error, id, sha, tags, status, updatedAt},
+  build: {error, id, hash, tags, status, updatedAt},
   env,
   env: {config: {slack}},
   meta,
@@ -43,7 +43,7 @@ module.exports = async ({
       color: STATUS_INFO[status].color,
       fallback: title,
       fields: !error ? [] : [{title: 'Error', value: error}],
-      footer: `${sha} SHA`,
+      footer: `${hash} HASH`,
       text: _.map(tags, tag => {
         const [left, ...right] = tag.split(':');
         return `${left}:${right.join(':')}`;

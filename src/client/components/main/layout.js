@@ -46,7 +46,7 @@ const query = gql`
   query {
     echo(say: "foo")
     foo: builds {
-      sha
+      hash
     }
     builds {
       id

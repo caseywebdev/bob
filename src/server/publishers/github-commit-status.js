@@ -15,7 +15,7 @@ const STATUS_STATES = {
 
 module.exports = async ({
   build,
-  build: {repo, sha, status, tags},
+  build: {repo, hash, status, tags},
   env,
   source,
   url
@@ -23,7 +23,7 @@ module.exports = async ({
   if (source.id !== 'github') return;
 
   const github = await getGithub({env});
-  return github.repos(repo).statuses(sha).create({
+  return github.repos(repo).statuses(hash).create({
     context: tags[0],
     state: STATUS_STATES[status],
     description: getBuildDescription({build}),

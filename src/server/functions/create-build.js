@@ -10,7 +10,7 @@ module.exports = async ({
   meta,
   ref,
   repo,
-  sha,
+  hash,
   sourceId,
   tags
 }) => {
@@ -25,7 +25,7 @@ module.exports = async ({
       meta,
       ref,
       repo,
-      sha,
+      hash,
       sourceId,
       tags: JSON.stringify(tags)
     })

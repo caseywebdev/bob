@@ -1,8 +1,8 @@
 const _ = require('underscore');
 const createBuild = require('./create-build');
 
-const getTags = ({ref, sha, tags}) => {
-  const variables = {REF: ref, SHA: sha};
+const getTags = ({ref, hash, tags}) => {
+  const variables = {REF: ref, HASH: hash};
   return _.unique(_.map(tags, str =>
     _.reduce(
       variables,
@@ -14,7 +14,7 @@ const getTags = ({ref, sha, tags}) => {
 
 module.exports = async ({
   commit,
-  commit: {ref, repo, sha},
+  commit: {ref, repo, hash},
   env,
   env: {id: envId},
   source,
@@ -35,9 +35,9 @@ module.exports = async ({
       meta,
       ref,
       repo,
-      sha,
+      hash,
       sourceId,
-      tags: getTags({ref, sha, tags})
+      tags: getTags({ref, hash, tags})
     });
   }));
 };

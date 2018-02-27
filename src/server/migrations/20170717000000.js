@@ -5,8 +5,29 @@ exports.up = db =>
     .raw('CREATE EXTENSION IF NOT EXISTS citext')
     .createTable('envs', t => {
       t.increments('id').primary();
-      t.string('name').notNullable().unique();
+      t.specificType('name', 'citext').notNullable().unique();
       t.json('config').notNullable();
+      t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
+      t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
+    })
+
+    .createTable('users', t => {
+      t.increments('id').primary();
+      t.string('passwordHash').notNullable();
+      t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
+      t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
+    })
+
+    .createTable('emailAddresses', t => {
+      t.increments('id').primary();
+      t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
+      t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
+    })
+
+    .createTable('tokens', t => {
+      t.increments('id').primary();
+      t.integer('userId').notNullable().references('users.id').onUpdate('CASCADE').onDelete('CASCADE').index();
+      t.binary('hash').notNullable().unique();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })
@@ -29,7 +50,7 @@ exports.up = db =>
       t.string('dockerfile');
       t.specificType('ref', 'citext').notNullable().index();
       t.specificType('repo', 'citext').notNullable().index();
-      t.specificType('sha', 'citext').notNullable().index();
+      t.specificType('hash', 'citext').notNullable().index();
       t.jsonb('tags').notNullable().index();
       t.string('status').notNullable().defaultTo(PENDING);
       t.json('output');

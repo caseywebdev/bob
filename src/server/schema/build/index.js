@@ -20,7 +20,7 @@ module.exports = new GraphQLObjectType({
     dockerfile: {type: GraphQLString},
     ref: {type: new GraphQLNonNull(GraphQLString)},
     repo: {type: new GraphQLNonNull(GraphQLString)},
-    sha: {type: new GraphQLNonNull(GraphQLString)},
+    hash: {type: new GraphQLNonNull(GraphQLString)},
     tags: {type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString)))},
     status: {type: new GraphQLNonNull(require('../build-status'))},
     output: {type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString)))},

@@ -5,8 +5,6 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const http = require('http');
 const sockets = require('../functions/sockets');
-const schema = require('../schema');
-const {graphqlExpress, graphiqlExpress} = require('graphql-server-express');
 
 const asyncify = handler =>
   _.isArray(handler) ? _.map(handler, asyncify) :
@@ -20,8 +18,7 @@ const server = http.createServer(
     .enable('strict routing')
     .disable('x-powered-by')
     .use(bodyParser.json())
-    .use('/api/graphql', graphqlExpress({schema}))
-    .use('/api/graphiql', graphiqlExpress({endpointURL: '/api/graphql'}))
+    .post('/api/graphql', asyncify(require('../handlers/http/graphql')))
     .post(
       '/api/envs/:envId/webhooks/:sourceId',
       asyncify(require('../handlers/http/webhook'))
