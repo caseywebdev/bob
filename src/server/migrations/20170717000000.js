@@ -39,12 +39,13 @@ exports.up = db =>
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .index();
-      t.string('tokenHash').notNullable().unique();
+      t.string('tokenHash').notNullable();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })
 
     .createTable('permissions', t => {
+      t.increments('id').primary();
       t.integer('envId')
         .notNullable()
         .references('envs.id')
@@ -58,7 +59,7 @@ exports.up = db =>
       t.integer('role').notNullable();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
-      t.primary(['envId', 'userId']);
+      t.unique(['envId', 'userId']);
     })
 
     .createTable('builds', t => {
