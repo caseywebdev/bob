@@ -1,25 +1,38 @@
 const {graphql} = require('graphql');
 const bcrypt = require('bcrypt');
+const getDb = require('../../functions/get-db');
 const schema = require('../../schema');
 
 module.exports = async ({
-  req: {body: {query}, headers: {authorization = ''}},
+  req: {
+    body: {operationName, query, variables},
+    headers: {authorization = ''}
+  },
   res
 }) => {
-  let [type, token] = authorization.split(/\s+/);
+  let [type, auth] = authorization.split(/\s+/);
 
-  // Basic will supply a base64 encoded token.
   if (type.toLowerCase() === 'basic') {
     try {
-      const [email, password] =
-        Buffer.from(token, 'base64').toString().split(':');
-      if (email && password) {
-        // const match = await bcrypt.compare(password, passwordHash);
-
-      } else {
-        token = email || password;
-      }
+      const [left, right] = Buffer.from(auth, 'base64').toString().split(':');
+      auth = left || right;
     } catch (er) {}
   }
-  res.send(await graphql(schema, query));
+
+  const db = await getDb();
+  let token = null;
+  const [tokenId, tokenValue] = (auth || '').split('-');
+  if (tokenId && tokenValue) {
+    token = await db('tokens').where({id: tokenId}).first();
+    if (!(await bcrypt.compare(tokenValue, token.tokenHash))) token = null;
+  }
+
+  res.send(await graphql(
+    schema,
+    query,
+    null,
+    {db, token},
+    variables,
+    operationName
+  ));
 };

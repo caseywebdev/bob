@@ -11,9 +11,12 @@ ENV \
   CONSUL_SERVICE_NAME='bob' \
   CONSUL_SERVICE_TAGS='' \
   CONSUL_URL='' \
-  CONTAINERPILOT_VERSION='3.6.2' \
+  CONTAINERPILOT_VERSION='3.7.0' \
   CONTAINERPILOT='/code/etc/containerpilot.json5.gotmpl' \
-  POSTGRES_URL='pg://postgres:postgres@postgres/postgres'
+  PASSWORD_SALT_ROUNDS='10' \
+  POSTGRES_URL='pg://postgres:postgres@postgres/postgres' \
+  TOKEN_SALT_ROUNDS='1' \
+  TOKEN_SIZE='32'
 
 RUN \
   apk --no-cache add curl g++ libc6-compat make nginx python && \

@@ -20,21 +20,41 @@ exports.up = db =>
 
     .createTable('emailAddresses', t => {
       t.increments('id').primary();
+      t.integer('userId')
+        .notNullable()
+        .references('users.id')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+        .index();
+      t.string('emailAddress').notNullable().unique();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })
 
     .createTable('tokens', t => {
       t.increments('id').primary();
-      t.integer('userId').notNullable().references('users.id').onUpdate('CASCADE').onDelete('CASCADE').index();
-      t.binary('hash').notNullable().unique();
+      t.integer('userId')
+        .notNullable()
+        .references('users.id')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+        .index();
+      t.string('tokenHash').notNullable().unique();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })
 
     .createTable('permissions', t => {
-      t.integer('envId').notNullable().references('envs.id').onUpdate('CASCADE').onDelete('CASCADE');
-      t.string('userId').notNullable();
+      t.integer('envId')
+        .notNullable()
+        .references('envs.id')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
+      t.integer('userId')
+        .notNullable()
+        .references('envs.id')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
       t.integer('role').notNullable();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
@@ -43,7 +63,12 @@ exports.up = db =>
 
     .createTable('builds', t => {
       t.increments('id').primary();
-      t.integer('envId').notNullable().references('envs.id').onUpdate('CASCADE').onDelete('CASCADE').index();
+      t.integer('envId')
+        .notNullable()
+        .references('envs.id')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+        .index();
       t.string('sourceId').notNullable().index();
       t.json('buildArgs');
       t.string('context');
@@ -64,4 +89,7 @@ exports.down = ({schema}) =>
   schema
     .dropTable('builds')
     .dropTable('permissions')
+    .dropTable('tokens')
+    .dropTable('emailAddresses')
+    .dropTable('users')
     .dropTable('envs');

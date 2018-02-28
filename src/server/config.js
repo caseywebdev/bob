@@ -7,12 +7,8 @@ const fromEnv = key => ({
 });
 
 module.exports = {
-  bob: {
-    url: env.BOB_URL
-  },
-  consul: {
-    url: env.CONSUL_URL
-  },
+  bob: {url: env.BOB_URL},
+  consul: {url: env.CONSUL_URL},
   docker: {
     buildOptions: JSON.parse(env.DOCKER_BUILD_OPTIONS || '{}'),
     socketPath: env.DOCKER_SOCKET_PATH,
@@ -27,8 +23,11 @@ module.exports = {
     clientId: env.GITHUB_CLIENT_ID,
     clientSecret: fromEnv('DOCKER_GITHUB_SECRET')
   },
+  passwordSaltRounds: parseInt(env.PASSWORD_SALT_ROUNDS),
   postgres: {url: fromEnv('POSTGRES_URL')},
   rootUserId: fromEnv('ROOT_USER_ID'),
+  tokenSaltRounds: parseInt(env.TOKEN_SALT_ROUNDS),
+  tokenSize: parseInt(env.TOKEN_SIZE),
   vault: {
     auth: {
       data: JSON.parse(env.VAULT_AUTH_DATA || '{}'),
@@ -36,7 +35,5 @@ module.exports = {
     },
     url: env.VAULT_URL
   },
-  worker: {
-    buildId: parseInt(env.WORKER_BUILD_ID)
-  }
+  worker: {buildId: parseInt(env.WORKER_BUILD_ID)}
 };

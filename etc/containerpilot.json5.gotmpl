@@ -1,22 +1,25 @@
 {
   consul: '{{env "CONSUL_URL"}}',
   jobs: [
-    {name: 'setup', exec: 'bin/setup'},
+    {name: 'setup', exec: 'bin/setup', logging: {raw: true}},
     {
       name: 'exitOnSetupFail',
       exec: 'pkill containerpilot',
+      logging: {raw: true},
       when: {source: 'setup', once: 'exitFailed'}
      },
 {{- if (eq (env "WATCH") "1")}}
     {
       name: 'watch-build',
       exec: 'bin/watch-build',
+      logging: {raw: true},
       when: {source: 'setup', once: 'exitSuccess'},
       restarts: 'unlimited'
     },
     {
       name: 'livereload',
       exec: 'bin/livereload',
+      logging: {raw: true},
       when: {source: 'setup', once: 'exitSuccess'},
       restarts: 'unlimited'
     },
@@ -24,12 +27,14 @@
     {
       name: 'api',
       exec: 'bin/api',
+      logging: {raw: true},
       when: {source: 'setup', once: 'exitSuccess'},
       restarts: 'unlimited'
     },
     {
       name: '{{env "CONSUL_SERVICE_NAME"}}',
       exec: 'nginx',
+      logging: {raw: true},
       when: {source: 'setup', once: 'exitSuccess'},
 {{- if env "CONSUL_URL"}}
       port: 80,
