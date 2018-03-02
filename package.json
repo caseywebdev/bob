@@ -30,6 +30,7 @@
     "cogs-transformer-underscore-template": "1.1.0",
     "cogs-transformer-uglify-js": "3.1.1",
     "cogs": "4.2.6",
+    "dataloader": "1.4.0",
     "dockerode": "2.5.4",
     "eslint-config-coderiety": "1.0.0",
     "eslint-plugin-react": "7.7.0",

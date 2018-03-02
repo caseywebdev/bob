@@ -15,6 +15,9 @@ ENV \
   CONTAINERPILOT='/code/etc/containerpilot.json5.gotmpl' \
   PASSWORD_SALT_ROUNDS='10' \
   POSTGRES_URL='pg://postgres:postgres@postgres/postgres' \
+  SMTP_USERNAME='' \
+  SMTP_PASSWORD='' \
+  SMTP_EMAIL_ADDRESS='' \
   TOKEN_SALT_ROUNDS='1' \
   TOKEN_SIZE='32'
 

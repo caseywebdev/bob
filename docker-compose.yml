@@ -18,6 +18,8 @@ services:
       GITHUB_CLIENT_ID:
       GITHUB_CLIENT_SECRET:
       ROOT_USER_ID:
+      SMTP_PASSWORD:
+      SMTP_USERNAME:
       WATCH: 1
     ports:
       - 80:80

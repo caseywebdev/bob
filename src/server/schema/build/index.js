@@ -1,5 +1,4 @@
 const {
-  GraphQLID,
   GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
@@ -10,10 +9,9 @@ const GraphQLJSON = require('graphql-type-json');
 module.exports = new GraphQLObjectType({
   name: 'Build',
   fields: () => ({
-    id: {type: new GraphQLNonNull(GraphQLID)},
+    id: {type: new GraphQLNonNull(require('../uuid'))},
     env: require('./env'),
-    envId: {type: new GraphQLNonNull(GraphQLID)},
-    sourceId: {type: new GraphQLNonNull(GraphQLID)},
+    sourceId: {type: new GraphQLNonNull(require('../source-id'))},
     buildArgs: {type: GraphQLJSON},
     message: {type: new GraphQLNonNull(GraphQLString)},
     context: {type: GraphQLString},

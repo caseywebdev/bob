@@ -4,7 +4,7 @@ exports.up = db =>
   db.schema
     .raw('CREATE EXTENSION IF NOT EXISTS citext')
     .createTable('envs', t => {
-      t.increments('id').primary();
+      t.uuid('id').primary();
       t.specificType('name', 'citext').notNullable().unique();
       t.json('config').notNullable();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
@@ -12,15 +12,15 @@ exports.up = db =>
     })
 
     .createTable('users', t => {
-      t.increments('id').primary();
+      t.uuid('id').primary();
       t.string('passwordHash').notNullable();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })
 
     .createTable('emailAddresses', t => {
-      t.increments('id').primary();
-      t.integer('userId')
+      t.uuid('id').primary();
+      t.uuid('userId')
         .notNullable()
         .references('users.id')
         .onUpdate('CASCADE')
@@ -32,39 +32,44 @@ exports.up = db =>
     })
 
     .createTable('tokens', t => {
-      t.increments('id').primary();
-      t.integer('userId')
+      t.uuid('id').primary();
+      t.uuid('userId')
         .notNullable()
         .references('users.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .index();
       t.string('tokenHash').notNullable();
+      t.integer('roles').notNullable();
+      t.string('userAgent').notNullable();
+      t.string('ipAddress').notNullable();
+      t.string('name');
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
+      t.timestamp('lastUsedAt').notNullable().defaultTo(db.fn.now());
     })
 
     .createTable('permissions', t => {
-      t.increments('id').primary();
-      t.integer('envId')
+      t.uuid('id').primary();
+      t.uuid('envId')
         .notNullable()
         .references('envs.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      t.integer('userId')
+      t.uuid('userId')
         .notNullable()
         .references('envs.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      t.integer('role').notNullable();
+      t.integer('roles').notNullable();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
       t.unique(['envId', 'userId']);
     })
 
     .createTable('builds', t => {
-      t.increments('id').primary();
-      t.integer('envId')
+      t.uuid('id').primary();
+      t.uuid('envId')
         .notNullable()
         .references('envs.id')
         .onUpdate('CASCADE')

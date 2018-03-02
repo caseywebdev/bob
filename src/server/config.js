@@ -20,12 +20,17 @@ module.exports = {
     key: fromEnv('DOCKER_KEY')
   },
   github: {
-    clientId: env.GITHUB_CLIENT_ID,
-    clientSecret: fromEnv('DOCKER_GITHUB_SECRET')
+    clientId: fromEnv('GITHUB_CLIENT_ID'),
+    clientSecret: fromEnv('GITHUB_CLIENT_SECRET')
   },
   passwordSaltRounds: parseInt(env.PASSWORD_SALT_ROUNDS),
   postgres: {url: fromEnv('POSTGRES_URL')},
   rootUserId: fromEnv('ROOT_USER_ID'),
+  smtp: {
+    emailAddress: fromEnv('SMTP_EMAIL_ADDRESS'),
+    username: fromEnv('SMTP_USERNAME'),
+    password: fromEnv('SMTP_PASSWORD')
+  },
   tokenSaltRounds: parseInt(env.TOKEN_SALT_ROUNDS),
   tokenSize: parseInt(env.TOKEN_SIZE),
   vault: {

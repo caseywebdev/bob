@@ -5,5 +5,5 @@ module.exports = {
     say: {type: GraphQLString}
   },
   type: GraphQLString,
-  resolve: (__, {say}) => say
+  resolve: (obj, {say}) => say
 };

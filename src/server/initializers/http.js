@@ -16,6 +16,7 @@ const server = http.createServer(
   express()
     .enable('case sensitive routing')
     .enable('strict routing')
+    .enable('trust proxy')
     .disable('x-powered-by')
     .use(bodyParser.json())
     .post('/api/graphql', asyncify(require('../handlers/http/graphql')))

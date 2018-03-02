@@ -44,7 +44,6 @@ import styles from './layout.scss';
 
 const query = gql`
   query {
-    echo(say: "foo")
     foo: builds {
       hash
     }
@@ -93,7 +92,7 @@ const render = props =>
       </Link>
     </div>
     <div className={styles.content}>
-      <pre>{JSON.stringify(props, null, 2)}</pre>
+      <pre>{console.log(props) || JSON.stringify(props, null, 2)}</pre>
       <Switch>
         <Route component={NotFound} />
       </Switch>
