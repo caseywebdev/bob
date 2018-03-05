@@ -1,4 +1,4 @@
-FROM node:9.7.0-alpine
+FROM node:9.7.1-alpine
 
 CMD ["containerpilot"]
 
