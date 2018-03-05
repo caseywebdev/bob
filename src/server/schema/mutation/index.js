@@ -6,6 +6,7 @@ module.exports = new GraphQLObjectType({
   fields: () => ({
     createToken: require('./create-token'),
     signIn: require('./sign-in'),
-    signUp: require('./sign-up')
+    signUp: require('./sign-up'),
+    verifyEmailAddress: require('./verify-email-address')
   })
 });

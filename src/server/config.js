@@ -33,7 +33,7 @@ module.exports = {
   },
   passwordSaltRounds: parseInt(env.PASSWORD_SALT_ROUNDS),
   postgres: {url: fromEnv('POSTGRES_URL')},
-  rootUserId: fromEnv('ROOT_USER_ID'),
+  rootEmailAddress: fromEnv('ROOT_EMAIL_ADDRESS'),
   tokenSaltRounds: parseInt(env.TOKEN_SALT_ROUNDS),
   tokenSize: parseInt(env.TOKEN_SIZE),
   vault: {

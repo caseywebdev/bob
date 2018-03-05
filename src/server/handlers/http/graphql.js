@@ -33,8 +33,8 @@ module.exports = async ({
 
   const db = await getDb();
   let token = null;
-  const tokenId = auth.slice(0, 32);
-  const tokenValue = auth.slice(32);
+  const tokenId = auth.slice(0, 36);
+  const tokenValue = auth.slice(36);
   if (tokenId && tokenValue) {
     token = await db('tokens').where({id: tokenId}).first();
     if (token && await bcrypt.compare(tokenValue, token.tokenHash)) {

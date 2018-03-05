@@ -6,14 +6,14 @@ import history from '../../constants/history';
 import MainLayout from '../main/layout';
 import Meta from '../shared/meta';
 import React from 'react';
-import SignInGithub from '../sign-in/github';
+import VerifyEmailAddress from '../verify-email-address';
 
 export default () =>
   <ApolloProvider client={apolloClient}>
     <Router {...{history}}>
       <Meta title='Bob'>
         <Switch>
-          <Route exact path='/sign-in/github' component={SignInGithub} />
+          <Route exact path='/email-addresses/:emailAddressId/verify/:token' component={VerifyEmailAddress} />
           <Route exact path='/graphiql' component={GraphiQL} />
           <Route component={MainLayout} />
         </Switch>

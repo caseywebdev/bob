@@ -1,15 +1,15 @@
 const {
   GraphQLInputObjectType,
   GraphQLObjectType,
-  GraphQLNonNull,
-  GraphQLString
+  GraphQLNonNull
 } = require('graphql');
-const bcrypt = require('bcrypt');
 const config = require('../../config');
+const createRandomToken = require('../../functions/create-random-token');
 const mail = require('../../functions/mail');
 const uuid = require('uuid/v4');
+const qs = require('querystring');
 
-const {passwordSaltRounds} = config;
+const {bob: {url}} = config;
 
 module.exports = {
   args: {
@@ -17,9 +17,7 @@ module.exports = {
       type: new GraphQLNonNull(new GraphQLInputObjectType({
         name: 'SignUpInput',
         fields: () => ({
-          emailAddress: {type: new GraphQLNonNull(require('../email-address-string'))},
-          name: {type: new GraphQLNonNull(GraphQLString)},
-          password: {type: new GraphQLNonNull(GraphQLString)}
+          emailAddress: {type: new GraphQLNonNull(require('../email-address-string'))}
         })
       }))
     }
@@ -27,36 +25,41 @@ module.exports = {
   type: new GraphQLNonNull(new GraphQLObjectType({
     name: 'SignUpOutput',
     fields: () => ({
-      user: {type: new GraphQLNonNull(require('../user'))}
+      emailAddress: {type: new GraphQLNonNull(require('../email-address'))}
     })
   })),
-  resolve: async (obj, {input: {emailAddress, name, password}}, {db}) => {
-    const existing = await db('emailAddresses').where({emailAddress}).first();
-    if (existing) {
+  resolve: async (obj, {input: {emailAddress}}, {db}) => {
+    let record = await db('emailAddresses').where({emailAddress}).first();
+    if (record && record.userId) {
       throw new Error(
         'That email address has already been signed up. ' +
         'Did you mean to sign in?'
       );
     }
 
-    let user;
-    const passwordHash = await bcrypt.hash(password, passwordSaltRounds);
-    await db.transaction(async trx => {
-      user = (
-        await trx('users')
-          .insert({id: uuid(), name, passwordHash})
+    const {token, tokenHash} = await createRandomToken();
+    if (record) {
+      record = (
+        await db('emailAddresses')
+          .update({tokenHash, updatedAt: new Date()})
+          .where({id: record.id})
+          .returning('*')
+        )[0];
+    } else {
+      record = (
+        await db('emailAddresses')
+          .insert({id: uuid(), emailAddress, tokenHash})
           .returning('*')
       )[0];
-      await trx('emailAddresses')
-        .insert({id: uuid(), userId: user.id, emailAddress});
-    });
+    }
 
     await mail({
-      to: {name, address: emailAddress},
+      to: {address: emailAddress},
       subject: 'Please verify your Bob email address',
-      markdown: `Verify URL for ${JSON.stringify(user)}`
+      markdown: `Verify URL: ${url}/sign-up?` +
+        qs.stringify({emailAddressId: record.id, token})
     });
 
-    return {user};
+    return {emailAddress: record};
   }
 };

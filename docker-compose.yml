@@ -21,7 +21,7 @@ services:
       MAIL_FROM_ADDRESS:
       MAIL_FROM_NAME:
       MAIL_SMTP_URL:
-      ROOT_USER_ID:
+      ROOT_EMAIL_ADDRESS:
       WATCH: 1
     ports:
       - 80:80

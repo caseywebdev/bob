@@ -22,13 +22,12 @@ exports.up = db =>
     .createTable('emailAddresses', t => {
       t.uuid('id').primary();
       t.uuid('userId')
-        .notNullable()
         .references('users.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .index();
       t.string('emailAddress').notNullable().unique();
-      t.timestamp('verifiedAt');
+      t.string('tokenHash').notNullable();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })
