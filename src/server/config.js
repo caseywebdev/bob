@@ -23,14 +23,17 @@ module.exports = {
     clientId: fromEnv('GITHUB_CLIENT_ID'),
     clientSecret: fromEnv('GITHUB_CLIENT_SECRET')
   },
+  mail: {
+    enabled: env.MAIL_ENABLED === '1',
+    from: {
+      address: env.MAIL_FROM_ADDRESS,
+      name: env.MAIL_FROM_NAME
+    },
+    smtpUrl: fromEnv('MAIL_SMTP_URL')
+  },
   passwordSaltRounds: parseInt(env.PASSWORD_SALT_ROUNDS),
   postgres: {url: fromEnv('POSTGRES_URL')},
   rootUserId: fromEnv('ROOT_USER_ID'),
-  smtp: {
-    emailAddress: fromEnv('SMTP_EMAIL_ADDRESS'),
-    username: fromEnv('SMTP_USERNAME'),
-    password: fromEnv('SMTP_PASSWORD')
-  },
   tokenSaltRounds: parseInt(env.TOKEN_SALT_ROUNDS),
   tokenSize: parseInt(env.TOKEN_SIZE),
   vault: {

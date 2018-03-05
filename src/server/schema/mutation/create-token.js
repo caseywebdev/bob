@@ -30,6 +30,8 @@ module.exports = {
 
     if (!roles.length) throw new Error('At least one role is required');
 
-    return await createToken({db, name, req, roles, userId: token.userId});
+    return {
+      token: await createToken({db, name, req, roles, userId: token.userId})
+    };
   }
 };

@@ -17,9 +17,11 @@ services:
     environment:
       GITHUB_CLIENT_ID:
       GITHUB_CLIENT_SECRET:
+      MAIL_ENABLED:
+      MAIL_FROM_ADDRESS:
+      MAIL_FROM_NAME:
+      MAIL_SMTP_URL:
       ROOT_USER_ID:
-      SMTP_PASSWORD:
-      SMTP_USERNAME:
       WATCH: 1
     ports:
       - 80:80

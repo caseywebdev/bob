@@ -4,7 +4,8 @@ module.exports = new GraphQLObjectType({
   name: 'Mutation',
   description: 'Queries for creating, updating and deleting data.',
   fields: () => ({
+    createToken: require('./create-token'),
     signIn: require('./sign-in'),
-    createToken: require('./create-token')
+    signUp: require('./sign-up')
   })
 });

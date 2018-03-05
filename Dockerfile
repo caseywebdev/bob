@@ -15,9 +15,10 @@ ENV \
   CONTAINERPILOT='/code/etc/containerpilot.json5.gotmpl' \
   PASSWORD_SALT_ROUNDS='10' \
   POSTGRES_URL='pg://postgres:postgres@postgres/postgres' \
-  SMTP_USERNAME='' \
-  SMTP_PASSWORD='' \
-  SMTP_EMAIL_ADDRESS='' \
+  MAIL_FROM_ADDRESS='' \
+  MAIL_FROM_NAME='' \
+  MAIL_ENABLED='0' \
+  MAIL_SMTP_URL='' \
   TOKEN_SALT_ROUNDS='1' \
   TOKEN_SIZE='32'
 
@@ -28,7 +29,7 @@ RUN \
     tar xz -C /usr/local/bin
 
 COPY package.json ./
-RUN npm install --no-save
+RUN npm install --no-save --build-from-source=bcrypt
 
 COPY .eslintrc .stylelintrc ./
 COPY bin/build bin/

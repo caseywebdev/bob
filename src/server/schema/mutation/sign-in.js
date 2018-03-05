@@ -34,6 +34,6 @@ module.exports = {
       throw new Error('Invalid email address and password combination');
     }
 
-    return await createToken({db, req, roles: [], userId: user.id});
+    return {token: await createToken({db, req, roles: [], userId: user.id})};
   }
 };

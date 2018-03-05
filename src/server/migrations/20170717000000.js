@@ -13,6 +13,7 @@ exports.up = db =>
 
     .createTable('users', t => {
       t.uuid('id').primary();
+      t.string('name').notNullable();
       t.string('passwordHash').notNullable();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
@@ -27,6 +28,7 @@ exports.up = db =>
         .onDelete('CASCADE')
         .index();
       t.string('emailAddress').notNullable().unique();
+      t.timestamp('verifiedAt');
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })
