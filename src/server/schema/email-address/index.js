@@ -1,17 +1,13 @@
-const {
-  GraphQLID,
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLString
-} = require('graphql');
+const {GraphQLScalarType} = require('graphql');
+const {Kind: {STRING}} = require('graphql/language');
 
-module.exports = new GraphQLObjectType({
+const EMAIL_RE = /^[\w.%+-]+@[a-z\d.-]+\.[a-z]{2,}$/i;
+
+const check = str => EMAIL_RE.test(str) ? str : undefined;
+
+module.exports = new GraphQLScalarType({
   name: 'EmailAddress',
-  fields: () => ({
-    id: {type: new GraphQLNonNull(GraphQLID)},
-    user: require('./user'),
-    emailAddress: {type: new GraphQLNonNull(require('../email-address-string'))},
-    createdAt: {type: new GraphQLNonNull(GraphQLString)},
-    updatedAt: {type: new GraphQLNonNull(GraphQLString)}
-  })
+  parseValue: check,
+  serialize: check,
+  parseLiteral: ({kind, value}) => kind === STRING ? check(value) : undefined
 });

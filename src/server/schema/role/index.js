@@ -1,6 +1,6 @@
 const _ = require('underscore');
 const {GraphQLEnumType} = require('graphql');
-const roles = require('../../constants/roles');
+const roles = require('../../../shared/constants/roles');
 
 module.exports = new GraphQLEnumType({
   name: 'Role',

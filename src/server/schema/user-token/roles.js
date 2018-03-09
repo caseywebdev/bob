@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const {GraphQLList, GraphQLNonNull} = require('graphql');
 const Role = require('../role');
-const roles = require('../../constants/roles');
+const roles = require('../../../shared/constants/roles');
 
 module.exports = {
   type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Role))),

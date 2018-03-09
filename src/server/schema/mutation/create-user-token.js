@@ -5,13 +5,13 @@ const {
   GraphQLNonNull,
   GraphQLString
 } = require('graphql');
-const createToken = require('../../functions/create-token');
+const createUserToken = require('../../functions/create-user-token');
 
 module.exports = {
   args: {
     input: {
       type: new GraphQLNonNull(new GraphQLInputObjectType({
-        name: 'CreateTokenInput',
+        name: 'CreateUserTokenInput',
         fields: () => ({
           name: {type: new GraphQLNonNull(GraphQLString)},
           roles: {type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(require('../role'))))}
@@ -20,18 +20,24 @@ module.exports = {
     }
   },
   type: new GraphQLNonNull(new GraphQLObjectType({
-    name: 'CreateTokenOutput',
+    name: 'CreateUserTokenOutput',
     fields: () => ({
-      token: {type: new GraphQLNonNull(require('../token'))}
+      userToken: {type: new GraphQLNonNull(require('../user-token'))}
     })
   })),
-  resolve: async (obj, {input: {name, roles}}, {db, req, token}) => {
-    if (!token || token.roles > 0) throw new Error('Forbidden');
+  resolve: async (obj, {input: {name, roles}}, {db, req, userToken}) => {
+    if (!userToken || userToken.roles > 0) throw new Error('Forbidden');
 
     if (!roles.length) throw new Error('At least one role is required');
 
     return {
-      token: await createToken({db, name, req, roles, userId: token.userId})
+      userToken: await createUserToken({
+        db,
+        name,
+        req,
+        roles,
+        userId: userToken.userId
+      })
     };
   }
 };

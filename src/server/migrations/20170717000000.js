@@ -19,7 +19,7 @@ exports.up = db =>
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })
 
-    .createTable('emailAddresses', t => {
+    .createTable('userEmailAddresses', t => {
       t.uuid('id').primary();
       t.uuid('userId')
         .references('users.id')
@@ -32,7 +32,7 @@ exports.up = db =>
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })
 
-    .createTable('tokens', t => {
+    .createTable('userTokens', t => {
       t.uuid('id').primary();
       t.uuid('userId')
         .notNullable()
@@ -96,7 +96,7 @@ exports.down = ({schema}) =>
   schema
     .dropTable('builds')
     .dropTable('permissions')
-    .dropTable('tokens')
-    .dropTable('emailAddresses')
+    .dropTable('userTokens')
+    .dropTable('userEmailAddresses')
     .dropTable('users')
     .dropTable('envs');

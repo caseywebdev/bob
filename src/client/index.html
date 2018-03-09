@@ -20,11 +20,7 @@
     >
     <title>Bob</title>
     <script>
-      window.env = <%= JSON.stringify(_.pick(
-        process.env,
-        'MINIFY',
-        'WATCH'
-      )) %>;
+      window.env = <%= JSON.stringify(_.pick(process.env, 'WATCH')) %>;
       window.COGS_MANIFEST = <%= JSON.stringify(manifest) %>;
     </script>
   </head>

@@ -1,24 +1,23 @@
-FROM node:9.7.1-alpine
+FROM node:9.8.0-alpine
+
+WORKDIR /code
 
 CMD ["containerpilot"]
 
 EXPOSE 80
-
-WORKDIR /code
 
 ENV \
   BOB_URL='http://localhost' \
   CONSUL_SERVICE_NAME='bob' \
   CONSUL_SERVICE_TAGS='' \
   CONSUL_URL='' \
-  CONTAINERPILOT_VERSION='3.7.0' \
   CONTAINERPILOT='/code/etc/containerpilot.json5.gotmpl' \
-  PASSWORD_SALT_ROUNDS='10' \
-  POSTGRES_URL='pg://postgres:postgres@postgres/postgres' \
+  MAIL_ENABLED='0' \
   MAIL_FROM_ADDRESS='' \
   MAIL_FROM_NAME='' \
-  MAIL_ENABLED='0' \
   MAIL_SMTP_URL='' \
+  PASSWORD_SALT_ROUNDS='10' \
+  POSTGRES_URL='pg://postgres:postgres@postgres/postgres' \
   ROOT_EMAIL_ADDRESS='' \
   TOKEN_SALT_ROUNDS='1' \
   TOKEN_SIZE='32'
@@ -26,6 +25,7 @@ ENV \
 RUN \
   apk --no-cache add curl g++ libc6-compat make nginx python && \
   mkdir -p /run/nginx && \
+  CONTAINERPILOT_VERSION='3.7.0' && \
   curl -fLsS https://github.com/joyent/containerpilot/releases/download/$CONTAINERPILOT_VERSION/containerpilot-$CONTAINERPILOT_VERSION.tar.gz | \
     tar xz -C /usr/local/bin
 

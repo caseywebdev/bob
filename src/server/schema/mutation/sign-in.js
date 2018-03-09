@@ -5,7 +5,7 @@ const {
   GraphQLString
 } = require('graphql');
 const bcrypt = require('bcrypt');
-const createToken = require('../../functions/create-token');
+const createUserToken = require('../../functions/create-user-token');
 
 module.exports = {
   args: {
@@ -13,7 +13,7 @@ module.exports = {
       type: new GraphQLNonNull(new GraphQLInputObjectType({
         name: 'SignInInput',
         fields: () => ({
-          emailAddress: {type: new GraphQLNonNull(require('../email-address-string'))},
+          emailAddress: {type: new GraphQLNonNull(require('../email-address'))},
           password: {type: new GraphQLNonNull(GraphQLString)}
         })
       }))
@@ -22,7 +22,7 @@ module.exports = {
   type: new GraphQLNonNull(new GraphQLObjectType({
     name: 'SignInOutput',
     fields: () => ({
-      token: {type: new GraphQLNonNull(require('../token'))}
+      userToken: {type: new GraphQLNonNull(require('../user-token'))}
     })
   })),
   resolve: async (obj, {input: {emailAddress, password}}, {db, req}) => {
@@ -35,6 +35,8 @@ module.exports = {
       throw new Error('Invalid email address and password combination');
     }
 
-    return {token: await createToken({db, req, roles: [], userId: user.id})};
+    return {
+      userToken: await createUserToken({db, req, roles: [], userId: user.id})
+    };
   }
 };

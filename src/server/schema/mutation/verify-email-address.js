@@ -4,7 +4,7 @@ const {
   GraphQLNonNull,
   GraphQLString
 } = require('graphql');
-const bcrypt = require('bcrypt');
+const verifyEmailAddress = require('../../functions/verify-email-address');
 
 module.exports = {
   args: {
@@ -12,7 +12,6 @@ module.exports = {
       type: new GraphQLNonNull(new GraphQLInputObjectType({
         name: 'VerifyEmailAddressInput',
         fields: () => ({
-          emailAddressId: {type: new GraphQLNonNull(require('../uuid'))},
           token: {type: new GraphQLNonNull(GraphQLString)}
         })
       }))
@@ -21,25 +20,22 @@ module.exports = {
   type: new GraphQLNonNull(new GraphQLObjectType({
     name: 'VerifyEmailAddressOutput',
     fields: () => ({
-      emailAddress: {type: new GraphQLNonNull(require('../email-address'))}
+      userEmailAddress: {
+        type: new GraphQLNonNull(require('../user-email-address'))
+      }
     })
   })),
-  resolve: async (obj, {input: {emailAddressId, token}}, {db}) => {
-    let emailAddress = await db('emailAddresses')
-      .where({id: emailAddressId, userId: null})
-      .first();
-    if (
-      !emailAddress ||
-      !(await bcrypt.compare(token, emailAddress.tokenHash))
-    ) throw new Error('Invalid emailAddressId and token combination');
+  resolve: async (obj, {input: {token}}, {db, userToken}) => {
+    if (!userToken) throw new Error('Authentication required');
 
-    emailAddress = (
-      await db('emailAddresses')
-        .update({verifiedAt: new Date()})
-        .where({id: emailAddress.id})
-        .returning('*')
-    )[0];
-
-    return {emailAddress};
+    const uea = await verifyEmailAddress({db, token});
+    return {
+      userEmailAddress: (
+        await db('userEmailAddresses')
+          .update({updatedAt: new Date(), userId: userToken.userId})
+          .where({id: uea.id})
+          .returning('*')
+      )[0]
+    };
   }
 };

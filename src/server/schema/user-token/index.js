@@ -1,12 +1,11 @@
 const {
-  GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString
 } = require('graphql');
 
 module.exports = new GraphQLObjectType({
-  name: 'Token',
+  name: 'UserToken',
   fields: () => ({
     id: {type: new GraphQLNonNull(require('../uuid'))},
     roles: require('./roles'),

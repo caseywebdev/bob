@@ -1,11 +1,9 @@
 const _ = require('underscore');
 const {graphql} = require('graphql');
-const bcrypt = require('bcrypt');
 const DataLoader = require('dataloader');
 const getDb = require('../../functions/get-db');
 const schema = require('../../schema');
-
-const ONE_DAY = 1000 * 60 * 60 * 24;
+const verifyUserToken = require('../../functions/verify-user-token');
 
 const getLoaders = ({db}) => ({
   users: new DataLoader(async ids => {
@@ -13,6 +11,24 @@ const getLoaders = ({db}) => ({
     return ids.map(id => usersById[id]);
   })
 });
+
+const getToken = ({authorization}) => {
+  let [type, token = ''] = (authorization || '').split(/\s+/);
+
+  if (type.toLowerCase() === 'basic') {
+    try {
+      const [left, right] = Buffer.from(token, 'base64').toString().split(':');
+      token = left || right || '';
+    } catch (er) {}
+  }
+
+  return token;
+};
+
+const getUserToken = async ({authorization, db}) => {
+  const token = getToken({authorization});
+  if (token) return await verifyUserToken({db, token});
+};
 
 module.exports = async ({
   req,
@@ -22,38 +38,17 @@ module.exports = async ({
   },
   res
 }) => {
-  let [type, auth = ''] = (authorization || '').split(/\s+/);
-
-  if (type.toLowerCase() === 'basic') {
-    try {
-      const [left, right] = Buffer.from(auth, 'base64').toString().split(':');
-      auth = left || right || '';
-    } catch (er) {}
-  }
-
   const db = await getDb();
-  let token = null;
-  const tokenId = auth.slice(0, 36);
-  const tokenValue = auth.slice(36);
-  if (tokenId && tokenValue) {
-    token = await db('tokens').where({id: tokenId}).first();
-    if (token && await bcrypt.compare(tokenValue, token.tokenHash)) {
-      const now = new Date();
-      if (now - token.lastUsedAt > ONE_DAY) {
-        await db('tokens')
-          .update({lastUsedAt: now, updatedAt: now})
-          .where({id: tokenId});
-      }
-    } else {
-      token = null;
-    }
-  }
-
   res.send(await graphql(
     schema,
     query,
     null,
-    {db, loaders: getLoaders({db}), req, token},
+    {
+      db,
+      loaders: getLoaders({db}),
+      req,
+      userToken: await getUserToken({authorization, db})
+    },
     variables,
     operationName
   ));

@@ -1,25 +1,18 @@
-const uuid = require('uuid/v4');
-const createRandomToken = require('./create-random-token');
+const {promisify} = require('util');
+const bcrypt = require('bcrypt');
+const config = require('../config');
+const crypto = require('crypto');
+const toBase64url = require('./to-base64url');
 
-module.exports = async ({
-  db,
-  name,
-  req: {headers: {'user-agent': userAgent}, ip: ipAddress},
-  roles,
-  userId
-}) => {
-  const id = uuid();
-  const {token, tokenHash} = await createRandomToken();
-  const [tokenRecord] = await db('tokens')
-    .insert({
-      id,
-      name,
-      tokenHash,
-      roles: roles.reduce((roles, role) => roles | role, 0),
-      userId,
-      userAgent,
-      ipAddress
-    })
-    .returning('*');
-  return {...tokenRecord, token: id + token};
+const {tokenSize, tokenSaltRounds} = config;
+
+const randomBytes = promisify(crypto.randomBytes);
+
+module.exports = async ({id}) => {
+  const token =
+    toBase64url(Buffer.from(id.replace(/-/g, ''), 'hex')) +
+    '.' +
+    toBase64url(await randomBytes(tokenSize));
+  const tokenHash = await bcrypt.hash(token, tokenSaltRounds);
+  return {token, tokenHash};
 };

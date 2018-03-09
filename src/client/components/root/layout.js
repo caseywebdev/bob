@@ -13,7 +13,11 @@ export default () =>
     <Router {...{history}}>
       <Meta title='Bob'>
         <Switch>
-          <Route exact path='/email-addresses/:emailAddressId/verify/:token' component={VerifyEmailAddress} />
+          <Route
+            exact
+            path='/verify-email-address'
+            component={VerifyEmailAddress}
+          />
           <Route exact path='/graphiql' component={GraphiQL} />
           <Route component={MainLayout} />
         </Switch>

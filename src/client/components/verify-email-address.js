@@ -5,7 +5,7 @@ import React, {Component} from 'react';
 const query = gql`
   mutation($input: VerifyEmailAddressInput!) {
     verifyEmailAddress(input: $input) {
-      emailAddress {
+      userEmailAddress {
         emailAddress
       }
     }
@@ -15,7 +15,12 @@ const query = gql`
 export default graphql(query)(
   class extends Component {
     componentWillMount() {
-      this.props.mutate({variables: {input: this.props.match.params}});
+      const query = new URLSearchParams(this.props.location.search);
+      const input = {
+        userEmailAddressId: query.get('userEmailAddressId'),
+        token: query.get('token')
+      };
+      this.props.mutate({variables: {input}});
     }
 
     render() {
