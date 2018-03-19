@@ -27,17 +27,15 @@ module.exports = {
       userEmailAddress: {type: new GraphQLNonNull(require('../user-email-address'))}
     })
   })),
-  resolve: async (obj, {input: {emailAddress}}, {db}) => {
-    if (
-      await db('userEmailAddresses')
-        .where({emailAddress})
-        .whereNotNull('userId')
-        .first()
-    ) throw new Error(`${emailAddress} has already been claimed.`);
+  resolve: async (obj, {input: {emailAddress}}, {db, loaders, userToken}) => {
+    let uea = await db('userEmailAddresses').where({emailAddress}).first();
+    if (uea && uea.userId) {
+      throw new Error(`${emailAddress} has already been claimed.`);
+    }
 
-    const id = uuid();
+    const id = uea ? uea.id : uuid();
     const {token, tokenHash} = await createToken({id});
-    const {rows: {0: uea}} = await db.raw(`
+    uea = (await db.raw(`
       INSERT INTO "userEmailAddresses"
         ("id", "emailAddress", "tokenHash") VALUES (?, ?, ?)
       ON CONFLICT ("emailAddress") DO UPDATE
@@ -49,12 +47,20 @@ module.exports = {
       tokenHash,
       tokenHash,
       new Date()
-    ]);
+    ])).rows[0];
+
+    const to = {address: emailAddress};
+    let path = '/sign-up';
+    if (userToken) {
+      const {name} = await loaders.users.load(userToken.userId);
+      to.name = name;
+      path = '/verify-email-address';
+    }
 
     await mail({
-      to: {address: emailAddress},
+      to,
       subject: 'Please verify your Bob email address',
-      markdown: `Verify URL: ${url}/verify-email-address?token=${token}`
+      markdown: `Verify URL: ${url}${path}?token=${token}`
     });
 
     return {userEmailAddress: uea};

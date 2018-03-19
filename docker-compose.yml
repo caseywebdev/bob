@@ -1,7 +1,24 @@
 version: '3.5'
 
-volumes:
-  pg-data:
+x-bob-shared: &x-bob-shared
+  build: .
+  environment:
+    GITHUB_CLIENT_ID:
+    GITHUB_CLIENT_SECRET:
+    MAIL_ENABLED:
+    MAIL_FROM_ADDRESS:
+    MAIL_FROM_NAME:
+    MAIL_SMTP_URL:
+    ROOT_EMAIL_ADDRESS:
+    WATCH: 1
+  volumes:
+    - ./.eslintrc:/code/.eslintrc
+    - ./.stylelintrc:/code/.stylelintrc
+    - ./bin:/code/bin
+    - ./etc:/code/etc
+    - ./package.json:/code/package.json
+    - ./src:/code/src
+    - /var/run/docker.sock:/var/run/docker.sock
 
 services:
   postgres:
@@ -9,35 +26,19 @@ services:
     volumes:
       - pg-data:/var/lib/postgresql/data
 
-  bob: &bob
-    build: .
+  bob:
+    <<: *x-bob-shared
     depends_on:
       - bob-inotify-fix
       - postgres
-    environment:
-      GITHUB_CLIENT_ID:
-      GITHUB_CLIENT_SECRET:
-      MAIL_ENABLED:
-      MAIL_FROM_ADDRESS:
-      MAIL_FROM_NAME:
-      MAIL_SMTP_URL:
-      ROOT_EMAIL_ADDRESS:
-      WATCH: 1
     ports:
       - 80:80
-    volumes:
-      - ./.eslintrc:/code/.eslintrc
-      - ./.stylelintrc:/code/.stylelintrc
-      - ./bin:/code/bin
-      - ./etc:/code/etc
-      - ./package.json:/code/package.json
-      - ./src:/code/src
-      - /var/run/docker.sock:/var/run/docker.sock
 
   # HACK: Until https://github.com/docker/for-mac/issues/681 is fixed
   bob-inotify-fix:
-    <<: *bob
+    <<: *x-bob-shared
     command: ["tail", "-f", "/dev/null"]
-    depends_on: []
-    ports: []
     stop_signal: SIGKILL
+
+volumes:
+  pg-data:

@@ -6,18 +6,14 @@ import history from '../../constants/history';
 import MainLayout from '../main/layout';
 import Meta from '../shared/meta';
 import React from 'react';
-import VerifyEmailAddress from '../verify-email-address';
+import SignUp from '../sign-up';
 
 export default () =>
   <ApolloProvider client={apolloClient}>
     <Router {...{history}}>
       <Meta title='Bob'>
         <Switch>
-          <Route
-            exact
-            path='/verify-email-address'
-            component={VerifyEmailAddress}
-          />
+          <Route exact path='/sign-up' component={SignUp} />
           <Route exact path='/graphiql' component={GraphiQL} />
           <Route component={MainLayout} />
         </Switch>

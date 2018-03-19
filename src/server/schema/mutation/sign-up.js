@@ -38,13 +38,12 @@ module.exports = {
     await db.transaction(async trx => {
       user = (
         await trx('users')
-          .insert({userId, name, passwordHash})
+          .insert({id: userId, name, passwordHash})
           .returning('*')
       )[0];
       await trx('userEmailAddresses')
         .update({updatedAt: new Date(), userId})
-        .where({id: uea.id})
-        .returning('*');
+        .where({id: uea.id});
     });
 
     return {user};

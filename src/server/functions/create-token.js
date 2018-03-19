@@ -13,6 +13,5 @@ module.exports = async ({id}) => {
     toBase64url(Buffer.from(id.replace(/-/g, ''), 'hex')) +
     '.' +
     toBase64url(await randomBytes(tokenSize));
-  const tokenHash = await bcrypt.hash(token, tokenSaltRounds);
-  return {token, tokenHash};
+  return {token, tokenHash: await bcrypt.hash(token, tokenSaltRounds)};
 };

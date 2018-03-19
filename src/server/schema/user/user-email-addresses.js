@@ -5,5 +5,5 @@ module.exports = {
     new GraphQLNonNull(require('../user-email-address'))
   )),
   resolve: async ({id}, args, {db}) =>
-    await db('emailAddresses').where({userId: id})
+    await db('userEmailAddresses').where({userId: id})
 };

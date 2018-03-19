@@ -3,10 +3,15 @@ import gql from 'graphql-tag';
 import React, {Component} from 'react';
 
 const query = gql`
-  mutation($input: VerifyEmailAddressInput!) {
-    verifyEmailAddress(input: $input) {
-      userEmailAddress {
-        emailAddress
+  mutation($input: SignUpInput!) {
+    signUp(input: $input) {
+      user {
+        id
+        name
+        userEmailAddresses {
+          id
+          emailAddress
+        }
       }
     }
   }
@@ -17,8 +22,9 @@ export default graphql(query)(
     componentWillMount() {
       const query = new URLSearchParams(this.props.location.search);
       const input = {
-        userEmailAddressId: query.get('userEmailAddressId'),
-        token: query.get('token')
+        token: query.get('token'),
+        name: 'Casey',
+        password: 'password'
       };
       this.props.mutate({variables: {input}});
     }

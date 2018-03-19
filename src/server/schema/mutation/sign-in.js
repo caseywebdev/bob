@@ -28,7 +28,7 @@ module.exports = {
   resolve: async (obj, {input: {emailAddress, password}}, {db, req}) => {
     const user = await db('users')
       .select('users.*')
-      .innerJoin('emailAddresses', 'users.id', 'emailAddresses.userId')
+      .innerJoin('userEmailAddresses', 'users.id', 'userEmailAddresses.userId')
       .where({emailAddress})
       .first();
     if (!user || !(await bcrypt.compare(password, user.passwordHash))) {

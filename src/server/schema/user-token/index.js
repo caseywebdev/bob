@@ -11,6 +11,7 @@ module.exports = new GraphQLObjectType({
     roles: require('./roles'),
     name: {type: GraphQLString},
     token: {type: GraphQLString},
+    user: require('./user'),
     createdAt: {type: new GraphQLNonNull(GraphQLString)},
     updatedAt: {type: new GraphQLNonNull(GraphQLString)},
     lastUsedAt: {type: new GraphQLNonNull(GraphQLString)}
