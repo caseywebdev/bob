@@ -1,3 +1,4 @@
+import Meta from '../shared/meta';
 import React, {Component} from 'react';
 
 export default class extends Component {
@@ -9,8 +10,11 @@ export default class extends Component {
 
   render() {
     const {Index} = this.state;
-    if (Index) return <Index />;
 
-    return <div>Loading...</div>;
+    return (
+      <Meta title='GraphiQL'>
+        {Index ? <Index /> : 'Loading...'}
+      </Meta>
+    );
   }
 }

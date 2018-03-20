@@ -6,7 +6,9 @@ const ONE_DAY = 1000 * 60 * 60 * 24;
 
 module.exports = async ({db, token, userId}) => {
   const id = getIdFromToken(token);
-  const userToken = await db('userTokens').where({id, userId}).first();
+  const sql = db('userTokens').where({id});
+  if (userId) sql.where({userId});
+  const userToken = await sql.first();
   if (!userToken || !(await bcrypt.compare(token, userToken.tokenHash))) {
     throw INVALID_TOKEN;
   }

@@ -12,6 +12,8 @@ module.exports = new GraphQLObjectType({
     name: {type: GraphQLString},
     token: {type: GraphQLString},
     user: require('./user'),
+    ipAddress: {type: new GraphQLNonNull(GraphQLString)},
+    userAgent: {type: new GraphQLNonNull(GraphQLString)},
     createdAt: {type: new GraphQLNonNull(GraphQLString)},
     updatedAt: {type: new GraphQLNonNull(GraphQLString)},
     lastUsedAt: {type: new GraphQLNonNull(GraphQLString)}

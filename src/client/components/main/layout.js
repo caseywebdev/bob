@@ -44,14 +44,13 @@ import styles from './layout.scss';
 
 const query = gql`
   query {
-    foo: builds {
-      hash
-    }
-    builds {
+    viewer {
       id
-      repo
+      name
+      userTokens {
+        id
+      }
     }
-    token @client
   }
 `;
 
@@ -84,7 +83,7 @@ const query = gql`
 //   <ErrorComponent {...{error}} />
 // } */}
 
-const render = props =>
+const render = ({props}) =>
   <div className={styles.root}>
     <div className={styles.nav}>
       <Link className={styles.navItem} to='/'>
@@ -92,7 +91,7 @@ const render = props =>
       </Link>
     </div>
     <div className={styles.content}>
-      <pre>{console.log(props) || JSON.stringify(props, null, 2)}</pre>
+      <pre>{JSON.stringify(props.data, null, 2)}</pre>
       <Switch>
         <Route component={NotFound} />
       </Switch>
