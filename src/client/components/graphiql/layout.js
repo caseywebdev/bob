@@ -1,20 +1,8 @@
+import AsyncComponent from '../shared/async-component';
 import Meta from '../shared/meta';
-import React, {Component} from 'react';
+import React from 'react';
 
-export default class extends Component {
-  state = {};
-
-  componentWillMount() {
-    import('./index').then(({default: Index}) => this.setState({Index}));
-  }
-
-  render() {
-    const {Index} = this.state;
-
-    return (
-      <Meta title='GraphiQL'>
-        {Index ? <Index /> : 'Loading...'}
-      </Meta>
-    );
-  }
-}
+export default () =>
+  <Meta title='GraphiQL'>
+    <AsyncComponent importGetter={() => import('./index')} />
+  </Meta>;

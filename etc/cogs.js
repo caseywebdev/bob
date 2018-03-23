@@ -34,7 +34,7 @@ const FULL = {
     {
       name: 'local-css',
       only: ['**/*.css', 'src/client/global.scss'],
-      options: {debug: !MINIFY, rename: false}
+      options: {rename: false}
     },
     {name: 'eslint', only: 'src/**/*.js'},
     {name: 'json', only: ['**/*.json']},
