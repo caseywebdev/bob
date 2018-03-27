@@ -27,8 +27,7 @@ const FULL = {
     MINIFY ? {name: 'clean-css', only: '**/*.+(css|scss)'} : [],
     {
       name: 'local-css',
-      only: 'src/**/*.scss',
-      except: 'src/client/global.scss',
+      only: 'src/client/components/**/*.scss',
       options: {debug: !MINIFY}
     },
     {
@@ -41,6 +40,7 @@ const FULL = {
     {
       name: 'babel',
       only: ['src/**/*.+(js|scss)', '**/*.+(css|json)'],
+      except: 'src/client/index.scss',
       options: {
         plugins: ['transform-runtime'],
         presets: ['env', 'stage-0', 'react']
@@ -59,6 +59,7 @@ const FULL = {
     {
       name: 'concat-commonjs',
       only: '**/*+(css|js|json|scss)',
+      except: 'src/client/index.scss',
       options: {
         alias: {
           react:
@@ -75,7 +76,7 @@ const FULL = {
     MINIFY ? {
       name: 'uglify-js',
       only: '**/*.+(css|js|scss)',
-      except: '**/*+(-|_|.)min.js'
+      except: ['**/*+(-|_|.)min.js', 'src/client/index.scss']
     } : []
   ),
   builds: {
@@ -84,7 +85,12 @@ const FULL = {
       dir: 'dist'
     },
     'src/client/public/**/*': {base: 'src/client/public', dir: 'dist'},
-    'src/client/index.js': {base: 'src/client', dir: 'dist'}
+    'src/client/index.js': {base: 'src/client', dir: 'dist'},
+    'src/client/index.scss': {
+      base: 'src/client',
+      dir: 'dist',
+      ext: {'.scss': '.css'}
+    }
   },
   manifestPath: 'dist/manifest.json',
   then: FINAL

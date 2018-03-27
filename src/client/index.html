@@ -19,14 +19,20 @@
         width=device-width'
     >
     <title>Bob</title>
+  </head>
+
+  <body>
+    <style><%= await include('dist/index.css') %></style>
+
+    <div id='root'>
+      <div id='initialLoad'>Loading...</div>
+    </div>
+
     <script>
       window.env = <%= JSON.stringify(_.pick(process.env, 'WATCH')) %>;
       window.COGS_MANIFEST = <%= JSON.stringify(manifest) %>;
     </script>
-  </head>
 
-  <body>
-    <div id='root'></div>
-    <script src='<%- manifest['src/client/index.js'] %>'></script>
+    <script src='<%- manifest['src/client/index.js'] %>' async></script>
   </body>
 </html>

@@ -1,0 +1,27 @@
+@import 'config';
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+body {
+  color: $dark-gray;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 0;
+  text-size-adjust: 100%;
+  word-wrap: break-word;
+}
+
+#initialLoad {
+  align-items: center;
+  color: $gray;
+  display: flex;
+  font-size: 32px;
+  height: 100%;
+  justify-content: center;
+}
