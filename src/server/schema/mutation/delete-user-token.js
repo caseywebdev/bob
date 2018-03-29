@@ -10,6 +10,7 @@ const {
   NOT_FOUND,
   UNAUTHORIZED
 } = require('../../../shared/constants/errors');
+const {WRITE_USER_TOKEN} = require('../../../shared/constants/roles');
 
 module.exports = {
   args: {
@@ -31,7 +32,7 @@ module.exports = {
   resolve: async (obj, {input: {userTokenId}}, {db, userToken}) => {
     if (!userToken) throw UNAUTHORIZED;
 
-    if (!hasPermission('WRITE_USER_TOKENS', userToken.roles)) throw FORBIDDEN;
+    if (!hasPermission(WRITE_USER_TOKEN, userToken.roles)) throw FORBIDDEN;
 
     const target = await db('userTokens')
       .where({id: userTokenId, userId: userToken.userId})

@@ -4,5 +4,5 @@ import React from 'react';
 
 export default () =>
   <Meta title='GraphiQL'>
-    <AsyncComponent importGetter={() => import('./index')} />
+    <AsyncComponent loader={() => import('./index')} />
   </Meta>;

@@ -1,3 +1,4 @@
 {
-  "extends": "coderiety"
+  "extends": "coderiety",
+  "env": {"browser": true, "jest": true, "node": true}
 }

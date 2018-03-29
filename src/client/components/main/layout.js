@@ -18,10 +18,7 @@ export default () =>
           exact
           path='/'
           render={props =>
-            <AsyncComponent
-              {...props}
-              importGetter={() => import('./index')}
-            />
+            <AsyncComponent {...props} loader={() => import('./index')} />
           }
         />
         <Route component={NotFound} />

@@ -9,19 +9,59 @@ body,
 }
 
 body {
+  @include font-family;
   color: $dark-gray;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 14px;
   margin: 0;
   text-size-adjust: 100%;
   word-wrap: break-word;
 }
 
-#initialLoad {
+@keyframes bob-loading-dot {
+  0%,
+  50%,
+  100% {
+    transform: scale(0.6);
+  }
+
+  25% {
+    transform: scale(0.9);
+  }
+}
+
+.loading {
   align-items: center;
-  color: $gray;
   display: flex;
-  font-size: 32px;
+  flex-direction: column;
   height: 100%;
   justify-content: center;
+
+  > div {
+    display: flex;
+
+    > div {
+      @include box-shadow;
+      animation: bob-loading-dot 1s infinite ease-in-out both;
+      background-color: $bob-orange;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-sizing: border-box;
+      height: 15px;
+      width: 15px;
+    }
+
+    &:first-child > div:last-child {
+      animation-delay: 0.125s;
+    }
+
+    &:last-child {
+      > div:first-child {
+        animation-delay: 0.375s;
+      }
+
+      > div:last-child {
+        animation-delay: 0.25s;
+      }
+    }
+  }
 }

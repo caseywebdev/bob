@@ -5,13 +5,13 @@ import React from 'react';
 export default class extends React.Component {
   state = {};
 
-  async componentWillMount() {
-    const {default: Component} = await this.props.importGetter();
+  async componentDidMount() {
+    const {default: Component} = await this.props.loader();
     this.setState({Component});
   }
 
   render() {
-    const props = _.omit(this.props, 'importGetter');
+    const props = _.omit(this.props, 'loader');
     const {Component} = this.state;
     return Component ? <Component {...props} /> : <Loading />;
   }

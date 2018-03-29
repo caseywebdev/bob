@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+node_modules/.bin/jest \
+  --color \
+  --coverage \
+  "$@" \
+  src

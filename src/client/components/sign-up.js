@@ -19,7 +19,7 @@ const query = gql`
 
 export default graphql(query)(
   class extends Component {
-    componentWillMount() {
+    componentDidMount() {
       const query = new URLSearchParams(this.props.location.search);
       const input = {
         token: query.get('token'),

@@ -1,6 +1,7 @@
-import cx from 'classnames';
-import Icon from './icon';
 import React from 'react';
 
-export default ({className, ...rest}) =>
-  <Icon {...rest} className={cx('fa-spin', className)} name='refresh' />;
+export default () =>
+  <div className='loading'>
+    <div><div /><div /></div>
+    <div><div /><div /></div>
+  </div>;
