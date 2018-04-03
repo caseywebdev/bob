@@ -11,7 +11,7 @@ module.exports = new GraphQLObjectType({
     userTokens: require('./user-tokens'),
     id: {type: new GraphQLNonNull(require('../uuid'))},
     name: {type: new GraphQLNonNull(GraphQLString)},
-    createdAt: {type: new GraphQLNonNull(GraphQLString)},
-    updatedAt: {type: new GraphQLNonNull(GraphQLString)}
+    createdAt: {type: new GraphQLNonNull(require('../datetime'))},
+    updatedAt: {type: new GraphQLNonNull(require('../datetime'))}
   })
 });

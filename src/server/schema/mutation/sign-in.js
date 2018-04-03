@@ -4,6 +4,7 @@ const {
   GraphQLNonNull,
   GraphQLString
 } = require('graphql');
+const {passwordSaltRounds} = require('../../config');
 const bcrypt = require('bcrypt');
 const createUserToken = require('../../functions/create-user-token');
 
@@ -33,6 +34,15 @@ module.exports = {
       .first();
     if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
       throw new Error('Invalid email address and password combination');
+    }
+
+    if (bcrypt.getRounds(user.passwordHash) !== passwordSaltRounds) {
+      await db('users')
+        .update({
+          passwordHash: await bcrypt.hash(password, passwordSaltRounds),
+          updatedAt: new Date()
+        })
+        .where({id: user.id});
     }
 
     return {

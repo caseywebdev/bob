@@ -24,7 +24,7 @@ module.exports = new GraphQLObjectType({
     output: {type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString)))},
     error: {type: GraphQLString},
     meta: {type: GraphQLJSON},
-    createdAt: {type: new GraphQLNonNull(GraphQLString)},
-    updatedAt: {type: new GraphQLNonNull(GraphQLString)}
+    createdAt: {type: new GraphQLNonNull(require('../datetime'))},
+    updatedAt: {type: new GraphQLNonNull(require('../datetime'))}
   })
 });

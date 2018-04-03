@@ -47,7 +47,7 @@ exports.up = db =>
       t.string('name');
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
-      t.timestamp('lastUsedAt').notNullable().defaultTo(db.fn.now());
+      t.timestamp('lastUsedAt');
     })
 
     .createTable('permissions', t => {

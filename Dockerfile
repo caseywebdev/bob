@@ -19,7 +19,7 @@ ENV \
   PASSWORD_SALT_ROUNDS='10' \
   POSTGRES_URL='pg://postgres:postgres@postgres/postgres' \
   ROOT_EMAIL_ADDRESS='' \
-  TOKEN_SALT_ROUNDS='1' \
+  TOKEN_SALT_ROUNDS='4' \
   TOKEN_SIZE='32'
 
 RUN \

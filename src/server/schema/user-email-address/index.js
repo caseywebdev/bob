@@ -1,8 +1,7 @@
 const {
   GraphQLID,
   GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLString
+  GraphQLObjectType
 } = require('graphql');
 
 module.exports = new GraphQLObjectType({
@@ -11,7 +10,7 @@ module.exports = new GraphQLObjectType({
     id: {type: new GraphQLNonNull(GraphQLID)},
     user: require('./user'),
     emailAddress: {type: new GraphQLNonNull(require('../email-address'))},
-    createdAt: {type: new GraphQLNonNull(GraphQLString)},
-    updatedAt: {type: new GraphQLNonNull(GraphQLString)}
+    createdAt: {type: new GraphQLNonNull(require('../datetime'))},
+    updatedAt: {type: new GraphQLNonNull(require('../datetime'))}
   })
 });

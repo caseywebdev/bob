@@ -1,4 +1,5 @@
 const {INVALID_TOKEN} = require('../../shared/constants/errors');
+const {tokenSaltRounds} = require('../config');
 const bcrypt = require('bcrypt');
 const getIdFromToken = require('./get-id-from-token');
 
@@ -13,12 +14,19 @@ module.exports = async ({db, token, userId}) => {
     throw INVALID_TOKEN;
   }
 
+  const updates = {};
+  if (bcrypt.getRounds(userToken.tokenHash) !== tokenSaltRounds) {
+    updates.tokenHash = await bcrypt.hash(token, tokenSaltRounds);
+  }
+
   const now = new Date();
-  if (now - token.lastUsedAt < ONE_DAY) return userToken;
+  if (now - userToken.lastUsedAt >= ONE_DAY) updates.lastUsedAt = now;
+
+  if (!Object.keys(updates).length) return userToken;
 
   return (
     await db('userTokens')
-      .update({lastUsedAt: now, updatedAt: now})
+      .update({...updates, updatedAt: now})
       .where({id})
       .returning('*')
   )[0];
