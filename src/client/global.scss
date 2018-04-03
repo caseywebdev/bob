@@ -1,2 +1,19 @@
 @import 'config';
 @import 'node_modules/font-awesome/scss/font-awesome';
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+body {
+  @include font-family;
+  color: $dark-gray;
+  font-size: 14px;
+  margin: 0;
+  text-size-adjust: 100%;
+  word-wrap: break-word;
+}

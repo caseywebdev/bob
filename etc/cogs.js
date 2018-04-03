@@ -36,11 +36,10 @@ const FULL = {
       options: {rename: false}
     },
     {name: 'eslint', only: 'src/**/*.js'},
-    {name: 'json', only: ['**/*.json']},
+    {name: 'json', only: '**/*.json'},
     {
       name: 'babel',
       only: ['src/**/*.+(js|scss)', '**/*.+(css|json)'],
-      except: 'src/client/index.scss',
       options: {
         plugins: ['transform-runtime'],
         presets: ['env', 'stage-0', 'react']
@@ -59,7 +58,6 @@ const FULL = {
     {
       name: 'concat-commonjs',
       only: '**/*+(css|js|json|scss)',
-      except: 'src/client/index.scss',
       options: {
         alias: {
           react:
@@ -76,7 +74,7 @@ const FULL = {
     MINIFY ? {
       name: 'uglify-js',
       only: '**/*.+(css|js|scss)',
-      except: ['**/*+(-|_|.)min.js', 'src/client/index.scss']
+      except: '**/*+(-|_|.)min.js'
     } : []
   ),
   builds: {
@@ -85,12 +83,7 @@ const FULL = {
       dir: 'dist'
     },
     'src/client/public/**/*': {base: 'src/client/public', dir: 'dist'},
-    'src/client/index.js': {base: 'src/client', dir: 'dist'},
-    'src/client/index.scss': {
-      base: 'src/client',
-      dir: 'dist',
-      ext: {'.scss': '.css'}
-    }
+    'src/client/index.js': {base: 'src/client', dir: 'dist'}
   },
   manifestPath: 'dist/manifest.json',
   then: FINAL

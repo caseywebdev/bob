@@ -22,20 +22,11 @@
   </head>
 
   <body>
-    <style><%= await include('dist/index.css') %></style>
-
-    <div id='root'>
-      <div class='loading'>
-        <div><div></div><div></div></div>
-        <div><div></div><div></div></div>
-      </div>
-    </div>
-
+    <div id='root'></div>
     <script>
       window.env = <%= JSON.stringify(_.pick(process.env, 'WATCH')) %>;
       window.COGS_MANIFEST = <%= JSON.stringify(manifest) %>;
     </script>
-
     <script src='<%- manifest['src/client/index.js'] %>' async></script>
   </body>
 </html>

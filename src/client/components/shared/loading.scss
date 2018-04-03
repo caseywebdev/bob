@@ -1,0 +1,114 @@
+@import '../../config';
+
+.centered {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}
+
+@mixin loading($name, $size) {
+  @keyframes bob-loading-dot-1-#{$name} {
+    0% {
+      transform: translate(0, 0);
+    }
+
+    15% {
+      transform: translate(0.6 * $size, 0);
+    }
+
+    20% {
+      transform: translate(0.45 * $size, 0);
+    }
+
+    25%,
+    75% {
+      transform: translate(0.5 * $size, 0);
+    }
+
+    90% {
+      transform: translate(0.5 * $size, 0.6 * $size);
+    }
+
+    95% {
+      transform: translate(0.5 * $size, 0.45 * $size);
+    }
+
+    100% {
+      transform: translate(0.5 * $size, 0.5 * $size);
+    }
+  }
+
+  @keyframes bob-loading-dot-2-#{$name} {
+    0%,
+    25% {
+      transform: translate(0, 0.5 * $size);
+    }
+
+    40% {
+      transform: translate(0, -0.1 * $size);
+    }
+
+    45% {
+      transform: translate(0, 0.05 * $size);
+    }
+
+    50%,
+    100% {
+      transform: translate(0, 0);
+    }
+  }
+
+  @keyframes bob-loading-dot-3-#{$name} {
+    0%,
+    50% {
+      transform: translate(0.5 * $size, 0.5 * $size);
+    }
+
+    65% {
+      transform: translate(-0.1 * $size, 0.5 * $size);
+    }
+
+    70% {
+      transform: translate(0.05 * $size, 0.5 * $size);
+    }
+
+    75%,
+    100% {
+      transform: translate(0, 0.5 * $size);
+    }
+  }
+
+  .size-#{$name} {
+    width: $size;
+    height: $size;
+
+    > div {
+      @include box-shadow;
+      background-color: $bob-orange;
+      border-radius: 50%;
+      border: 0.05 * $size solid #fff;
+      box-sizing: border-box;
+      height: 0.4 * $size;
+      margin: 0.05 * $size;
+      position: absolute;
+      width: 0.4 * $size;
+
+      &:nth-child(1) {
+        animation: bob-loading-dot-1-#{$name} 1s infinite ease-in-out both;
+      }
+
+      &:nth-child(2) {
+        animation: bob-loading-dot-2-#{$name} 1s infinite ease-in-out both;
+      }
+
+      &:nth-child(3) {
+        animation: bob-loading-dot-3-#{$name} 1s infinite ease-in-out both;
+      }
+    }
+  }
+}
+
+@include loading('small', 16px);
+@include loading('medium', 32px);
+@include loading('large', 64px);

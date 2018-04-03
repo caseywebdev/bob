@@ -1,7 +1,5 @@
 import React from 'react';
+import styles from './loading.scss';
 
-export default () =>
-  <div className='loading'>
-    <div><div /><div /></div>
-    <div><div /><div /></div>
-  </div>;
+export default ({size}) =>
+  <div className={styles[`size-${size}`]}><div /><div /><div /></div>;

@@ -1,6 +1,7 @@
 import 'graphiql/graphiql.css';
 import disk from '../../constants/disk';
 import GraphiQL from 'graphiql';
+import Meta from '../shared/meta';
 import React from 'react';
 
 const fetcher = body => {
@@ -17,4 +18,7 @@ const fetcher = body => {
   });
 };
 
-export default () => <GraphiQL {...{fetcher}} />;
+export default () =>
+  <Meta title='GraphiQL'>
+    <GraphiQL {...{fetcher}} />
+  </Meta>;

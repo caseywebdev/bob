@@ -1,9 +1,11 @@
 import {Link, Route, Switch} from 'react-router-dom';
-import AsyncComponent from '../shared/async-component';
 import B from '../shapes/b';
-import NotFound from '../shared/not-found';
+import createAsyncComponent from '../../functions/create-async-component';
 import React from 'react';
 import styles from './layout.scss';
+
+const Index = createAsyncComponent(() => import('./index'));
+const NotFound = createAsyncComponent(() => import('../shared/not-found'));
 
 export default () =>
   <div className={styles.root}>
@@ -14,13 +16,7 @@ export default () =>
     </div>
     <div className={styles.content}>
       <Switch>
-        <Route
-          exact
-          path='/'
-          render={props =>
-            <AsyncComponent {...props} loader={() => import('./index')} />
-          }
-        />
+        <Route exact path='/' component={Index} />
         <Route component={NotFound} />
       </Switch>
     </div>

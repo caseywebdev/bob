@@ -1,8 +1,3 @@
-import AsyncComponent from '../shared/async-component';
-import Meta from '../shared/meta';
-import React from 'react';
+import createAsyncComponent from '../../functions/create-async-component';
 
-export default () =>
-  <Meta title='GraphiQL'>
-    <AsyncComponent loader={() => import('./index')} />
-  </Meta>;
+export default createAsyncComponent(() => import('./index'));

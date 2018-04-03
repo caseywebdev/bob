@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import Center from './center';
 import Loading from './loading';
 import React from 'react';
 
@@ -6,13 +6,20 @@ export default class extends React.Component {
   state = {};
 
   async componentDidMount() {
-    const {default: Component} = await this.props.loader();
-    this.setState({Component});
+    try {
+      const {default: Component} = await this.props.importComponent();
+      this.setState({Component});
+    } catch (er) {
+      this.setState({error: er});
+    }
   }
 
   render() {
-    const props = _.omit(this.props, 'loader');
-    const {Component} = this.state;
-    return Component ? <Component {...props} /> : <Loading />;
+    const {Component, error} = this.state;
+    return (
+      Component ? <Component {...this.props.props} /> :
+      error ? <Center>{error.toString()}</Center> :
+      <Center><Loading size='large' /></Center>
+    );
   }
 }
