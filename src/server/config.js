@@ -34,7 +34,7 @@ module.exports = {
   passwordSaltRounds: parseInt(env.PASSWORD_SALT_ROUNDS),
   postgres: {url: fromEnv('POSTGRES_URL')},
   rootEmailAddress: fromEnv('ROOT_EMAIL_ADDRESS'),
-  tokenSaltRounds: 5 || parseInt(env.TOKEN_SALT_ROUNDS),
+  tokenSaltRounds: parseInt(env.TOKEN_SALT_ROUNDS),
   tokenSize: parseInt(env.TOKEN_SIZE),
   vault: {
     auth: {

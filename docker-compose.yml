@@ -13,6 +13,7 @@ x-bob-shared: &x-bob-shared
     WATCH: 1
   volumes:
     - .:/code
+    - /code/coverage
     - /code/dist
     - /code/node_modules
 
