@@ -1,4 +1,4 @@
-FROM node:9.10.1-alpine
+FROM node:9.11.1-alpine
 
 WORKDIR /code
 
@@ -29,8 +29,8 @@ RUN \
   curl -fLsS https://github.com/joyent/containerpilot/releases/download/$CONTAINERPILOT_VERSION/containerpilot-$CONTAINERPILOT_VERSION.tar.gz | \
     tar xz -C /usr/local/bin
 
-COPY package.json ./
-RUN npm install --no-save --build-from-source=bcrypt
+COPY package-lock.json package.json ./
+RUN npm install --build-from-source=bcrypt
 
 COPY .eslintrc .stylelintrc ./
 COPY bin/build bin/
