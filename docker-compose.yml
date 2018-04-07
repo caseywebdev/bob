@@ -12,14 +12,9 @@ x-bob-shared: &x-bob-shared
     ROOT_EMAIL_ADDRESS:
     WATCH: 1
   volumes:
-    - ./.eslintrc:/code/.eslintrc
-    - ./.stylelintrc:/code/.stylelintrc
-    - ./bin:/code/bin
-    - ./etc:/code/etc
-    - ./package-lock.json:/code/package-lock.json
-    - ./package.json:/code/package.json
-    - ./src:/code/src
-    - /var/run/docker.sock:/var/run/docker.sock
+    - .:/code
+    - /code/dist
+    - /code/node_modules
 
 services:
   postgres:
