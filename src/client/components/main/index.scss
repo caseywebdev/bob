@@ -41,10 +41,10 @@
 }
 
 .content {
-  @include box-shadow;
   -webkit-overflow-scrolling: touch;
+  box-shadow: $box-shadow;
   flex: 1;
-  overflow: auto;
   height: 100%;
+  overflow: auto;
   position: relative;
 }

@@ -30,7 +30,7 @@ RUN \
     tar xz -C /usr/local/bin
 
 COPY package-lock.json package.json ./
-RUN npm install --build-from-source=bcrypt
+RUN npm install
 
 COPY .eslintrc .stylelintrc ./
 COPY bin/build bin/

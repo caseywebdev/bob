@@ -84,10 +84,10 @@
     height: $size;
 
     > div {
-      @include box-shadow;
       background-color: $bob-orange;
       border-radius: 50%;
       border: 0.05 * $size solid #fff;
+      box-shadow: $box-shadow;
       box-sizing: border-box;
       height: 0.4 * $size;
       margin: 0.05 * $size;

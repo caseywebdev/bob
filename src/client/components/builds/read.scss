@@ -19,7 +19,7 @@
 }
 
 .description {
-  @include box-shadow;
+  box-shadow: $box-shadow;
   position: relative;
   z-index: 1;
 }

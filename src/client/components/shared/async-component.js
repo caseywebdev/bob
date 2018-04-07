@@ -1,5 +1,6 @@
 import Center from './center';
 import Loading from './loading';
+import Notice from './notice';
 import React from 'react';
 
 export default class extends React.Component {
@@ -16,10 +17,13 @@ export default class extends React.Component {
 
   render() {
     const {Component, error} = this.state;
-    return (
-      Component ? <Component {...this.props.props} /> :
-      error ? <Center>{error.toString()}</Center> :
-      <Center><Loading size='large' /></Center>
-    );
+
+    if (Component) return <Component {...this.props.props} />;
+
+    if (error) {
+      return <Center><Notice type='error'>{error.toString()}</Notice></Center>;
+    }
+
+    return <Center><Loading size='large' /></Center>;
   }
 }

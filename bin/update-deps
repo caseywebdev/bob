@@ -1,0 +1,3 @@
+#!/bin/sh -e
+
+npm update --package-lock-only

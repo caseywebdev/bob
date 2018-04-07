@@ -1,12 +1,14 @@
 import {ApolloProvider} from 'react-apollo';
 import {Route, Router, Switch} from 'react-router-dom';
-import apolloClient from '../../constants/apollo-client';
-import GraphiQL from '../graphiql/layout';
-import history from '../../constants/history';
-import MainLayout from '../main/layout';
-import Meta from '../shared/meta';
+import apolloClient from '../constants/apollo-client';
+import createAsyncComponent from '../functions/create-async-component';
+import history from '../constants/history';
+import Meta from './shared/meta';
 import React from 'react';
-import SignUp from '../sign-up';
+
+const GraphiQL = createAsyncComponent(() => import('./graphiql'));
+const Main = createAsyncComponent(() => import('./main'));
+const SignUp = createAsyncComponent(() => import('./sign-up'));
 
 export default () =>
   <ApolloProvider client={apolloClient}>
@@ -15,7 +17,7 @@ export default () =>
         <Switch>
           <Route exact path='/sign-up' component={SignUp} />
           <Route exact path='/graphiql' component={GraphiQL} />
-          <Route component={MainLayout} />
+          <Route component={Main} />
         </Switch>
       </Meta>
     </Router>

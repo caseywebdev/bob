@@ -10,7 +10,7 @@ body,
 }
 
 body {
-  @include font-family;
+  font-family: $font-family;
   color: $dark-gray;
   font-size: 14px;
   margin: 0;

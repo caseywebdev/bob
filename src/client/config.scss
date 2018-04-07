@@ -28,16 +28,10 @@ $teal-blue: #85c7f8;
 $yellow: #f2cb30;
 
 $border-radius: 3px;
+$box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+$font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
 
 $fa-font-path: '/fonts';
-
-@mixin font-family {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-
-@mixin box-shadow {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
-}
 
 @mixin ellipsis {
   overflow: hidden;

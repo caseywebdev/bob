@@ -1,12 +1,15 @@
 @import '../../config';
 
 .root {
-  display: flex;
   border-radius: $border-radius;
-  background: $red;
+  border: 2px solid #fff;
+  box-shadow: $box-shadow;
   color: #fff;
-  font-family: Monaco, monospace;
-  font-size: 12px;
+  display: flex;
+}
+
+.type-error {
+  background: $red;
 }
 
 .left {
