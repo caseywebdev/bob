@@ -17,3 +17,11 @@ body {
   text-size-adjust: 100%;
   word-wrap: break-word;
 }
+
+input {
+  border-radius: $border-radius;
+  box-shadow: none;
+  border: 1px solid $light-gray;
+  display: block;
+  padding: 10px;
+}

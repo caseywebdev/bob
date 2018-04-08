@@ -1,22 +1,5 @@
 version: '3.6'
 
-x-bob-shared: &x-bob-shared
-  build: .
-  environment:
-    GITHUB_CLIENT_ID:
-    GITHUB_CLIENT_SECRET:
-    MAIL_ENABLED:
-    MAIL_FROM_ADDRESS:
-    MAIL_FROM_NAME:
-    MAIL_SMTP_URL:
-    ROOT_EMAIL_ADDRESS:
-    WATCH: 1
-  volumes:
-    - .:/code
-    - /code/coverage
-    - /code/dist
-    - /code/node_modules
-
 services:
   postgres:
     image: postgres:10.2-alpine
@@ -24,18 +7,25 @@ services:
       - pg-data:/var/lib/postgresql/data
 
   bob:
-    <<: *x-bob-shared
+    build: .
     depends_on:
-      - bob-inotify-fix
       - postgres
+    environment:
+      GITHUB_CLIENT_ID:
+      GITHUB_CLIENT_SECRET:
+      MAIL_ENABLED:
+      MAIL_FROM_ADDRESS:
+      MAIL_FROM_NAME:
+      MAIL_SMTP_URL:
+      ROOT_EMAIL_ADDRESS:
+      WATCH: 1
     ports:
       - 80:80
-
-  # HACK: Until https://github.com/docker/for-mac/issues/681 is fixed
-  bob-inotify-fix:
-    <<: *x-bob-shared
-    command: ["tail", "-f", "/dev/null"]
-    stop_signal: SIGKILL
+    volumes:
+      - .:/code
+      - /code/coverage
+      - /code/dist
+      - /code/node_modules
 
 volumes:
   pg-data:
