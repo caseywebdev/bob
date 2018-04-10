@@ -1,20 +1,8 @@
-import {graphql} from 'react-apollo';
-import gql from 'graphql-tag';
+import Loading from '../shared/loading';
 import React from 'react';
+import SignIn from '../sign-in';
 
-const query = gql`
-  query {
-    viewer {
-      id
-      name
-      userTokens {
-        id
-      }
-    }
-  }
-`;
-
-const render = ({props}) =>
-  <pre>{JSON.stringify(props.data, null, 2)}</pre>;
-
-export default graphql(query)(props => render({props}));
+export default ({loading, viewer}) =>
+  loading ? <Loading size='big' /> :
+  viewer ? <pre>{JSON.stringify(viewer, null, 2)}</pre> :
+  <SignIn />;
