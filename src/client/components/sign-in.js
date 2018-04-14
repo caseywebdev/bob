@@ -43,6 +43,7 @@ export default graphql(gql`
           {
             isLoading ? <Loading size='large' /> :
             <div>
+              Sign In
               {error && <Notice type='error'>{error.toString()}</Notice>}
               <input
                 type='text'

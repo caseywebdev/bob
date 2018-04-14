@@ -2,6 +2,7 @@ import {graphql} from 'react-apollo';
 import {Link, Route, Switch} from 'react-router-dom';
 import B from '../shapes/b';
 import createAsyncComponent from '../../functions/create-async-component';
+import disk from '../../constants/disk';
 import gql from 'graphql-tag';
 import React from 'react';
 import styles from './index.scss';
@@ -32,8 +33,10 @@ export default graphql(gql`
       name
     }
   }
-`)(
-  ({data: {loading, viewer}}) =>
+`, {
+  skip: () => !disk.get('token')
+})(
+  ({data: {loading, viewer} = {}}) =>
     <div className={styles.root}>
       <div className={styles.nav}>
         <Link className={styles.navItem} to='/'>
