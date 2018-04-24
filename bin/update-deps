@@ -1,4 +1,4 @@
 #!/bin/sh -e
 
-npm update --no-save --package-lock-only
-npm prune --no-save --package-lock-only
+rm -fr package-lock.json
+npm install --no-save --package-lock-only

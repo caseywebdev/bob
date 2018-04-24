@@ -22,7 +22,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - .:/code
+      - .:/code:cached
       - /code/coverage
       - /code/dist
       - /code/node_modules
