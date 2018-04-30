@@ -1,4 +1,4 @@
 #!/bin/sh -e
 
-rm -fr package-lock.json
-npm install --no-save --package-lock-only
+rm -fr node_modules/* package-lock.json
+npm install

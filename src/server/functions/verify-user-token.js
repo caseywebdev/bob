@@ -3,7 +3,7 @@ const {tokenSaltRounds} = require('../config');
 const bcrypt = require('bcrypt');
 const getIdFromToken = require('./get-id-from-token');
 
-const ONE_DAY = 1000 * 60 * 60 * 24;
+const ONE_HOUR = 1000 * 60 * 60;
 
 module.exports = async ({db, token, userId}) => {
   const id = getIdFromToken(token);
@@ -20,7 +20,7 @@ module.exports = async ({db, token, userId}) => {
   }
 
   const now = new Date();
-  if (now - userToken.lastUsedAt >= ONE_DAY) updates.lastUsedAt = now;
+  if (now - userToken.lastUsedAt >= ONE_HOUR) updates.lastUsedAt = now;
 
   if (!Object.keys(updates).length) return userToken;
 
