@@ -57,7 +57,7 @@ const FULL = {
     },
     {
       name: 'concat-commonjs',
-      only: '**/*+(css|js|json|scss)',
+      only: '**/*.+(css|js|json|scss)',
       options: {
         alias: {
           react:
