@@ -2,11 +2,11 @@ const {GraphQLScalarType} = require('graphql');
 const {Kind: {STRING}} = require('graphql/language');
 const isUuid = require('../../functions/is-uuid');
 
-const check = str => isUuid(str) ? str : null;
+const check = str => isUuid(str) ? str : undefined;
 
 module.exports = new GraphQLScalarType({
   name: 'UUID',
   parseValue: check,
   serialize: check,
-  parseLiteral: ({kind, value}) => kind === STRING ? check(value) : null
+  parseLiteral: ({kind, value}) => kind === STRING ? check(value) : undefined
 });

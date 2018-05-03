@@ -10,18 +10,6 @@ const Query = props => props.skip ? props.children() : <_Query {...props} />;
 const getToken = ({location: {search}}) =>
   (new URLSearchParams(search)).get('token');
 
-// graphql(gql`
-//   mutation($input: SignUpInput!) {
-//     signUp(input: $input) {
-//       user {
-//         id
-//       }
-//     }
-//   }
-// `, {
-//   name: 'signUp'
-// })
-
 class ClaimEmailAddress extends Component {
   state = {
     emailAddress: ''
@@ -40,23 +28,81 @@ class ClaimEmailAddress extends Component {
           }
         `}
       >
-        {() =>
-          <div>
+        {(mutate, {error, loading}) =>
+          <form
+            onSubmit={ev => {
+              ev.preventDefault();
+              mutate({
+                variables: {input: {emailAddress: this.state.emailAddress}}
+              });
+            }}
+          >
+            <pre>{JSON.stringify({error, loading})}</pre>
             <input
-              value={''}
+              value={this.state.emailAddress}
               onChange={({target: {value}}) =>
                 this.setState({emailAddress: value})
               }
             />
-            <button onClick={this.submit}>Next</button>
-          </div>
+            <button>Next</button>
+          </form>
         }
       </Mutation>
     );
   }
 }
 
-const SignUp = () => <div />;
+class SignUp extends Component {
+  state = {
+    name: '',
+    password: ''
+  };
+
+  render() {
+    return (
+      <Mutation
+        mutation={gql`
+          mutation($input: SignUpInput!) {
+            signUp(input: $input) {
+              user {
+                id
+              }
+            }
+          }
+        `}
+      >
+        {(mutate, {error, loading}) =>
+          <form
+            onSubmit={ev => {
+              ev.preventDefault();
+              mutate({variables: {input: {...this.state, token: this.props.token}}});
+            }}
+          >
+            <pre>{JSON.stringify({error, loading})}</pre>
+            <input
+              autoComplete='name'
+              type='text'
+              value={this.state.name}
+              onChange={({target: {value}}) => this.setState({name: value})}
+            />
+            <input
+              type='email'
+              value={this.props.emailAddress}
+              disabled
+            /> (verified)
+            <input
+              autoComplete='new-password'
+              type='password'
+              value={this.state.password}
+              onChange={({target: {value}}) => this.setState({password: value})}
+            />
+            <button>Finish</button>
+          </form>
+        }
+      </Mutation>
+    );
+  }
+}
 
 export default ({location}) => {
   const token = getToken({location});
@@ -73,7 +119,11 @@ export default ({location}) => {
       skip={!token}
       variables={{token}}
     >
-      {({data: {emailAddress} = {}, error, loading}) =>
+      {({
+        data: {userEmailAddress: {emailAddress} = {}} = {},
+        error,
+        loading
+      } = {}) =>
         <Meta title='Sign Up'>
           {loading && <Loading size='large' />}
           {error && <Notice type='error'>{error.message}</Notice>}

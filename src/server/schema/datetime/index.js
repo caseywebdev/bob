@@ -6,7 +6,7 @@ module.exports = new GraphQLScalarType({
   serialize: obj => obj && obj.toJSON(),
   parseValue: str => {
     const date = new Date(str);
-    return isNaN(date.valueOf()) ? null : date;
+    return isNaN(date.valueOf()) ? undefined : date;
   },
-  parseLiteral: ({kind, value}) => kind === STRING ? value : null
+  parseLiteral: ({kind, value}) => kind === STRING ? value : undefined
 });

@@ -46,13 +46,15 @@ export default graphql(gql`
               Sign In
               {error && <Notice type='error'>{error.toString()}</Notice>}
               <input
-                type='text'
+                autoComplete='email'
+                type='email'
                 value={emailAddress}
                 onChange={({target: {value}}) =>
                   this.setState({emailAddress: value})
                 }
               />
               <input
+                autoComplete='current-password'
                 type='password'
                 value={password}
                 onChange={({target: {value}}) =>
