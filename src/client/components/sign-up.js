@@ -80,16 +80,17 @@ class SignUp extends Component {
           >
             <pre>{JSON.stringify({error, loading})}</pre>
             <input
+              autoComplete='username'
+              type='email'
+              value={this.props.emailAddress}
+              disabled
+            /> (verified)
+            <input
               autoComplete='name'
               type='text'
               value={this.state.name}
               onChange={({target: {value}}) => this.setState({name: value})}
             />
-            <input
-              type='email'
-              value={this.props.emailAddress}
-              disabled
-            /> (verified)
             <input
               autoComplete='new-password'
               type='password'

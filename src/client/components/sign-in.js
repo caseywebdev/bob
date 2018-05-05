@@ -46,7 +46,7 @@ export default graphql(gql`
               Sign In
               {error && <Notice type='error'>{error.toString()}</Notice>}
               <input
-                autoComplete='email'
+                autoComplete='username'
                 type='email'
                 value={emailAddress}
                 onChange={({target: {value}}) =>
