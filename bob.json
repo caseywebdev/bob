@@ -1,7 +1,7 @@
 {
   "tags": [
-    "coderiety/bob:{{REF}}",
     "coderiety/bob:{{SHA}}",
+    "coderiety/bob:{{REF}}",
     "coderiety/bob:latest"
   ]
 }
