@@ -31,11 +31,12 @@ module.exports = {
     },
     smtpUrl: fromEnv('MAIL_SMTP_URL')
   },
-  passwordSaltRounds: parseInt(env.PASSWORD_SALT_ROUNDS),
   postgres: {url: fromEnv('POSTGRES_URL')},
   rootEmailAddress: fromEnv('ROOT_EMAIL_ADDRESS'),
-  tokenSaltRounds: parseInt(env.TOKEN_SALT_ROUNDS),
-  tokenSize: parseInt(env.TOKEN_SIZE),
+  token: {
+    hashAlgorithm: env.TOKEN_HASH_ALGORITHM,
+    size: parseInt(env.TOKEN_SIZE)
+  },
   vault: {
     auth: {
       data: JSON.parse(env.VAULT_AUTH_DATA || '{}'),

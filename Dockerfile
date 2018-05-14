@@ -1,4 +1,4 @@
-FROM node:10.0.0-alpine
+FROM node:10.1.0-alpine
 
 WORKDIR /code
 
@@ -16,16 +16,15 @@ ENV \
   MAIL_FROM_ADDRESS='' \
   MAIL_FROM_NAME='' \
   MAIL_SMTP_URL='' \
-  PASSWORD_SALT_ROUNDS='10' \
   POSTGRES_URL='pg://postgres:postgres@postgres/postgres' \
   ROOT_EMAIL_ADDRESS='' \
-  TOKEN_SALT_ROUNDS='4' \
+  TOKEN_HASH_ALGORITHM='sha512' \
   TOKEN_SIZE='32'
 
 RUN \
   apk --no-cache add curl g++ libc6-compat make nginx python && \
   mkdir -p /run/nginx && \
-  CONTAINERPILOT_VERSION='3.7.0' && \
+  CONTAINERPILOT_VERSION='3.8.0' && \
   curl -fLsS https://github.com/joyent/containerpilot/releases/download/$CONTAINERPILOT_VERSION/containerpilot-$CONTAINERPILOT_VERSION.tar.gz | \
     tar xz -C /usr/local/bin
 

@@ -14,7 +14,6 @@ exports.up = db =>
     .createTable('users', t => {
       t.uuid('id').primary();
       t.string('name').notNullable();
-      t.string('passwordHash').notNullable();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })
@@ -22,12 +21,26 @@ exports.up = db =>
     .createTable('userEmailAddresses', t => {
       t.uuid('id').primary();
       t.uuid('userId')
+        .notNullable()
         .references('users.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .index();
       t.string('emailAddress').notNullable().unique();
-      t.string('tokenHash').notNullable();
+      t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
+      t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
+    })
+
+    .createTable('emailAddressClaims', t => {
+      t.uuid('id').primary();
+      t.uuid('userId')
+        .references('users.id')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
+      t.string('emailAddress').notNullable().index();
+      t.binary('tokenHash').notNullable();
+      t.string('tokenHashAlgorithm').notNullable();
+      t.string('code');
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })
@@ -40,7 +53,8 @@ exports.up = db =>
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .index();
-      t.string('tokenHash').notNullable();
+      t.binary('tokenHash').notNullable();
+      t.string('tokenHashAlgorithm').notNullable();
       t.integer('roles').notNullable();
       t.string('userAgent').notNullable();
       t.string('ipAddress').notNullable();
