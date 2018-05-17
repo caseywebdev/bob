@@ -37,7 +37,7 @@ export default graphql(gql`
     }
 
     render() {
-      const {emailAddress, error, isLoading, password} = this.state;
+      const {emailAddress, error, isLoading} = this.state;
       return (
         <Center>
           {
@@ -51,14 +51,6 @@ export default graphql(gql`
                 value={emailAddress}
                 onChange={({target: {value}}) =>
                   this.setState({emailAddress: value})
-                }
-              />
-              <input
-                autoComplete='current-password'
-                type='password'
-                value={password}
-                onChange={({target: {value}}) =>
-                  this.setState({password: value})
                 }
               />
               <button onClick={this.submit}>Sign In</button>

@@ -5,6 +5,7 @@ const {
   GraphQLString
 } = require('graphql');
 const bcrypt = require('bcrypt');
+const getDb = require('../../functions/get-db');
 const verifyEmailAddress = require('../../functions/verify-email-address');
 const config = require('../../config');
 const uuid = require('uuid/v4');
@@ -30,11 +31,12 @@ module.exports = {
       user: {type: new GraphQLNonNull(require('../user'))}
     })
   })),
-  resolve: async (obj, {input: {name, password, token}}, {db}) => {
-    const uea = await verifyEmailAddress({db, token});
+  resolve: async (obj, {input: {name, password, token}}) => {
+    const uea = await verifyEmailAddress({token});
     const userId = uuid();
     let user;
     const passwordHash = await bcrypt.hash(password, passwordSaltRounds);
+    const db = await getDb();
     await db.transaction(async trx => {
       user = (
         await trx('users')

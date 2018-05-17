@@ -1,6 +1,9 @@
 {
   "private": true,
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "5.1.0-11",
+    "@fortawesome/fontawesome-svg-core": "1.2.0-11",
+    "@fortawesome/react-fontawesome": "0.1.0-11",
     "@slack/client": "4",
     "anser": "1",
     "apollo-cache-inmemory": "1",
@@ -36,7 +39,6 @@
     "eslint-plugin-react": "7",
     "eslint": "4",
     "express": "4",
-    "font-awesome": "4",
     "fort-knox": "0.1",
     "graphiql": "0.11",
     "graphql-tag": "2",
@@ -64,6 +66,7 @@
     "tar-stream": "1",
     "underscore.string": "3",
     "underscore": "1",
+    "useragent": "2",
     "uuid": "3",
     "uws": "9",
     "watchy": "0.9"

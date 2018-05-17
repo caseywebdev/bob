@@ -4,7 +4,7 @@ import React from 'react';
 import styles from './notice.scss';
 
 const ICONS = {
-  error: <Icon name='exclamation-circle' />
+  error: <Icon icon='exclamation-circle' />
 };
 
 export default ({children, type}) =>

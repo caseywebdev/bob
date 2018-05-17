@@ -1,8 +1,11 @@
-const bcrypt = require('bcrypt');
 const createToken = require('./create-token');
+const getHash = require('./get-hash');
 const uuid = require('uuid/v4');
 
-test('creates a token and matching hash', async () => {
-  const {token, tokenHash} = await createToken({id: uuid()});
-  expect(await bcrypt.compare(token, tokenHash)).toBe(true);
+test('creates a unique token and matching hash', async () => {
+  const id = uuid();
+  const {token, tokenHash, tokenHashAlgorithm} = await createToken({id});
+  expect(tokenHash)
+    .toEqual(getHash({algorithm: tokenHashAlgorithm, buffer: token}));
+  expect(token).not.toEqual(await createToken({id}));
 });

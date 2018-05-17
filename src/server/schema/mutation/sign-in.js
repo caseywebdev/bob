@@ -7,6 +7,7 @@ const {
 const {passwordSaltRounds} = require('../../config');
 const bcrypt = require('bcrypt');
 const createUserToken = require('../../functions/create-user-token');
+const getDb = require('../../functions/get-db');
 
 module.exports = {
   args: {
@@ -26,7 +27,12 @@ module.exports = {
       userToken: {type: new GraphQLNonNull(require('../user-token'))}
     })
   })),
-  resolve: async (obj, {input: {emailAddress, password}}, {db, req}) => {
+  resolve: async (
+    obj,
+    {input: {emailAddress, password}},
+    {req: {headers: {'user-agent': userAgent}, ip: ipAddress}}
+  ) => {
+    const db = await getDb();
     const user = await db('users')
       .select('users.*')
       .innerJoin('userEmailAddresses', 'users.id', 'userEmailAddresses.userId')
@@ -46,7 +52,12 @@ module.exports = {
     }
 
     return {
-      userToken: await createUserToken({db, req, roles: [], userId: user.id})
+      userToken: await createUserToken({
+        ipAddress,
+        roles: [],
+        userAgent,
+        userId: user.id
+      })
     };
   }
 };

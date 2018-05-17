@@ -13,7 +13,7 @@ import styles from './description.scss';
 const REFRESH_INTERVAL = 1000;
 
 const ICONS = {
-  pending: 'clock-o',
+  pending: 'clock',
   claimed: 'briefcase',
   pulling: 'download',
   building: 'wrench',
@@ -44,7 +44,7 @@ const render = ({
   <div className={cx(styles.root, styles[`status-${status}`])}>
     <div className={styles.content}>
       <Link className={styles.link} to={`/builds/${id}`}>
-        <div className={styles.left}><Icon name={ICONS[status]} /></div>
+        <div className={styles.left}><Icon icon={ICONS[status]} /></div>
         <div className={styles.center}>
           <div className={styles.title}>{getBuildDescription({build})}</div>
           {_.map(tags, (tag, key) =>
@@ -58,10 +58,10 @@ const render = ({
           {
             buildIsDone({build}) ?
             <span className={styles.button} onClick={() => rebuild({props})}>
-              <Icon name='repeat' />
+              <Icon icon='redo' />
             </span> :
             <span className={styles.button} onClick={() => cancel({props})}>
-              <Icon name='ban' />
+              <Icon icon='ban' />
             </span>
           }
         </div>

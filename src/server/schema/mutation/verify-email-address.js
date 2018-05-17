@@ -4,6 +4,7 @@ const {
   GraphQLNonNull,
   GraphQLString
 } = require('graphql');
+const getDb = require('../../functions/get-db');
 const verifyEmailAddress = require('../../functions/verify-email-address');
 
 module.exports = {
@@ -25,10 +26,11 @@ module.exports = {
       }
     })
   })),
-  resolve: async (obj, {input: {token}}, {db, userToken}) => {
+  resolve: async (obj, {input: {token}}, {userToken}) => {
     if (!userToken) throw new Error('Authentication required');
 
-    const uea = await verifyEmailAddress({db, token});
+    const uea = await verifyEmailAddress({token});
+    const db = await getDb();
     return {
       userEmailAddress: (
         await db('userEmailAddresses')

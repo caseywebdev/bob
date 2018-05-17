@@ -25,17 +25,21 @@ module.exports = {
       userToken: {type: new GraphQLNonNull(require('../user-token'))}
     })
   })),
-  resolve: async (obj, {input: {name, roles}}, {db, req, userToken}) => {
+  resolve: async (
+    obj,
+    {input: {name, roles}},
+    {req: {headers: {'user-agent': userAgent}, ip: ipAddress}, userToken}
+  ) => {
     if (!userToken || userToken.roles > 0) throw new Error('Forbidden');
 
     if (!roles.length) throw new Error('At least one role is required');
 
     return {
       userToken: await createUserToken({
-        db,
+        ipAddress,
         name,
-        req,
         roles,
+        userAgent,
         userId: userToken.userId
       })
     };

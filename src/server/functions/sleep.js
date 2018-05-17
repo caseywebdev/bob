@@ -1,5 +1,8 @@
-const {promisify} = require('util');
-
-const sleepInMs = promisify(setTimeout);
-
-module.exports = async n => sleepInMs(n * 1000);
+module.exports = n => {
+  let cancel;
+  const promise = new Promise(resolve => {
+    const timeoutId = setTimeout(resolve, n * 1000);
+    cancel = () => clearTimeout(timeoutId);
+  });
+  return {cancel, promise};
+};

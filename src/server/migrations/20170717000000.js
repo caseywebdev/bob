@@ -40,6 +40,8 @@ exports.up = db =>
       t.string('emailAddress').notNullable().index();
       t.binary('tokenHash').notNullable();
       t.string('tokenHashAlgorithm').notNullable();
+      t.string('userAgent').notNullable();
+      t.string('ipAddress').notNullable();
       t.string('code');
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());

@@ -78,10 +78,6 @@ const FULL = {
     } : []
   ),
   builds: {
-    'node_modules/font-awesome/fonts/*': {
-      base: 'node_modules/font-awesome',
-      dir: 'dist'
-    },
     'src/client/public/**/*': {base: 'src/client/public', dir: 'dist'},
     'src/client/index.js': {base: 'src/client', dir: 'dist'}
   },

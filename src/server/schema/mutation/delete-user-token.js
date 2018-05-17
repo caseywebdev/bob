@@ -4,6 +4,7 @@ const {
   GraphQLNonNull,
   GraphQLString
 } = require('graphql');
+const getDb = require('../../functions/get-db');
 const hasPermission = require('../../../shared/functions/has-permission');
 const {
   FORBIDDEN,
@@ -29,11 +30,12 @@ module.exports = {
       userToken: {type: new GraphQLNonNull(require('../user-token'))}
     })
   })),
-  resolve: async (obj, {input: {userTokenId}}, {db, userToken}) => {
+  resolve: async (obj, {input: {userTokenId}}, {userToken}) => {
     if (!userToken) throw UNAUTHORIZED;
 
     if (!hasPermission(WRITE_USER_TOKEN, userToken.roles)) throw FORBIDDEN;
 
+    const db = await getDb();
     const target = await db('userTokens')
       .where({id: userTokenId, userId: userToken.userId})
       .first();
