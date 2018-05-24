@@ -1,6 +1,5 @@
 const createToken = require('./create-token');
 const getDb = require('./get-db');
-const uuid = require('uuid/v4');
 
 module.exports = async ({
   ipAddress,
@@ -9,8 +8,7 @@ module.exports = async ({
   userAgent,
   userId
 }) => {
-  const id = uuid();
-  const {token, tokenHash} = await createToken({id});
+  const {id, token, tokenHash} = await createToken();
   const db = await getDb();
   const [userToken] = await db('userTokens')
     .insert({

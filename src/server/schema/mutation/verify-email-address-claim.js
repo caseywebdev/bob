@@ -5,7 +5,7 @@ const {
   GraphQLString
 } = require('graphql');
 const getDb = require('../../functions/get-db');
-const verifyEmailAddress = require('../../functions/verify-email-address');
+const verifyEmailAddressClaim = require('../../functions/verify-email-address-claim');
 
 module.exports = {
   args: {
@@ -27,13 +27,11 @@ module.exports = {
     })
   })),
   resolve: async (obj, {input: {token}}, {userToken}) => {
-    if (!userToken) throw new Error('Authentication required');
-
-    const uea = await verifyEmailAddress({token});
+    const eac = await verifyEmailAddressClaim({token});
     const db = await getDb();
     return {
       userEmailAddress: (
-        await db('userEmailAddresses')
+        await db('emailAddressClaims')
           .update({updatedAt: new Date(), userId: userToken.userId})
           .where({id: uea.id})
           .returning('*')

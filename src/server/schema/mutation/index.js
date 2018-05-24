@@ -10,6 +10,6 @@ module.exports = new GraphQLObjectType({
     signIn: require('./sign-in'),
     signOut: require('./sign-out'),
     signUp: require('./sign-up'),
-    verifyEmailAddress: require('./verify-email-address')
+    verifyEmailAddressClaim: require('./verify-email-address-claim')
   })
 });

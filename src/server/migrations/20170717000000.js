@@ -38,11 +38,11 @@ exports.up = db =>
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
       t.string('emailAddress').notNullable().index();
-      t.binary('tokenHash').notNullable();
-      t.string('tokenHashAlgorithm').notNullable();
       t.string('userAgent').notNullable();
       t.string('ipAddress').notNullable();
-      t.string('code');
+      t.binary('tokenHash');
+      t.string('tokenHashAlgorithm');
+      t.string('pin');
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })
