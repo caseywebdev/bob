@@ -59,14 +59,6 @@ const FULL = {
       name: 'concat-commonjs',
       only: '**/*.+(css|js|json|scss)',
       options: {
-        alias: {
-          react:
-            `react/cjs/react.${MINIFY ? 'production.min' : 'development'}.js`,
-          'react-dom':
-            `react-dom/cjs/react-dom.${
-              MINIFY ? 'production.min' : 'development'
-            }.js`
-        },
         entry: 'src/client/index.js',
         extensions: ['.js', '.css', '.scss']
       }

@@ -8,7 +8,7 @@ module.exports = new GraphQLObjectType({
   name: 'UserToken',
   fields: () => ({
     id: {type: new GraphQLNonNull(require('../uuid'))},
-    roles: require('./roles'),
+    roles: {type: new GraphQLNonNull(require('../roles'))},
     name: {type: GraphQLString},
     token: {type: GraphQLString},
     user: require('./user'),

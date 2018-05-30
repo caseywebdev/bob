@@ -45,7 +45,7 @@
     "graphql-type-json": "0.2",
     "graphql": "0.13",
     "history": "4",
-    "jest": "22",
+    "jest": "23",
     "knex": "0.14",
     "live-socket": "0.10",
     "livereload": "0.7",
@@ -68,7 +68,7 @@
     "underscore": "1",
     "useragent": "2",
     "uuid": "3",
-    "uws": "9",
+    "uws": "10",
     "watchy": "0.9"
   }
 }

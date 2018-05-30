@@ -5,7 +5,6 @@ const {
   GraphQLString
 } = require('graphql');
 const {passwordSaltRounds} = require('../../config');
-const bcrypt = require('bcrypt');
 const createUserToken = require('../../functions/create-user-token');
 const getDb = require('../../functions/get-db');
 
@@ -15,8 +14,7 @@ module.exports = {
       type: new GraphQLNonNull(new GraphQLInputObjectType({
         name: 'SignInInput',
         fields: () => ({
-          emailAddress: {type: new GraphQLNonNull(require('../email-address'))},
-          password: {type: new GraphQLNonNull(GraphQLString)}
+          token: {type: new GraphQLNonNull(GraphQLString)}
         })
       }))
     }
@@ -54,7 +52,7 @@ module.exports = {
     return {
       userToken: await createUserToken({
         ipAddress,
-        roles: [],
+        roles: 0,
         userAgent,
         userId: user.id
       })

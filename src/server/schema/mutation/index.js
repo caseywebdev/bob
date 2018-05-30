@@ -8,7 +8,6 @@ module.exports = new GraphQLObjectType({
     createUserToken: require('./create-user-token'),
     deleteUserToken: require('./delete-user-token'),
     signIn: require('./sign-in'),
-    signOut: require('./sign-out'),
     signUp: require('./sign-up'),
     verifyEmailAddressClaim: require('./verify-email-address-claim')
   })

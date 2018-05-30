@@ -6,6 +6,8 @@ const {
   GraphQLString
 } = require('graphql');
 const createUserToken = require('../../functions/create-user-token');
+const hasPermission = require('../../../shared/functions/has-permission');
+const {WRITE_USER_TOKEN} = require('../../../shared/functions/has-permission');
 
 module.exports = {
   args: {
@@ -14,7 +16,7 @@ module.exports = {
         name: 'CreateUserTokenInput',
         fields: () => ({
           name: {type: new GraphQLNonNull(GraphQLString)},
-          roles: {type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(require('../role'))))}
+          roles: {type: new GraphQLNonNull(require('../roles'))}
         })
       }))
     }
@@ -30,9 +32,10 @@ module.exports = {
     {input: {name, roles}},
     {req: {headers: {'user-agent': userAgent}, ip: ipAddress}, userToken}
   ) => {
-    if (!userToken || userToken.roles > 0) throw new Error('Forbidden');
-
-    if (!roles.length) throw new Error('At least one role is required');
+    if (
+      !userToken ||
+      !hasPermission(WRITE_USER_TOKEN | roles, userToken.roles)
+    ) throw new Error('Forbidden');
 
     return {
       userToken: await createUserToken({

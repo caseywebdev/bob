@@ -12,6 +12,7 @@ const Query = props => props.skip ? props.children() : <_Query {...props} />;
 
 const Home = createAsyncComponent(() => import('./home'));
 const NotFound = createAsyncComponent(() => import('../shared/not-found'));
+const SignIn = createAsyncComponent(() => import('../sign-in'));
 
 const VIEWER_QUERY = gql`
   query {
@@ -68,6 +69,7 @@ export default () =>
               exact path='/'
               render={props => <Home {...{...props, error, loading, viewer}} />}
             />
+            <Route exact path='/sign-in' component={SignIn} />
             <Route component={NotFound} />
           </Switch>
         </div>

@@ -4,13 +4,8 @@ const {
   GraphQLNonNull,
   GraphQLString
 } = require('graphql');
-const bcrypt = require('bcrypt');
 const getDb = require('../../functions/get-db');
-const verifyEmailAddress = require('../../functions/verify-email-address');
-const config = require('../../config');
 const uuid = require('uuid/v4');
-
-const {passwordSaltRounds} = config;
 
 module.exports = {
   args: {
@@ -19,7 +14,6 @@ module.exports = {
         name: 'SignUpInput',
         fields: () => ({
           name: {type: new GraphQLNonNull(GraphQLString)},
-          password: {type: new GraphQLNonNull(GraphQLString)},
           token: {type: new GraphQLNonNull(GraphQLString)}
         })
       }))
