@@ -62,8 +62,7 @@ module.exports = {
       subject: 'Please verify your Bob email address',
       markdown:
         `From: ${ua.parse(userAgent)} (${ipAddress})\n` +
-        `Verify URL: ${url}${PATHS[intent]}?` +
-        qs.stringify({emailAddress, token})
+        `Verify URL: ${url}${PATHS[intent]}?${qs.stringify({token})}`
     });
 
     return true;
