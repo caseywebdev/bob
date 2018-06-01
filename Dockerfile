@@ -22,7 +22,7 @@ ENV \
   TOKEN_SIZE='32'
 
 RUN \
-  apk --no-cache add curl g++ libc6-compat make nginx python && \
+  apk --no-cache add curl nginx && \
   mkdir -p /run/nginx && \
   CONTAINERPILOT_VERSION='3.8.0' && \
   curl -fLsS https://github.com/joyent/containerpilot/releases/download/$CONTAINERPILOT_VERSION/containerpilot-$CONTAINERPILOT_VERSION.tar.gz | \
