@@ -8,10 +8,11 @@ const config = require('../../config');
 const createToken = require('../../functions/create-token');
 const getDb = require('../../functions/get-db');
 const mail = require('../../functions/mail');
+const getIpAddress = require('../../functions/get-ip-address');
 const ua = require('useragent');
 const qs = require('querystring');
 
-const {url} = config.bob;
+const {clientUrl} = config.bob;
 
 const PATHS = {
   CREATE_USER_EMAIL_ADDRESS: '/create-user-email-address',
@@ -42,10 +43,11 @@ module.exports = {
   resolve: async (
     obj,
     {input: {emailAddress, intent}},
-    {req: {headers: {'user-agent': userAgent}, ip: ipAddress}, userToken}
+    {req, req: {headers: {'user-agent': userAgent}}, userToken}
   ) => {
     const {id, token, tokenHash, tokenHashAlgorithm} = await createToken();
     const db = await getDb();
+    const ipAddress = getIpAddress({req});
     await db('emailAddressClaims')
       .insert({
         emailAddress,
@@ -62,7 +64,7 @@ module.exports = {
       subject: 'Please verify your Bob email address',
       markdown:
         `From: ${ua.parse(userAgent)} (${ipAddress})\n` +
-        `Verify URL: ${url}${PATHS[intent]}?${qs.stringify({token})}`
+        `Verify URL: ${clientUrl}${PATHS[intent]}?${qs.stringify({token})}`
     });
 
     return true;

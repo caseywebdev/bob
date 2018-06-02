@@ -7,7 +7,7 @@ const fromEnv = key => ({
 });
 
 module.exports = {
-  bob: {url: env.BOB_URL},
+  bob: {apiUrl: env.BOB_API_URL, clientUrl: env.BOB_CLIENT_URL},
   consul: {url: env.CONSUL_URL},
   docker: {
     buildOptions: JSON.parse(env.DOCKER_BUILD_OPTIONS || '{}'),
@@ -37,6 +37,7 @@ module.exports = {
     hashAlgorithm: env.TOKEN_HASH_ALGORITHM,
     size: parseInt(env.TOKEN_SIZE)
   },
+  trustForwardedForIndex: parseInt(env.TRUST_FORWARDED_FOR_INDEX),
   vault: {
     auth: {
       data: JSON.parse(env.VAULT_AUTH_DATA || '{}'),

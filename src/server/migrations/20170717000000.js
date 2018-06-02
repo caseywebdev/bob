@@ -26,7 +26,7 @@ exports.up = db =>
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .index();
-      t.specificType('name', 'citext').notNullable().unique();
+      t.specificType('emailAddress', 'citext').notNullable().unique();
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })
@@ -37,7 +37,7 @@ exports.up = db =>
         .references('users.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      t.specificType('name', 'citext').notNullable().index();
+      t.specificType('emailAddress', 'citext').notNullable().index();
       t.string('userAgent').notNullable();
       t.string('ipAddress').notNullable();
       t.binary('tokenHash');

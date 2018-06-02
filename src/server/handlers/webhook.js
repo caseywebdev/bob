@@ -1,13 +1,13 @@
 const _ = require('underscore');
-const {FORBIDDEN} = require('../../../shared/constants/errors');
-const {WRITE} = require('../../../shared/constants/permission-levels');
-const createBuilds = require('../../functions/create-builds');
-const getEnv = require('../../functions/get-env');
-const getRole = require('../../functions/get-role');
-const sources = require('../../sources');
+const {FORBIDDEN} = require('../../shared/constants/errors');
+const {WRITE} = require('../../shared/constants/permission-levels');
+const createBuilds = require('../functions/create-builds');
+const getEnv = require('../functions/get-env');
+const getRole = require('../functions/get-role');
+const sources = require('../sources');
 
 module.exports = async ({req, res}) => {
-  const {params: {envId, sourceId}, query: {token}} = req;
+  const {envId, sourceId, token} = req.query;
   const env = await getEnv({id: envId});
   const source = sources[sourceId];
   if (!source) {

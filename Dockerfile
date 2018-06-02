@@ -7,7 +7,8 @@ CMD ["containerpilot"]
 EXPOSE 80
 
 ENV \
-  BOB_URL='http://localhost' \
+  BOB_API_URL='http://localhost:8080' \
+  BOB_CLIENT_URL='http://localhost' \
   CONSUL_SERVICE_NAME='bob' \
   CONSUL_SERVICE_TAGS='' \
   CONSUL_URL='' \
@@ -19,7 +20,8 @@ ENV \
   POSTGRES_URL='pg://postgres:postgres@postgres/postgres' \
   ROOT_EMAIL_ADDRESS='' \
   TOKEN_HASH_ALGORITHM='sha512' \
-  TOKEN_SIZE='32'
+  TOKEN_SIZE='32' \
+  TRUST_FORWARDED_FOR_INDEX='0'
 
 RUN \
   apk --no-cache add curl nginx && \

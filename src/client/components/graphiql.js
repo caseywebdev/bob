@@ -3,12 +3,13 @@ import disk from '../constants/disk';
 import GraphiQL from 'graphiql';
 import Meta from './shared/meta';
 import React from 'react';
+import config from '../config';
 
 const fetcher = body => {
   const token = disk.get('token');
   const headers = {'Content-Type': 'application/json'};
   if (token) headers.Authorization = `Bearer ${token}`;
-  return fetch('/api/graphql', {
+  return fetch(`${config.bob.apiUrl}/graphql`, {
     body: JSON.stringify(body),
     headers: headers,
     method: 'POST'

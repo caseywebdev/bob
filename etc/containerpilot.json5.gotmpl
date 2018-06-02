@@ -25,15 +25,30 @@
     },
 {{- end}}
     {
-      name: 'api',
+      name: '{{env "CONSUL_SERVICE_NAME"}}-api',
       exec: 'bin/api',
       logging: {raw: true},
       when: {source: 'setup', once: 'exitSuccess'},
+{{- if env "CONSUL_URL"}}
+      port: 8080,
+      health: {
+        exec: 'curl -fsSo /healthz localhost:8080',
+        interval: 5,
+        ttl: 10,
+        timeout: '5s'
+      },
+      consul: {
+        deregisterCriticalServiceAfter: '10m'
+      },
+  {{- if env "CONSUL_SERVICE_TAGS"}}
+      tags: ["{{env "CONSUL_SERVICE_TAGS" | split "," | join "\", \""}}"],
+  {{- end}}
+{{- end}}
       restarts: 'unlimited'
     },
     {
-      name: '{{env "CONSUL_SERVICE_NAME"}}',
-      exec: 'nginx',
+      name: '{{env "CONSUL_SERVICE_NAME"}}-client',
+      exec: 'bin/client',
       logging: {raw: true},
       when: {source: 'setup', once: 'exitSuccess'},
 {{- if env "CONSUL_URL"}}

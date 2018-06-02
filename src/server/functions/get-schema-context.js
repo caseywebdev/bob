@@ -1,9 +1,7 @@
 const _ = require('underscore');
-const {graphql} = require('graphql');
 const DataLoader = require('dataloader');
-const getDb = require('../../functions/get-db');
-const schema = require('../../schema');
-const verifyUserToken = require('../../functions/verify-user-token');
+const getDb = require('../functions/get-db');
+const verifyUserToken = require('../functions/verify-user-token');
 
 const getLoaders = () => ({
   users: new DataLoader(async ids => {
@@ -31,20 +29,8 @@ const getUserToken = async ({authorization}) => {
   if (token) return await verifyUserToken({token});
 };
 
-module.exports = async ({
+module.exports = async ({authorization, req}) => ({
+  loaders: getLoaders(),
   req,
-  req: {body: {operationName, query, variables}, headers: {authorization}},
-  res
-}) =>
-  res.send(await graphql(
-    schema,
-    query,
-    null,
-    {
-      loaders: getLoaders(),
-      req,
-      userToken: await getUserToken({authorization})
-    },
-    variables,
-    operationName
-  ));
+  userToken: await getUserToken({authorization})
+});

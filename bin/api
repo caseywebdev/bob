@@ -1,10 +1,10 @@
 #!/bin/sh -e
 
 if [ "$WATCH" = "1" ]; then
-  node_modules/.bin/watchy \
+  exec node_modules/.bin/watchy \
     -w 'src/server/**/*' \
     -w 'src/shared/**/*' \
     -- node src/server
 else
-  node src/server
+  exec node src/server
 fi

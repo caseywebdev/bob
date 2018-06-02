@@ -7,6 +7,7 @@ const {
 const {passwordSaltRounds} = require('../../config');
 const createUserToken = require('../../functions/create-user-token');
 const getDb = require('../../functions/get-db');
+const getIpAddress = require('../../functions/get-ip-address');
 
 module.exports = {
   args: {
@@ -28,7 +29,7 @@ module.exports = {
   resolve: async (
     obj,
     {input: {emailAddress, password}},
-    {req: {headers: {'user-agent': userAgent}, ip: ipAddress}}
+    {req, req: {headers: {'user-agent': userAgent}}}
   ) => {
     const db = await getDb();
     const user = await db('users')
@@ -51,7 +52,7 @@ module.exports = {
 
     return {
       userToken: await createUserToken({
-        ipAddress,
+        ipAddress: getIpAddress({req}),
         roles: 0,
         userAgent,
         userId: user.id

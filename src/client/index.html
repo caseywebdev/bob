@@ -1,7 +1,7 @@
 <%
   const manifest = _.mapObject(
     JSON.parse(await include('dist/manifest.json')),
-    path => path.slice(4)
+    path => path.slice('dist'.length)
   );
 %><!doctype html>
 
@@ -24,7 +24,9 @@
   <body>
     <div id='root'></div>
     <script>
-      window.env = <%= JSON.stringify(_.pick(process.env, 'WATCH')) %>;
+      window.env = <%=
+        JSON.stringify(_.pick(process.env, 'BOB_API_URL', 'WATCH'))
+      %>;
       window.COGS_MANIFEST = <%= JSON.stringify(manifest) %>;
     </script>
     <script src='<%- manifest['src/client/index.js'] %>' async></script>

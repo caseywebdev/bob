@@ -1,4 +1,4 @@
-import apolloClient from '../constants/apollo-client';
+import apolloClient, {wsLink} from '../constants/apollo-client';
 import disk from '../constants/disk';
 
 export default token => {
@@ -8,5 +8,6 @@ export default token => {
     disk.remove('token');
   }
   apolloClient.cache.reset();
+  if (wsLink.client) wsLink.client.close();
   window.postMessage({name: 'token-updated'}, location.origin);
 };

@@ -1,10 +1,14 @@
 const _ = require('underscore');
+const {execute, subscribe} = require('graphql');
 const {NOT_FOUND} = require('../../shared/constants/errors');
 const {promisify} = require('util');
+const {SubscriptionServer} = require('subscriptions-transport-ws');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const express = require('express');
+const getSchemaContext = require('../functions/get-schema-context');
 const http = require('http');
-const sockets = require('../functions/sockets');
+const schema = require('../schema');
 
 const asyncify = handler =>
   _.isArray(handler) ? _.map(handler, asyncify) :
@@ -16,41 +20,37 @@ const server = http.createServer(
   express()
     .enable('case sensitive routing')
     .enable('strict routing')
-    .enable('trust proxy')
     .disable('x-powered-by')
+    .use(cors())
     .use(bodyParser.json())
-    .post('/api/graphql', asyncify(require('../handlers/http/graphql')))
-    .post(
-      '/api/envs/:envId/webhooks/:sourceId',
-      asyncify(require('../handlers/http/webhook'))
-    )
+    .get('/healthz', asyncify(require('../handlers/healthz')))
+    .post('/graphql', asyncify(require('../handlers/graphql')))
+    .post('/webhook', asyncify(require('../handlers/webhook')))
     .use((req, res, next) => next(NOT_FOUND))
-    .use(require('../handlers/http/error'))
+    .use(require('../handlers/error'))
 );
 
-// const HANDLERS = _.map(['close', 'open', 'pave'], name => {
-//   const handler = require(`../handlers/ws/${name}`);
-//   return socket =>
-//     socket.live.on(name, async (params, cb = _.noop) => {
-//       try { cb(null, await handler({params, socket})); } catch (er) { cb(er); }
-//     });
-// });
-//
-// const wss = new ws.Server({server});
-//
-// wss.on('connection', socket => {
-//   socket = {live: new Live({socket})};
-//   _.each(HANDLERS, handler => handler(socket));
-//   socket.live.trigger('open');
-// });
+SubscriptionServer.create(
+  {
+    execute,
+    onConnect: async ({authorization}, {upgradeReq: req}) =>
+      await getSchemaContext({authorization, req}),
+    schema,
+    subscribe
+  },
+  {path: '/graphql', server}
+);
+
+const sockets = new Set();
+server.on('connection', socket => {
+  sockets.add(socket);
+  socket.on('close', () => sockets.delete(socket));
+});
 
 process.once('SIGTERM', () => {
-  console.log('Closing HTTP server...');
-  server.close(() => {
-    console.log('HTTP server closed');
-    console.log('Closing sockets...');
-    _.each(sockets, ({live}) => live.close());
-  });
+  console.log(`Closing HTTP server (${sockets.size} open sockets)...`);
+  sockets.forEach(socket => socket.destroy());
+  server.close(() => console.log('HTTP server closed'));
 });
 
 module.exports = async () => {

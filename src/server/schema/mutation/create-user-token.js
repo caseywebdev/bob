@@ -1,13 +1,13 @@
 const {
   GraphQLInputObjectType,
-  GraphQLList,
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLString
 } = require('graphql');
-const createUserToken = require('../../functions/create-user-token');
-const hasPermission = require('../../../shared/functions/has-permission');
 const {WRITE_USER_TOKEN} = require('../../../shared/functions/has-permission');
+const createUserToken = require('../../functions/create-user-token');
+const getIpAddress = require('../../functions/get-ip-address');
+const hasPermission = require('../../../shared/functions/has-permission');
 
 module.exports = {
   args: {
@@ -30,7 +30,7 @@ module.exports = {
   resolve: async (
     obj,
     {input: {name, roles}},
-    {req: {headers: {'user-agent': userAgent}, ip: ipAddress}, userToken}
+    {req, req: {headers: {'user-agent': userAgent}}, userToken}
   ) => {
     if (
       !userToken ||
@@ -39,7 +39,7 @@ module.exports = {
 
     return {
       userToken: await createUserToken({
-        ipAddress,
+        ipAddress: getIpAddress({req}),
         name,
         roles,
         userAgent,
