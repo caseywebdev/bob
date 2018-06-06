@@ -8,23 +8,6 @@ const WATCH = env.WATCH === '1';
 
 const BOB_CLIENT_HOSTNAME = url.parse(BOB_CLIENT_URL).hostname;
 
-const FINAL = {
-  transformers: {
-    name: 'underscore-template',
-    options: {
-      data: {
-        BOB_CLIENT_HOSTNAME,
-        BOB_CLIENT_URL,
-        WATCH
-      }
-    }
-  },
-  builds: {
-    'etc/nginx.conf': {base: 'etc', dir: '/etc/nginx'},
-    'src/client/index.html': {base: 'src/client', dir: 'dist'}
-  }
-};
-
 const FULL = {
   transformers: [].concat(
     {name: 'stylelint', only: 'src/**/*.scss', options: {syntax: 'scss'}},
@@ -79,8 +62,25 @@ const FULL = {
     'src/client/public/**/*': {base: 'src/client/public', dir: 'dist'},
     'src/client/index.js': {base: 'src/client', dir: 'dist'}
   },
-  manifestPath: 'dist/manifest.json',
-  then: FINAL
+  manifestPath: 'dist/manifest.json'
 };
 
-module.exports = ONLY_FINAL ? FINAL : FULL;
+const FINAL = {
+  requires: ONLY_FINAL ? null : 0,
+  transformers: {
+    name: 'underscore-template',
+    options: {
+      data: {
+        BOB_CLIENT_HOSTNAME,
+        BOB_CLIENT_URL,
+        WATCH
+      }
+    }
+  },
+  builds: {
+    'etc/nginx.conf': {base: 'etc', dir: '/etc/nginx'},
+    'src/client/index.html': {base: 'src/client', dir: 'dist'}
+  }
+};
+
+module.exports = ONLY_FINAL ? FINAL : [FULL, FINAL];
