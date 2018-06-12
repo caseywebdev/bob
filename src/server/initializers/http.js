@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const {execute, subscribe} = require('graphql');
 const {NOT_FOUND} = require('../../shared/constants/errors');
 const {promisify} = require('util');
@@ -11,7 +10,7 @@ const http = require('http');
 const schema = require('../schema');
 
 const asyncify = handler =>
-  _.isArray(handler) ? _.map(handler, asyncify) :
+  Array.isArray(handler) ? handler.map(asyncify) :
   async (req, res, next) => {
     try { await handler({next, req, res}); } catch (er) { next(er); }
   };

@@ -4,6 +4,6 @@ module.exports = new GraphQLObjectType({
   name: 'Subscription',
   description: 'Queries for subscribing to data changes.',
   fields: () => ({
-    echo: require('./echo')
+    emailAddressClaimCreated: require('./email-address-claim-created')
   })
 });

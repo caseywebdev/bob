@@ -7,11 +7,11 @@ const {postgres: {url}} = config;
 
 let db;
 process.once('SIGTERM', async () => {
-  if (db) {
-    console.log('Destroying PG connection pool...');
-    await db.destroy();
-    console.log('PG connection pool destroyed');
-  }
+  if (!db) return;
+
+  console.log('Destroying PG connection pool...');
+  await db.destroy();
+  console.log('PG connection pool destroyed');
 });
 
 module.exports = memoize(async () =>

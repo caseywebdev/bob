@@ -12,6 +12,8 @@ const getIpAddress = require('../../functions/get-ip-address');
 const ua = require('useragent');
 const qs = require('querystring');
 
+const pubsub = require('../../constants/pubsub');
+
 const {clientUrl} = config.bob;
 
 const PATHS = {
@@ -66,6 +68,8 @@ module.exports = {
         `From: ${ua.parse(userAgent)} (${ipAddress})\n` +
         `Verify URL: ${clientUrl}${PATHS[intent]}?${qs.stringify({token})}`
     });
+
+    await pubsub.publish('emailAddressClaimCreated', {emailAddressClaimCreated: emailAddress});
 
     return true;
   }

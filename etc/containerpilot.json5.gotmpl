@@ -32,7 +32,7 @@
 {{- if env "CONSUL_URL"}}
       port: 8080,
       health: {
-        exec: 'curl -fsSo /healthz localhost:8080',
+        exec: 'curl -fsSo /dev/null localhost:8080/healthz',
         interval: 5,
         ttl: 10,
         timeout: '5s'

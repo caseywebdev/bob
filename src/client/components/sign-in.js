@@ -1,10 +1,16 @@
-import {Mutation, Query} from 'react-apollo';
+import {Mutation, Query, Subscription} from 'react-apollo';
 import {Route} from 'react-router-dom';
 import Center from './shared/center';
 import gql from 'graphql-tag';
 import Loading from './shared/loading';
 import Notice from './shared/notice';
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
+
+const SUBSCRIPTION = gql`
+  subscription {
+    emailAddressClaimCreated
+  }
+`;
 
 const SIGN_IN_MUTATION = gql`
   mutation($input: CreateEmailAddressClaimInput!) {
@@ -37,34 +43,41 @@ class WithoutToken extends Component {
   render() {
     const {emailAddress} = this.state;
     return (
-      <Mutation mutation={SIGN_IN_MUTATION}>
-        {(mutate, {data: {createEmailAddressClaim: success} = {}, error, loading}) =>
-          <Center>
-            {
-              loading ? <Loading size='large' /> :
-              <form
-                onSubmit={ev => {
-                  ev.preventDefault();
-                  mutate({variables: {input: {emailAddress, intent: 'SIGN_IN'}}});
-                }}
-              >
-                Sign In
-                {error && <Notice type='error'>{error.toString()}</Notice>}
-                {success && 'Success!'}
-                <input
-                  autoComplete='username'
-                  type='email'
-                  value={emailAddress}
-                  onChange={(({target: {value}}) =>
-                    this.setState({emailAddress: value})
-                  )}
-                />
-                <button>Sign In</button>
-              </form>
-            }
-          </Center>
+      <Subscription subscription={SUBSCRIPTION}>
+        {({data, error}) =>
+          <Fragment>
+            <pre>{JSON.stringify(data)}{JSON.stringify(error)}</pre>
+            <Mutation mutation={SIGN_IN_MUTATION}>
+              {(mutate, {data: {createEmailAddressClaim: success} = {}, error, loading}) =>
+                <Center>
+                  {
+                    loading ? <Loading size='large' /> :
+                    <form
+                      onSubmit={ev => {
+                        ev.preventDefault();
+                        mutate({variables: {input: {emailAddress, intent: 'SIGN_IN'}}});
+                      }}
+                    >
+                      Sign In
+                      {error && <Notice type='error'>{error.toString()}</Notice>}
+                      {success && 'Success!'}
+                      <input
+                        autoComplete='username'
+                        type='email'
+                        value={emailAddress}
+                        onChange={(({target: {value}}) =>
+                          this.setState({emailAddress: value})
+                        )}
+                      />
+                      <button>Sign In</button>
+                    </form>
+                  }
+                </Center>
+              }
+            </Mutation>
+          </Fragment>
         }
-      </Mutation>
+      </Subscription>
     );
   }
 }
