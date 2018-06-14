@@ -58,10 +58,8 @@ class PostgresPubSub extends PubSub {
     }
   }
 
-  async getConnection() {
-    return await (
-      this.connection || (this.connection = this.createConnection())
-    );
+  getConnection() {
+    return this.connection || (this.connection = this.createConnection());
   }
 
   async handleEnd(_connection) {

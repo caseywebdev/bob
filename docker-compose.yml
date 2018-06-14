@@ -3,8 +3,8 @@ version: '3.6'
 services:
   postgres:
     image: postgres:10.3-alpine
-    # ports:
-    #   - 5432:5432
+    ports:
+      - 5432:5432
     volumes:
       - pg-data:/var/lib/postgresql/data
 
@@ -15,6 +15,7 @@ services:
     environment:
       GITHUB_CLIENT_ID:
       GITHUB_CLIENT_SECRET:
+      LIVERELOAD_URL: http://localhost:35729
       MAIL_ENABLED:
       MAIL_FROM_ADDRESS:
       MAIL_FROM_NAME:
@@ -24,6 +25,7 @@ services:
     ports:
       - 80:80
       - 8080:8080
+      - 35729:35729
     volumes:
       - .:/code:cached
       - /code/coverage

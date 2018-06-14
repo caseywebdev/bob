@@ -4,7 +4,6 @@ const url = require('url');
 const {BOB_CLIENT_URL} = env;
 const MINIFY = env.MINIFY === '1';
 const ONLY_FINAL = env.ONLY_FINAL === '1';
-const WATCH = env.WATCH === '1';
 
 const BOB_CLIENT_HOSTNAME = url.parse(BOB_CLIENT_URL).hostname;
 
@@ -69,13 +68,7 @@ const FINAL = {
   requires: ONLY_FINAL ? null : 0,
   transformers: {
     name: 'underscore-template',
-    options: {
-      data: {
-        BOB_CLIENT_HOSTNAME,
-        BOB_CLIENT_URL,
-        WATCH
-      }
-    }
+    options: {data: {BOB_CLIENT_HOSTNAME, BOB_CLIENT_URL}}
   },
   builds: {
     'etc/nginx.conf': {base: 'etc', dir: '/etc/nginx'},

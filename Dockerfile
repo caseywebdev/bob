@@ -13,6 +13,7 @@ ENV \
   CONSUL_SERVICE_TAGS='' \
   CONSUL_URL='' \
   CONTAINERPILOT='/code/etc/containerpilot.json5.gotmpl' \
+  LIVERELOAD_URL='' \
   MAIL_ENABLED='0' \
   MAIL_FROM_ADDRESS='' \
   MAIL_FROM_NAME='' \
@@ -21,7 +22,8 @@ ENV \
   ROOT_EMAIL_ADDRESS='' \
   TOKEN_HASH_ALGORITHM='sha512' \
   TOKEN_SIZE='32' \
-  TRUST_FORWARDED_FOR_INDEX='0'
+  TRUST_FORWARDED_FOR_INDEX='0' \
+  WATCH='0'
 
 RUN \
   apk --no-cache add curl nginx && \

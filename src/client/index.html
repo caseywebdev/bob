@@ -25,7 +25,7 @@
     <div id='root'></div>
     <script>
       window.env = <%=
-        JSON.stringify(_.pick(process.env, 'BOB_API_URL', 'WATCH'))
+        JSON.stringify(_.pick(process.env, 'BOB_API_URL', 'LIVERELOAD_URL'))
       %>;
       window.COGS_MANIFEST = <%= JSON.stringify(manifest) %>;
     </script>

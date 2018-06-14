@@ -1,10 +1,10 @@
 import config from '../config';
 
-const {watch} = config;
+const {url} = config.livereload;
 
-if (watch) {
+if (url) {
   const script = document.createElement('script');
   script.async = true;
-  script.src = '/livereload.js?port=80';
+  script.src = `${url}/livereload.js`;
   document.body.appendChild(script);
 }
