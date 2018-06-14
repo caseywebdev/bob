@@ -1,8 +1,8 @@
 const {
-  GraphQLInputObjectType,
-  GraphQLBoolean,
   GraphQLEnumType,
-  GraphQLNonNull
+  GraphQLInputObjectType,
+  GraphQLNonNull,
+  GraphQLObjectType
 } = require('graphql');
 const config = require('../../config');
 const createToken = require('../../functions/create-token');
@@ -11,8 +11,6 @@ const mail = require('../../functions/mail');
 const getIpAddress = require('../../functions/get-ip-address');
 const ua = require('useragent');
 const qs = require('querystring');
-
-const pubsub = require('../../constants/pubsub');
 
 const {clientUrl} = config.bob;
 
@@ -41,7 +39,12 @@ module.exports = {
       }))
     }
   },
-  type: GraphQLBoolean,
+  type: new GraphQLNonNull(new GraphQLObjectType({
+    name: 'CreateEmailAddressClaimOutput',
+    fields: () => ({
+      emailAddressClaimId: {type: new GraphQLNonNull(require('../uuid'))}
+    })
+  })),
   resolve: async (
     obj,
     {input: {emailAddress, intent}},
@@ -65,12 +68,10 @@ module.exports = {
       to: {address: emailAddress},
       subject: 'Please verify your Bob email address',
       markdown:
-        `From: ${ua.parse(userAgent)} (${ipAddress})\n` +
+        `From: ${ua.parse(userAgent)} (${ipAddress})\n\n` +
         `Verify URL: ${clientUrl}${PATHS[intent]}?${qs.stringify({token})}`
     });
 
-    await pubsub.publish('emailAddressClaimCreated', {emailAddressClaimCreated: emailAddress});
-
-    return true;
+    return {emailAddressClaimId: id};
   }
 };

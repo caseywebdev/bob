@@ -42,7 +42,7 @@ exports.up = db =>
       t.string('ipAddress').notNullable();
       t.binary('tokenHash');
       t.string('tokenHashAlgorithm');
-      t.string('pin');
+      t.timestamp('verifiedAt');
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })

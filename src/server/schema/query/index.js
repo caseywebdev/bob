@@ -6,7 +6,6 @@ module.exports = new GraphQLObjectType({
   fields: () => ({
     build: require('./build'),
     builds: require('./builds'),
-    emailAddressFromToken: require('./email-address-from-token'),
     viewer: require('./viewer')
   })
 });

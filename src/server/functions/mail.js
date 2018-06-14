@@ -22,10 +22,11 @@ module.exports = async options => {
 
   const {to, subject, markdown} = options;
   console.log([
-    'MAIL',
+    '<mail>',
     `TO ${JSON.stringify(to)}`,
     `FROM ${JSON.stringify(from)}`,
     subject,
-    markdown
+    markdown,
+    '</mail>'
   ].join('\n'));
 };

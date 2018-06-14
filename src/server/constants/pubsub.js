@@ -1,6 +1,7 @@
 const {PubSub} = require('graphql-subscriptions');
 const getDb = require('../functions/get-db');
 const sleep = require('../functions/sleep');
+const escapeSql = require('../functions/escape-sql');
 
 const IGNORE = new Set(['newListener', 'removeListener']);
 
@@ -13,20 +14,30 @@ class PostgresPubSub extends PubSub {
   }
 
   async publish(channel, payload) {
-    const db = await getDb();
-    await db.raw(db.raw(
+
+    // Escape channel (identifier) and payload (string < 8000 bytes).
+    const sql = escapeSql(
       'NOTIFY :channel:, :payload',
       {channel, payload: JSON.stringify(payload) || 'null'}
-    ).toQuery());
+    );
+
+    // Prefer sending the NOTIFY on the LISTEN connection if available. This
+    // will ensure that subscribing and then publishing in the same thread will
+    // result in the message always being heard. If there isn't a LISTEN
+    // connection established, then nothing is subscribed so it's safe to use
+    // the pool.
+    if (this.connection) {
+      const connection = await this.connection;
+      await connection.query(sql);
+    } else {
+      const db = await getDb();
+      await db.raw(sql);
+    }
+
     return true;
   }
 
-  async getConnection() {
-    if (this.connection) return await this.connection;
-
-    let resolve;
-    this.connection = new Promise(_resolve => resolve = _resolve);
-
+  async createConnection() {
     while (true) {
       try {
         const db = await getDb();
@@ -36,17 +47,21 @@ class PostgresPubSub extends PubSub {
           .on('end', async () => this.handleEnd(connection));
 
         for (let channel in this.getChannels()) {
-          await connection.query(`LISTEN "${channel}"`);
+          await connection.query(escapeSql('LISTEN :channel:', {channel}));
         }
 
-        this.connection = connection;
-        resolve(connection);
         return connection;
       } catch (er) {
         console.error(er);
         await sleep(10);
       }
     }
+  }
+
+  async getConnection() {
+    return await (
+      this.connection || (this.connection = this.createConnection())
+    );
   }
 
   async handleEnd(_connection) {
@@ -60,7 +75,7 @@ class PostgresPubSub extends PubSub {
       if (IGNORE.has(channel) || this.ee.listenerCount(channel)) return;
 
       const connection = await this.getConnection();
-      await connection.query(`LISTEN "${channel}"`);
+      await connection.query(escapeSql('LISTEN :channel:', {channel}));
     } catch (er) {
       console.error(er);
     }
@@ -74,7 +89,9 @@ class PostgresPubSub extends PubSub {
       if (!this.getChannels().length) {
         this.connection = null;
         await connection.end();
-      } else await connection.query(`UNLISTEN "${channel}"`);
+      } else {
+        await connection.query(escapeSql('UNLISTEN :channel:', {channel}));
+      }
     } catch (er) {
       console.error(er);
     }

@@ -5,6 +5,7 @@ module.exports = new GraphQLObjectType({
   description: 'Queries for creating, updating and deleting data.',
   fields: () => ({
     createEmailAddressClaim: require('./create-email-address-claim'),
+    verifyEmailAddressClaim: require('./verify-email-address-claim'),
     createUserToken: require('./create-user-token'),
     deleteUserToken: require('./delete-user-token'),
     signIn: require('./sign-in'),
