@@ -1,6 +1,6 @@
 const {
+  GraphQLBoolean,
   GraphQLInputObjectType,
-  GraphQLObjectType,
   GraphQLNonNull,
   GraphQLString
 } = require('graphql');
@@ -19,26 +19,24 @@ module.exports = {
       type: new GraphQLNonNull(new GraphQLInputObjectType({
         name: 'DeleteUserTokenInput',
         fields: () => ({
-          userTokenId: {type: new GraphQLNonNull(GraphQLString)}
+          id: {type: GraphQLString},
+          self: {type: GraphQLBoolean}
         })
       }))
     }
   },
-  type: new GraphQLNonNull(new GraphQLObjectType({
-    name: 'DeleteUserTokenOutput',
-    fields: () => ({
-      userToken: {type: new GraphQLNonNull(require('../user-token'))}
-    })
-  })),
-  resolve: async (obj, {input: {userTokenId}}, {userToken}) => {
+  type: new GraphQLNonNull(GraphQLBoolean),
+  resolve: async (obj, {input: {id, self}}, {userToken}) => {
     if (!userToken) throw UNAUTHORIZED;
 
     if (!hasPermission(WRITE_USER_TOKEN, userToken.roles)) throw FORBIDDEN;
 
     const db = await getDb();
-    const target = await db('userTokens')
-      .where({id: userTokenId, userId: userToken.userId})
-      .first();
+    const {userId} = userToken;
+    const target =
+      self ? userToken :
+      id ? await db('userTokens').where({id, userId}).first() :
+      null;
     if (!target) throw NOT_FOUND;
 
     await db('userTokens').delete().where({id: target.id});

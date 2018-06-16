@@ -13,6 +13,9 @@ const Query = props => props.skip ? props.children() : <_Query {...props} />;
 const Home = createAsyncComponent(() => import('./home'));
 const NotFound = createAsyncComponent(() => import('../shared/not-found'));
 const SignIn = createAsyncComponent(() => import('../sign-in'));
+const VerifyEmailAddressClaim = createAsyncComponent(() =>
+  import('../verify-email-address-claim')
+);
 
 const VIEWER_QUERY = gql`
   query {
@@ -29,13 +32,9 @@ const VIEWER_QUERY = gql`
   }
 `;
 
-const SIGN_OUT_MUTATION = gql`
+const DELETE_USER_TOKEN_MUTATION = gql`
   mutation {
-    signOut {
-      userToken {
-        id
-      }
-    }
+    deleteUserToken(input: {self: true})
   }
 `;
 
@@ -50,7 +49,7 @@ export default () =>
           {
             viewer &&
             <Mutation
-              mutation={SIGN_OUT_MUTATION}
+              mutation={DELETE_USER_TOKEN_MUTATION}
               onCompleted={() => updateToken()}
             >
               {(mutate, {error, loading}) =>
@@ -70,6 +69,10 @@ export default () =>
               render={props => <Home {...{...props, error, loading, viewer}} />}
             />
             <Route exact path='/sign-in' component={SignIn} />
+            <Route
+              exact path='/verify-email-address-claim'
+              component={VerifyEmailAddressClaim}
+            />
             <Route component={NotFound} />
           </Switch>
         </div>

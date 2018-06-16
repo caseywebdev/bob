@@ -9,7 +9,6 @@ import React, {Component} from 'react';
 
 const GraphiQL = createAsyncComponent(() => import('./graphiql'));
 const Main = createAsyncComponent(() => import('./main'));
-const SignUp = createAsyncComponent(() => import('./sign-up'));
 
 export default class extends Component {
   state = {
@@ -34,7 +33,6 @@ export default class extends Component {
         <Router {...{history}}>
           <Meta title='Bob'>
             <Switch>
-              <Route exact path='/sign-up' component={SignUp} />
               <Route exact path='/graphiql' component={GraphiQL} />
               <Route component={Main} />
             </Switch>

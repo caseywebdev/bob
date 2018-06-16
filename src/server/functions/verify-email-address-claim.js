@@ -2,12 +2,13 @@ const getDb = require('./get-db');
 const verifyToken = require('./verify-token');
 
 module.exports = async ({token}) => {
-  const {id} = await verifyToken({table: 'emailAddressClaims', token});
+  const eac = await verifyToken({table: 'emailAddressClaims', token});
+
+  // EACs can only be used once, so delete immediately after verification.
   const db = await getDb();
-  return (
-    await db('emailAddressClaims')
-      .update({verifiedAt: new Date()})
-      .where({id})
-      .returning('*')
-  )[0];
+  await db('emailAddressClaims').delete().where({id: eac.id});
+
+  // TODO: Throw if EAC is too old
+
+  return eac;
 };

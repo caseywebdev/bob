@@ -33,16 +33,11 @@ exports.up = db =>
 
     .createTable('emailAddressClaims', t => {
       t.uuid('id').primary();
-      t.uuid('userId')
-        .references('users.id')
-        .onUpdate('CASCADE')
-        .onDelete('CASCADE');
       t.specificType('emailAddress', 'citext').notNullable().index();
       t.string('userAgent').notNullable();
       t.string('ipAddress').notNullable();
       t.binary('tokenHash');
       t.string('tokenHashAlgorithm');
-      t.timestamp('verifiedAt');
       t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     })

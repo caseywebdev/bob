@@ -1,8 +1,7 @@
 const {
-  GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLNonNull,
-  GraphQLObjectType
+  GraphQLBoolean
 } = require('graphql');
 const config = require('../../config');
 const createToken = require('../../functions/create-token');
@@ -14,41 +13,22 @@ const qs = require('querystring');
 
 const {clientUrl} = config.bob;
 
-const PATHS = {
-  CREATE_USER_EMAIL_ADDRESS: '/create-user-email-address',
-  SIGN_IN: '/sign-in',
-  SIGN_UP: '/sign-up'
-};
-
 module.exports = {
   args: {
     input: {
       type: new GraphQLNonNull(new GraphQLInputObjectType({
         name: 'CreateEmailAddressClaimInput',
         fields: () => ({
-          emailAddress: {type: new GraphQLNonNull(require('../email-address'))},
-          intent: {type: new GraphQLNonNull(new GraphQLEnumType({
-            name: 'CreateEmailAddressClaimInputIntent',
-            values: {
-              CREATE_USER_EMAIL_ADDRESS: {},
-              SIGN_IN: {},
-              SIGN_UP: {}
-            }
-          }))}
+          emailAddress: {type: new GraphQLNonNull(require('../email-address'))}
         })
       }))
     }
   },
-  type: new GraphQLNonNull(new GraphQLObjectType({
-    name: 'CreateEmailAddressClaimOutput',
-    fields: () => ({
-      emailAddressClaimId: {type: new GraphQLNonNull(require('../uuid'))}
-    })
-  })),
+  type: new GraphQLNonNull(GraphQLBoolean),
   resolve: async (
     obj,
-    {input: {emailAddress, intent}},
-    {req, req: {headers: {'user-agent': userAgent}}, userToken}
+    {input: {emailAddress}},
+    {req, req: {headers: {'user-agent': userAgent}}}
   ) => {
     const {id, token, tokenHash, tokenHashAlgorithm} = await createToken();
     const db = await getDb();
@@ -60,8 +40,7 @@ module.exports = {
         ipAddress,
         tokenHash,
         tokenHashAlgorithm,
-        userAgent,
-        userId: userToken && userToken.userId
+        userAgent
       });
 
     await mail({
@@ -69,9 +48,10 @@ module.exports = {
       subject: 'Please verify your Bob email address',
       markdown:
         `From: ${ua.parse(userAgent)} (${ipAddress})\n\n` +
-        `Verify URL: ${clientUrl}${PATHS[intent]}?${qs.stringify({token})}`
+        `Verify URL: ${clientUrl}/verify-email-address-claim?` +
+        qs.stringify({token})
     });
 
-    return {emailAddressClaimId: id};
+    return true;
   }
 };
