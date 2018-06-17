@@ -27,6 +27,7 @@ const VIEWER_QUERY = gql`
         roles
         lastUsedAt
         updatedAt
+        createdAt
       }
     }
   }

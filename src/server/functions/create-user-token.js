@@ -16,7 +16,7 @@ module.exports = async ({
       name,
       tokenHash,
       tokenHashAlgorithm,
-      roles: roles.reduce((roles, role) => roles | role, 0),
+      roles,
       userId,
       userAgent,
       ipAddress

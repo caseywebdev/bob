@@ -64,7 +64,7 @@ module.exports = {
 
     userToken = await createUserToken({
       ipAddress: getIpAddress({req}),
-      roles: [],
+      roles: 0,
       userAgent,
       userId: user.id
     });
