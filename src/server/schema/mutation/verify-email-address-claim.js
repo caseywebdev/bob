@@ -9,6 +9,7 @@ const getDb = require('../../functions/get-db');
 const getIpAddress = require('../../functions/get-ip-address');
 const uuid = require('uuid/v4');
 const verifyEmailAddressClaim = require('../../functions/verify-email-address-claim');
+const getNameFromEmailAddress = require('../../functions/get-name-from-email-address');
 
 module.exports = {
   description: 'Verify an email address claim. If the user is authenticated, the email address will be added to their account.',
@@ -49,7 +50,7 @@ module.exports = {
 
     if (!user) {
       const userId = uuid();
-      const name = emailAddress.slice(0, emailAddress.lastIndexOf('@'));
+      const name = await getNameFromEmailAddress({emailAddress});
       const db = await getDb();
       await db.transaction(async trx => {
         user = (

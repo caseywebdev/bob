@@ -32,7 +32,7 @@ export default class extends Component {
                   mutate({variables: {input: {emailAddress}}});
                 }}
               >
-                Sign In
+                Enter your email to sign in or create an account
                 <input
                   autoComplete='username'
                   type='email'

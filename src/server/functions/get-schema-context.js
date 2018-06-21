@@ -8,6 +8,12 @@ const getLoaders = () => ({
     const db = await getDb();
     const usersById = _.indexBy(await db('users').whereIn('id', ids), 'id');
     return ids.map(id => usersById[id]);
+  }),
+  userEmailAddressesByUser: new DataLoader(async userIds => {
+    const db = await getDb();
+    const uea = await db('userEmailAddresses').whereIn('userId', userIds);
+    const ueaByUserId = _.groupBy(uea, 'userId');
+    return userIds.map(userId => ueaByUserId[userId] || []);
   })
 });
 

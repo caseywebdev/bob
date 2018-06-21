@@ -22,6 +22,7 @@ const VIEWER_QUERY = gql`
     viewer {
       id
       name
+      avatarUrl
       userTokens {
         id
         roles
@@ -47,6 +48,7 @@ export default () =>
           <Link className={styles.navItem} to='/'>
             <B className={styles.bShape} />
           </Link>
+          {viewer && <img src={viewer.avatarUrl} style={{width: 40}}/>}
           {
             viewer &&
             <Mutation

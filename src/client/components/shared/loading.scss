@@ -1,10 +1,11 @@
 @import '../../config';
 
-.centered {
-  align-items: center;
-  display: flex;
-  height: 100%;
-  justify-content: center;
+.root {
+  visibility: hidden;
+}
+
+.visible {
+  visibility: visible;
 }
 
 @mixin loading($name, $size) {

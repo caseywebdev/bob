@@ -7,6 +7,7 @@ const {
 module.exports = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
+    avatarUrl: require('./avatar-url'),
     userEmailAddresses: require('./user-email-addresses'),
     userTokens: require('./user-tokens'),
     id: {type: new GraphQLNonNull(require('../uuid'))},
