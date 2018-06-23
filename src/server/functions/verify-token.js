@@ -1,4 +1,4 @@
-const {INVALID_TOKEN} = require('../../shared/constants/errors');
+const {INVALID_TOKEN} = require('../constants/errors');
 const getIdFromToken = require('./get-id-from-token');
 const getDb = require('./get-db');
 const getHash = require('./get-hash');

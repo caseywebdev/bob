@@ -1,6 +1,6 @@
-const getBuildDescription = require('../../shared/functions/get-build-description');
+const getBuildDescription = require('../functions/get-build-description');
 const getGithub = require('../functions/get-github');
-const STATUSES = require('../../shared/constants/statuses');
+const STATUSES = require('../constants/statuses');
 
 const STATUS_STATES = {
   [STATUSES.PENDING]: 'pending',

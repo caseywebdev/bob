@@ -1,4 +1,4 @@
-const {PENDING, CLAIMED} = require('../../shared/constants/statuses');
+const {PENDING, CLAIMED} = require('../constants/statuses');
 const getDb = require('../functions/get-db');
 const publishBuild = require('../functions/publish-build');
 const runBuild = require('../functions/run-build');

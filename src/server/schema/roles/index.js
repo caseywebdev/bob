@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const {GraphQLScalarType} = require('graphql');
 const {Kind: {NUMBER}} = require('graphql/language');
-const roles = require('../../../shared/constants/roles');
+const roles = require('../../constants/roles');
 
 const ALL_ROLES = _.reduce(roles, (roles, n) => roles | n, 0);
 

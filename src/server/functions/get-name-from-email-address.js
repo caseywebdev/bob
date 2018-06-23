@@ -14,11 +14,10 @@ module.exports = async ({emailAddress}) => {
       name: {familyName = '', formatted = '', givenName = ''}
     } = data.entry[0];
 
-    const name = (
-      displayName ||
-      formatted ||
-      `${givenName} ${familyName}`
-    ).trim();
+    const name =
+      formatted.trim() ||
+      `${givenName} ${familyName}`.trim() ||
+      displayName.trim();
 
     if (name) return name;
   } catch (er) {}

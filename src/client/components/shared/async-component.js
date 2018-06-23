@@ -8,7 +8,8 @@ export default class extends React.Component {
 
   async componentDidMount() {
     try {
-      const {default: Component} = await this.props.importComponent();
+      const {importComponent} = this.props;
+      const {default: Component} = await importComponent();
       this.setState({Component});
     } catch (er) {
       this.setState({error: er});
@@ -16,9 +17,9 @@ export default class extends React.Component {
   }
 
   render() {
-    const {Component, error} = this.state;
+    const {props: {componentProps}, state: {Component, error}} = this;
 
-    if (Component) return <Component {...this.props.props} />;
+    if (Component) return <Component {...componentProps} />;
 
     if (error) {
       return <Center><Notice type='error'>{error.toString()}</Notice></Center>;

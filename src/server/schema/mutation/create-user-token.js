@@ -4,10 +4,10 @@ const {
   GraphQLNonNull,
   GraphQLString
 } = require('graphql');
-const {WRITE_USER_TOKEN} = require('../../../shared/functions/has-permission');
+const {WRITE_USER_TOKEN} = require('../../constants/roles');
 const createUserToken = require('../../functions/create-user-token');
 const getIpAddress = require('../../functions/get-ip-address');
-const hasPermission = require('../../../shared/functions/has-permission');
+const hasPermission = require('../../functions/has-permission');
 
 module.exports = {
   args: {
@@ -34,8 +34,10 @@ module.exports = {
   ) => {
     if (
       !userToken ||
-      !hasPermission(WRITE_USER_TOKEN | roles, userToken.roles)
-    ) throw new Error('Forbidden');
+      !hasPermission(userToken.roles, WRITE_USER_TOKEN | roles)
+    ) {
+      throw new Error("You don't have sufficient permission to create a token");
+    }
 
     return {
       userToken: await createUserToken({

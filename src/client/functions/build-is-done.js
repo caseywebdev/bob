@@ -1,4 +1,4 @@
-import {CANCELLED, FAILED, SUCCEEDED} from '../../shared/constants/statuses';
+import {CANCELLED, FAILED, SUCCEEDED} from '../constants/statuses';
 
 export default ({build: {status}}) =>
   status === CANCELLED ||

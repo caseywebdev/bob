@@ -1,4 +1,4 @@
-const {UNAUTHORIZED} = require('../../shared/constants/errors');
+const {UNAUTHORIZED} = require('../constants/errors');
 const config = require('../config');
 const fetch = require('node-fetch');
 const getUser = require('../functions/get-user');

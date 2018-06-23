@@ -7,11 +7,11 @@ import {InMemoryCache} from 'apollo-cache-inmemory';
 import {WebSocketLink} from 'apollo-link-ws';
 import config from '../config';
 import disk from './disk';
-import errors from '../../shared/constants/errors';
 import updateToken from '../functions/update-token';
 
-const {INVALID_TOKEN} = errors;
 const {apiUrl} = config.bob;
+
+const INVALID_TOKEN_MESSAGE = 'Supplied token is invalid or expired';
 
 const cache = new InMemoryCache();
 
@@ -21,7 +21,7 @@ const getContext = () => {
 };
 
 const errorLink = new ErrorLink(({networkError: {bodyText} = {}}) => {
-  if (bodyText === INVALID_TOKEN.message) updateToken();
+  if (bodyText === INVALID_TOKEN_MESSAGE) updateToken();
 });
 
 const authLink = new ApolloLink((operation, forward) => {
@@ -35,7 +35,7 @@ export const wsLink = new WebSocketLink({
   uri: `${apiUrl.replace(/^http/, 'ws')}/graphql`,
   options: {
     connectionCallback: er => {
-      if (er && er.message === INVALID_TOKEN.message) updateToken();
+      if (er && er.message === INVALID_TOKEN_MESSAGE) updateToken();
     },
     connectionParams: getContext,
     reconnect: true

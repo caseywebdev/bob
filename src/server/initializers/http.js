@@ -1,5 +1,4 @@
 const {execute, subscribe} = require('graphql');
-const {NOT_FOUND} = require('../../shared/constants/errors');
 const {promisify} = require('util');
 const {SubscriptionServer} = require('subscriptions-transport-ws');
 const bodyParser = require('body-parser');
@@ -8,6 +7,8 @@ const express = require('express');
 const getSchemaContext = require('../functions/get-schema-context');
 const http = require('http');
 const schema = require('../schema');
+
+const NOT_FOUND = Object.assign(new Error('Not Found'), {statusCode: 404});
 
 const asyncify = handler =>
   Array.isArray(handler) ? handler.map(asyncify) :

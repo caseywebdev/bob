@@ -1,5 +1,5 @@
 const getDb = require('./get-db');
-const NOT_FOUND = require('../../shared/constants/errors');
+const NOT_FOUND = require('../constants/errors');
 
 module.exports = async ({id}) => {
   const db = await getDb();

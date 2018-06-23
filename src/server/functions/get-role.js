@@ -1,6 +1,5 @@
 const getDb = require('./get-db');
 const getRootUserId = require('./get-root-user-id');
-const {ADMIN, NONE} = require('../../shared/constants/permission-roles');
 
 module.exports = async ({envId, userId}) => {
   if (userId === await getRootUserId()) return ADMIN;

@@ -1,8 +1,8 @@
 const _ = require('underscore');
 const getRole = require('../functions/get-role');
-const ERRORS = require('../../shared/constants/errors');
-const LEVELS = require('../../shared/constants/permission-levels');
-const ROLES = require('../../shared/constants/permission-roles');
+const ERRORS = require('../constants/errors');
+const LEVELS = require('../constants/permission-levels');
+const ROLES = require('../constants/permission-roles');
 const saveEnv = require('../functions/save-env');
 
 const getDb = require('../functions/get-db');

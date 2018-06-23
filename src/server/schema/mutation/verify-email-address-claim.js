@@ -10,6 +10,7 @@ const getIpAddress = require('../../functions/get-ip-address');
 const uuid = require('uuid/v4');
 const verifyEmailAddressClaim = require('../../functions/verify-email-address-claim');
 const getNameFromEmailAddress = require('../../functions/get-name-from-email-address');
+const roles = require('../../constants/roles');
 
 module.exports = {
   description: 'Verify an email address claim. If the user is authenticated, the email address will be added to their account.',
@@ -65,7 +66,7 @@ module.exports = {
 
     userToken = await createUserToken({
       ipAddress: getIpAddress({req}),
-      roles: 0,
+      roles: roles.ALL,
       userAgent,
       userId: user.id
     });

@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const {CANCELLED, FAILED, SUCCEEDED} = require('../../shared/constants/statuses');
+const {CANCELLED, FAILED, SUCCEEDED} = require('../constants/statuses');
 const {fork} = require('child_process');
 const updateBuildStatus = require('./update-build-status');
 

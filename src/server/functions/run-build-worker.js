@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const {BUILDING, CANCELLED, FAILED, PULLING, PUSHING, SUCCEEDED} = require('../../shared/constants/statuses');
+const {BUILDING, CANCELLED, FAILED, PULLING, PUSHING, SUCCEEDED} = require('../constants/statuses');
 const {docker: {buildOptions}} = require('../config');
 const {promisify} = require('util');
 const getBuildArgs = require('./get-build-args');

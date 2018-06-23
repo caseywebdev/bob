@@ -1,11 +1,11 @@
 const _ = require('underscore');
 const {toKey} = require('pave');
 const createBuild = require('../functions/create-build');
-const ERRORS = require('../../shared/constants/errors');
+const ERRORS = require('../constants/errors');
 const getDb = require('../functions/get-db');
-const LEVELS = require('../../shared/constants/permission-levels');
-const ROLES = require('../../shared/constants/permission-roles');
-const STATUSES = require('../../shared/constants/statuses');
+const LEVELS = require('../constants/permission-levels');
+const ROLES = require('../constants/permission-roles');
+const STATUSES = require('../constants/statuses');
 const updateBuildStatus = require('../functions/update-build-status');
 
 const getBuilds = async ({

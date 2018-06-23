@@ -1,11 +1,12 @@
 @import '../../config';
 
 .root {
-  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .visible {
-  visibility: visible;
+  opacity: 1;
 }
 
 @mixin loading($name, $size) {

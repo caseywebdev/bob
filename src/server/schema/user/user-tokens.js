@@ -1,7 +1,7 @@
 const {GraphQLList, GraphQLNonNull} = require('graphql');
-const {READ_USER_TOKEN} = require('../../../shared/constants/roles');
+const {READ_USER_TOKEN} = require('../../constants/roles');
 const getDb = require('../../functions/get-db');
-const hasPermission = require('../../../shared/functions/has-permission');
+const hasPermission = require('../../functions/has-permission');
 
 module.exports = {
   type: new GraphQLNonNull(new GraphQLList(

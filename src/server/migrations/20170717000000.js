@@ -1,4 +1,4 @@
-const {PENDING} = require('../../shared/constants/statuses');
+const {PENDING} = require('../constants/statuses');
 
 exports.up = db =>
   db.schema
@@ -61,7 +61,7 @@ exports.up = db =>
       t.timestamp('lastUsedAt');
     })
 
-    .createTable('permissions', t => {
+    .createTable('envUsers', t => {
       t.uuid('id').primary();
       t.uuid('envId')
         .notNullable()
@@ -99,7 +99,7 @@ exports.up = db =>
       t.json('output');
       t.text('error');
       t.json('meta');
-      t.timestamp('createdAt').notNullable().defaultTo(db.fn.now());
+      t.timestamp('createdAt').notNullable().defaultTo(db.fn.now()).index();
       t.timestamp('updatedAt').notNullable().defaultTo(db.fn.now());
     });
 

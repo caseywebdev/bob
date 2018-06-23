@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const {INVALID_TOKEN} = require('../../shared/constants/errors');
+const {INVALID_TOKEN} = require('../constants/errors');
 const isUuid = require('./is-uuid');
 
 const UUID_GROUPING_RE = /^(\w{8})(\w{4})(\w{4})(\w{4})(\w{12})$/;

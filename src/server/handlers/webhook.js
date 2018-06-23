@@ -1,6 +1,5 @@
 const _ = require('underscore');
-const {FORBIDDEN} = require('../../shared/constants/errors');
-const {WRITE} = require('../../shared/constants/permission-levels');
+const {FORBIDDEN} = require('../constants/errors');
 const createBuilds = require('../functions/create-builds');
 const getEnv = require('../functions/get-env');
 const getRole = require('../functions/get-role');
