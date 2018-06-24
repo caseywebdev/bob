@@ -2,7 +2,6 @@
 
 bin/build \
   -w 'src/client/**/*' \
-  -w 'src/shared/**/*' \
   -w dist/index.css \
   -w dist/manifest.json \
   -w etc/nginx.conf

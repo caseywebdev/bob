@@ -4,6 +4,7 @@ const getDb = require('../../functions/get-db');
 const isUuid = require('../../functions/is-uuid');
 const hasPermission = require('../../functions/has-permission');
 const {READ_BUILD} = require('../../constants/roles');
+const {UNAUTHORIZED} = require('../../constants/errors');
 
 module.exports = {
   args: {
@@ -12,7 +13,7 @@ module.exports = {
   },
   type: new GraphQLNonNull(require('../build-connection')),
   resolve: async (obj, {after, first = 0}, {userToken}) => {
-    if (!userToken) throw new Error('Authentication is required');
+    if (!userToken) throw UNAUTHORIZED;
 
     if (!hasPermission(userToken.roles, READ_BUILD)) {
       throw new Error('The `READ_BUILD` role is required');

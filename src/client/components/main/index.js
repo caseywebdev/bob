@@ -29,6 +29,8 @@ const VIEWER_QUERY = gql`
         lastUsedAt
         updatedAt
         createdAt
+        userAgent
+        ipAddress
       }
     }
   }

@@ -3,7 +3,6 @@
 if [ "$WATCH" = "1" ]; then
   exec node_modules/.bin/watchy \
     -w 'src/server/**/*' \
-    -w 'src/shared/**/*' \
     -- node src/server
 else
   exec node src/server
